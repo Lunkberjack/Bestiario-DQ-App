@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.bestiario_dq_app.ui.bestiario.HomeScreen
 import com.example.bestiario_dq_app.ui.nav.SetupNavGraph
 import com.example.bestiario_dq_app.ui.theme.BestiarioDQAppTheme
 import dagger.hilt.android.AndroidEntryPoint

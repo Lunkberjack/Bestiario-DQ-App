@@ -28,45 +28,45 @@ class AuthViewModel @Inject constructor(
 
     fun onEvent(event: AuthUiEvent) {
         when(event) {
-            is AuthUiEvent.SignInUsernameChanged -> {
-                state = state.copy(signInUsername = event.value)
+            is AuthUiEvent.onLoginUsernameChanged -> {
+                state = state.copy(loginUsername = event.value)
             }
-            is AuthUiEvent.SignInPasswordChanged -> {
-                state = state.copy(signInPassword = event.value)
+            is AuthUiEvent.onLoginPassChanged -> {
+                state = state.copy(loginPass = event.value)
             }
-            is AuthUiEvent.SignIn -> {
-                signIn()
+            is AuthUiEvent.Login -> {
+                login()
             }
-            is AuthUiEvent.SignUpUsernameChanged -> {
-                state = state.copy(signUpUsername = event.value)
+            is AuthUiEvent.onRegistroUsernameChanged -> {
+                state = state.copy(registroUsername = event.value)
             }
-            is AuthUiEvent.SignUpPasswordChanged -> {
-                state = state.copy(signUpPassword = event.value)
+            is AuthUiEvent.onRegistroPassChanged -> {
+                state = state.copy(registroPass = event.value)
             }
             is AuthUiEvent.SignUp -> {
-                signUp()
+                registro()
             }
         }
     }
 
-    private fun signUp() {
+    private fun registro() {
         viewModelScope.launch {
             state = state.copy(isLoading = true)
             val result = repository.registro(
-                username = state.signUpUsername,
-                password = state.signUpPassword
+                username = state.registroUsername,
+                password = state.registroPass
             )
             resultChannel.send(result)
             state = state.copy(isLoading = false)
         }
     }
 
-    private fun signIn() {
+    private fun login() {
         viewModelScope.launch {
             state = state.copy(isLoading = true)
             val result = repository.login(
-                username = state.signInUsername,
-                password = state.signInPassword
+                username = state.loginUsername,
+                password = state.loginPass
             )
             resultChannel.send(result)
             state = state.copy(isLoading = false)

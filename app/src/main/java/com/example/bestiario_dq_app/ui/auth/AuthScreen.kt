@@ -57,9 +57,9 @@ fun AuthScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TextField(
-            value = state.signUpUsername,
+            value = state.registroUsername,
             onValueChange = {
-                viewModel.onEvent(AuthUiEvent.SignUpUsernameChanged(it))
+                viewModel.onEvent(AuthUiEvent.onRegistroUsernameChanged(it))
             },
             modifier = Modifier.fillMaxWidth(),
             placeholder = {
@@ -68,9 +68,9 @@ fun AuthScreen(
         )
         Spacer(modifier = Modifier.height(16.dp))
         TextField(
-            value = state.signUpPassword,
+            value = state.registroPass,
             onValueChange = {
-                viewModel.onEvent(AuthUiEvent.SignUpPasswordChanged(it))
+                viewModel.onEvent(AuthUiEvent.onRegistroPassChanged(it))
             },
             modifier = Modifier.fillMaxWidth(),
             placeholder = {
@@ -90,9 +90,9 @@ fun AuthScreen(
         Spacer(modifier = Modifier.height(64.dp))
 
         TextField(
-            value = state.signInUsername,
+            value = state.loginUsername,
             onValueChange = {
-                viewModel.onEvent(AuthUiEvent.SignInUsernameChanged(it))
+                viewModel.onEvent(AuthUiEvent.onLoginUsernameChanged(it))
             },
             modifier = Modifier.fillMaxWidth(),
             placeholder = {
@@ -101,9 +101,9 @@ fun AuthScreen(
         )
         Spacer(modifier = Modifier.height(16.dp))
         TextField(
-            value = state.signInPassword,
+            value = state.loginPass,
             onValueChange = {
-                viewModel.onEvent(AuthUiEvent.SignInPasswordChanged(it))
+                viewModel.onEvent(AuthUiEvent.onLoginPassChanged(it))
             },
             modifier = Modifier.fillMaxWidth(),
             placeholder = {
@@ -113,7 +113,7 @@ fun AuthScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                viewModel.onEvent(AuthUiEvent.SignIn)
+                viewModel.onEvent(AuthUiEvent.Login)
             },
             modifier = Modifier.align(Alignment.End)
         ) {

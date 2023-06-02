@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
+    <!--El nombre es necesario para que la inyección de dependencias funcione-->
     <application
         android:name=".AuthApp"
         android:allowBackup="true"
