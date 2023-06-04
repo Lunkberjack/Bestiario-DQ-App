@@ -17,7 +17,7 @@ fun SetupNavGraph(
         composable(
             route = Screen.Auth.route
         ) {
-            HomeScreen()
+            AuthScreen()
         }
 
         composable(

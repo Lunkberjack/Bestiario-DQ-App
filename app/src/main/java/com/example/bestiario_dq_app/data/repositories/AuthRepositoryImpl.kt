@@ -2,7 +2,7 @@ package com.example.bestiario_dq_app.data.repositories
 
 import android.content.SharedPreferences
 import com.example.bestiario_dq_app.data.remote.AuthApi
-import com.example.bestiario_dq_app.data.remote.requests.AuthRequest
+import com.example.bestiario_dq_app.data.remote.requests.PeticionAuth
 import com.example.bestiario_dq_app.data.remote.responses.AuthResult
 import com.example.bestiario_dq_app.domain.repositories.AuthRepository
 import retrofit2.HttpException
@@ -12,19 +12,19 @@ class AuthRepositoryImpl(
     private val prefs: SharedPreferences
 ): AuthRepository {
 
-    override suspend fun registro(username: String, password: String): AuthResult<Unit> {
+    override suspend fun registro(username: String, pass: String): AuthResult<Unit> {
         return try {
             api.registro(
-                request = AuthRequest(
+                request = PeticionAuth(
                     username = username,
-                    password = password
+                    pass = pass
                 )
             )
             // Queremos que el login sea automático cuando el usuario se registra:
-            login(username, password)
+            login(username, pass)
         } catch(e: HttpException) {
             if(e.code() == 401) {
-                AuthResult.Unauthorized()
+                AuthResult.NoAutorizado()
             } else {
                 AuthResult.UnknownError()
             }
@@ -33,21 +33,21 @@ class AuthRepositoryImpl(
         }
     }
 
-    override suspend fun login(username: String, password: String): AuthResult<Unit> {
+    override suspend fun login(username: String, pass: String): AuthResult<Unit> {
         return try {
             val response = api.login(
-                request = AuthRequest(
+                request = PeticionAuth(
                     username = username,
-                    password = password
+                    pass = pass
                 )
             )
             prefs.edit()
                 .putString("jwt", response.token)
                 .apply()
-            AuthResult.Authorized()
+            AuthResult.Autorizado()
         } catch(e: HttpException) {
             if(e.code() == 401) {
-                AuthResult.Unauthorized()
+                AuthResult.NoAutorizado()
             } else {
                 AuthResult.UnknownError()
             }
@@ -56,14 +56,14 @@ class AuthRepositoryImpl(
         }
     }
 
-    override suspend fun authenticate(): AuthResult<Unit> {
+    override suspend fun autentificar(): AuthResult<Unit> {
         return try {
-            val token = prefs.getString("jwt", null) ?: return AuthResult.Unauthorized()
-            api.authenticate("Bearer $token")
-            AuthResult.Authorized()
+            val token = prefs.getString("jwt", null) ?: return AuthResult.NoAutorizado()
+            api.autentificar("Bearer $token")
+            AuthResult.Autorizado()
         } catch(e: HttpException) {
             if(e.code() == 401) {
-                AuthResult.Unauthorized()
+                AuthResult.NoAutorizado()
             } else {
                 AuthResult.UnknownError()
             }
@@ -71,4 +71,7 @@ class AuthRepositoryImpl(
             AuthResult.UnknownError()
         }
     }
+
+    override suspend fun prueba() {
+api.prueba()    }
 }

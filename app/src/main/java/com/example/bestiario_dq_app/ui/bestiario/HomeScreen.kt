@@ -20,15 +20,20 @@ import androidx.compose.ui.unit.sp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen() {
-    Scaffold(topBar = DefaultAppBar(),
-        content = { it
-        Text(text = "xe", color = Color.White, fontSize = 90.sp, modifier = Modifier.fillMaxWidth())
-    })
+    Scaffold(topBar = { DefaultAppBar() },
+        content = {it
+            Text(
+                text = "xe",
+                color = Color.White,
+                fontSize = 90.sp,
+                modifier = Modifier.fillMaxWidth()
+            )
+        })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DefaultAppBar(onSearchClicked: () -> Unit) {
+fun DefaultAppBar(/*onSearchClicked: () -> Unit*/) {
     TopAppBar(
         title = {
             Text(
@@ -37,7 +42,7 @@ fun DefaultAppBar(onSearchClicked: () -> Unit) {
         },
         actions = {
             IconButton(
-                onClick = { onSearchClicked() }
+                onClick = { /*onSearchClicked()*/ }
             ) {
                 Icon(
                     imageVector = Icons.Filled.Search,

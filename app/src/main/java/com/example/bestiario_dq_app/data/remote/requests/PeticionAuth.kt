@@ -1,6 +1,6 @@
 package com.example.bestiario_dq_app.data.remote.requests
 
-data class AuthRequest(
+data class PeticionAuth(
     val username: String,
-    val password: String
+    val pass: String
 )

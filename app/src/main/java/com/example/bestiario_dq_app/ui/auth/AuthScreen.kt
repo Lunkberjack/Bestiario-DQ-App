@@ -28,11 +28,11 @@ fun AuthScreen(
     LaunchedEffect(viewModel, context) {
         viewModel.authResults.collect { result ->
             when(result) {
-                is AuthResult.Authorized -> {
+                is AuthResult.Autorizado -> {
 
                 }
 
-                is AuthResult.Unauthorized -> {
+                is AuthResult.NoAutorizado -> {
                     Toast.makeText(
                         context,
                         "You're not authorized",

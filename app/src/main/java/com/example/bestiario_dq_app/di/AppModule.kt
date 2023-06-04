@@ -22,7 +22,8 @@ object AppModule {
     @Singleton
     fun provideAuthApi(): AuthApi {
         return Retrofit.Builder()
-            .baseUrl("http://192.168.0.2:8080/")
+            // La IP actual del dispositivo donde corre la API.
+            .baseUrl("http://192.168.226.229:8080/")
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
             .create()
