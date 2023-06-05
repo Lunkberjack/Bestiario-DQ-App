@@ -13,11 +13,12 @@ import dagger.hilt.android.HiltAndroidApp
 fun SetupNavGraph(
     navController: NavHostController
 ) {
-    NavHost(navController = navController, startDestination = Screen.Auth.route) {
+    NavHost(navController = navController,
+        startDestination = Screen.Auth.route) {
         composable(
             route = Screen.Auth.route
         ) {
-            AuthScreen()
+            HomeScreen()
         }
 
         composable(

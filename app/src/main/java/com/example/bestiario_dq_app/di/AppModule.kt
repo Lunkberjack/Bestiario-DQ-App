@@ -11,7 +11,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
 import javax.inject.Singleton
 
@@ -24,7 +23,7 @@ object AppModule {
         return Retrofit.Builder()
             // La IP actual del dispositivo donde corre la API.
             .baseUrl("http://192.168.226.229:8080/")
-            .addConverterFactory(MoshiConverterFactory.create())
+            // .addConverterFactory(MoshiConverterFactory.create())
             .build()
             .create()
     }
