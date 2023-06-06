@@ -49,7 +49,7 @@ class AuthViewModel @Inject constructor(
                 state = state.copy(registroPass = event.value)
             }
 
-            is AuthUiEvent.SignUp -> {
+            is AuthUiEvent.Registro -> {
                 prueba()
             }
         }

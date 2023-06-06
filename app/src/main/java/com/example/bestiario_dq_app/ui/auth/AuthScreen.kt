@@ -88,7 +88,7 @@ fun AuthScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                viewModel.onEvent(AuthUiEvent.SignUp)
+                viewModel.onEvent(AuthUiEvent.Registro)
             },
             modifier = Modifier.align(Alignment.End)
         ) {
@@ -126,6 +126,20 @@ fun AuthScreen(
             modifier = Modifier.align(Alignment.End)
         ) {
             Text(text = "Sign in")
+        }
+        Button(
+            onClick = {
+                navController.navigate(Screen.Monstruos.route) {
+                    // Nos aseguramos de que la pantalla de autentificación se elimine del backstack.
+                    // Si esto no fuera así, podríamos volver a acceder a ella pulsando el botón "atrás".
+                    popUpTo(Screen.Auth.route) {
+                        inclusive = true
+                    }
+                }
+            },
+            modifier = Modifier.align(Alignment.End)
+        ) {
+            Text(text = "A casita manín")
         }
     }
     if (state.isLoading) {

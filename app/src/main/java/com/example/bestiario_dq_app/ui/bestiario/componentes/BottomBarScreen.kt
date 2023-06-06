@@ -4,28 +4,30 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.bestiario_dq_app.ui.auth.Screen
 
 sealed class BottomBarScreen(
-    val route: String,
+    val destination: Screen,
     val title: String,
     val icon: ImageVector
 ) {
     object Monstruos: BottomBarScreen(
-        route = "HOME",
-        title = "HOME",
+        destination = Screen.Monstruos,
+        title = "Monstruos",
         icon = Icons.Default.Home
     )
 
     object Perfil: BottomBarScreen(
-        route = "PROFILE",
-        title = "PROFILE",
+        destination = Screen.Perfil,
+        title = "Perfil",
         icon = Icons.Default.Person
     )
 
     object Favoritos: BottomBarScreen(
-        route = "SETTINGS",
-        title = "SETTINGS",
-        icon = Icons.Default.Settings
+        destination = Screen.Favoritos,
+        title = "Favoritos",
+        icon = Icons.Default.Star
     )
 }
