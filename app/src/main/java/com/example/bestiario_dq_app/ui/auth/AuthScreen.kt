@@ -16,11 +16,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.bestiario_dq_app.data.remote.responses.AuthResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AuthScreen(
+    navController: NavController,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -29,7 +31,13 @@ fun AuthScreen(
         viewModel.authResults.collect { result ->
             when(result) {
                 is AuthResult.Autorizado -> {
-
+                    navController.navigate(Screen.Secret.route) {
+                        // Nos aseguramos de que la pantalla de autentificación se elimine del backstack.
+                        // Si esto no fuera así, podríamos volver a acceder a ella pulsando el botón "atrás".
+                        popUpTo(Screen.Auth.route) {
+                            inclusive = true
+                        }
+                    }
                 }
 
                 is AuthResult.NoAutorizado -> {

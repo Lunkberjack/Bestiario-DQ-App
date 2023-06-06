@@ -25,7 +25,5 @@ interface AuthApi {
     )
 
     @GET("prueba")
-    suspend fun prueba(
-
-    )
+    suspend fun prueba(  )
 }

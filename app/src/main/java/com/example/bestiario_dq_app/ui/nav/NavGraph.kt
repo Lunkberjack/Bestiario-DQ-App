@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.bestiario_dq_app.ui.auth.AuthScreen
 import com.example.bestiario_dq_app.ui.auth.Screen
+import com.example.bestiario_dq_app.ui.auth.SecretScreen
 import com.example.bestiario_dq_app.ui.bestiario.HomeScreen
 import dagger.hilt.android.HiltAndroidApp
 
@@ -18,13 +19,13 @@ fun SetupNavGraph(
         composable(
             route = Screen.Auth.route
         ) {
-            HomeScreen()
+            AuthScreen()
         }
 
         composable(
-            route = Screen.Detail.route
+            route = Screen.Secret.route
         ) {
-
+            SecretScreen()
         }
     }
 }
