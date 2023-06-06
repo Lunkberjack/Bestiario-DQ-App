@@ -81,7 +81,6 @@ dependencies {
 
     // Pantalla de carga
     implementation "androidx.core:core-splashscreen:1.0.1"
-
 }
 
 // Permite referenciar el código generado
