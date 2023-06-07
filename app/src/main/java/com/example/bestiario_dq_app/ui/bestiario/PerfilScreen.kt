@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -117,8 +118,8 @@ fun ImageSelector(onImageSelected: (ImageBitmap) -> Unit) {
                 contentDescription = "Bild",
                 modifier = Modifier
                     .size(100.dp)
-                    .padding(bottom = 5.dp)
-                    .clip(RoundedCornerShape(20.dp))
+                    .padding(bottom = 10.dp)
+                    .safeContentPadding()
                     .clickable { onImageSelected(bitmap) }
             )
         }

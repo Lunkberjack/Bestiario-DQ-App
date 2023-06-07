@@ -1,14 +1,24 @@
 package com.example.bestiario_dq_app.ui.nav
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,9 +29,11 @@ import com.example.bestiario_dq_app.ui.auth.SecretScreen
 import com.example.bestiario_dq_app.ui.bestiario.FavoritosScreen
 import com.example.bestiario_dq_app.ui.bestiario.MonstruosScreen
 import com.example.bestiario_dq_app.ui.bestiario.PerfilScreen
+import com.example.bestiario_dq_app.ui.bestiario.componentes.AppDrawer
 import com.example.bestiario_dq_app.ui.bestiario.componentes.BottomBar
 import com.example.bestiario_dq_app.ui.bestiario.componentes.BottomBarScreen
 import com.example.bestiario_dq_app.ui.bestiario.componentes.DefaultAppBar
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,13 +49,33 @@ fun NavGraph(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
+
+
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = { DefaultAppBar(scrollBehavior) },
         bottomBar = {
-            BottomBar(navController = navController, screens = screens, currentDestination = currentDestination)
+            BottomBar(
+                navController = navController,
+                screens = screens,
+                currentDestination = currentDestination
+            )
         }
     ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .width(220.dp)
+        ) {
+            ModalNavigationDrawer(
+                modifier = Modifier.padding(innerPadding),
+                drawerContent = { AppDrawer(Screen.Monstruos.route, Modifier, navController) },
+                drawerState = rememberDrawerState(
+                    initialValue = DrawerValue.Open
+                )
+            ) {}
+        }
+
         Box(modifier = Modifier.padding(innerPadding)) {
             NavHost(navController = navController, startDestination = Screen.Monstruos.route) {
                 composable(route = Screen.Auth.route) {
