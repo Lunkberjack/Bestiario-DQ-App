@@ -1,16 +1,16 @@
 package com.example.bestiario_dq_app.data.repositories
 
 import android.content.SharedPreferences
-import com.example.bestiario_dq_app.data.remote.AuthApi
+import com.example.bestiario_dq_app.data.remote.Api
 import com.example.bestiario_dq_app.data.remote.requests.PeticionAuth
 import com.example.bestiario_dq_app.data.remote.responses.AuthResult
 import com.example.bestiario_dq_app.domain.repositories.AuthRepository
 import retrofit2.HttpException
 
 class AuthRepositoryImpl(
-    private val api: AuthApi,
+    private val api: Api,
     private val prefs: SharedPreferences
-): AuthRepository {
+) : AuthRepository {
 
     override suspend fun registro(username: String, pass: String): AuthResult<Unit> {
         return try {
@@ -22,8 +22,8 @@ class AuthRepositoryImpl(
             )
             // Queremos que el login sea automático cuando el usuario se registra:
             login(username, pass)
-        } catch(e: HttpException) {
-            if(e.code() == 401) {
+        } catch (e: HttpException) {
+            if (e.code() == 401) {
                 AuthResult.NoAutorizado()
             } else {
                 AuthResult.UnknownError()
@@ -45,8 +45,8 @@ class AuthRepositoryImpl(
                 .putString("jwt", response.token)
                 .apply()
             AuthResult.Autorizado()
-        } catch(e: HttpException) {
-            if(e.code() == 401) {
+        } catch (e: HttpException) {
+            if (e.code() == 401) {
                 AuthResult.NoAutorizado()
             } else {
                 AuthResult.UnknownError()
@@ -61,8 +61,8 @@ class AuthRepositoryImpl(
             val token = prefs.getString("jwt", null) ?: return AuthResult.NoAutorizado()
             api.autentificar("Bearer $token")
             AuthResult.Autorizado()
-        } catch(e: HttpException) {
-            if(e.code() == 401) {
+        } catch (e: HttpException) {
+            if (e.code() == 401) {
                 AuthResult.NoAutorizado()
             } else {
                 AuthResult.UnknownError()
@@ -73,5 +73,6 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun prueba() {
-api.prueba()    }
+        api.prueba()
+    }
 }

@@ -30,8 +30,9 @@ fun AuthScreen(
     LaunchedEffect(viewModel, context) {
         viewModel.authResults.collect { result ->
             when(result) {
+                // Si se registra/loggea correctamente o tiene token válido:
                 is AuthResult.Autorizado -> {
-                    navController.navigate(Screen.Secret.route) {
+                    navController.navigate(Screen.Monstruos.route) {
                         // Nos aseguramos de que la pantalla de autentificación se elimine del backstack.
                         // Si esto no fuera así, podríamos volver a acceder a ella pulsando el botón "atrás".
                         popUpTo(Screen.Auth.route) {

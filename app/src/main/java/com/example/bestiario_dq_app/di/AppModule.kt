@@ -3,15 +3,17 @@ package com.example.bestiario_dq_app.di
 import android.app.Application
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
-import com.example.bestiario_dq_app.data.remote.AuthApi
+import com.example.bestiario_dq_app.data.remote.Api
 import com.example.bestiario_dq_app.data.repositories.AuthRepositoryImpl
+import com.example.bestiario_dq_app.data.repositories.MonstruosRepositoryImpl
 import com.example.bestiario_dq_app.domain.repositories.AuthRepository
+import com.example.bestiario_dq_app.domain.repositories.MonstruosRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
-import retrofit2.create
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -19,13 +21,14 @@ import javax.inject.Singleton
 object AppModule {
     @Provides
     @Singleton
-    fun provideAuthApi(): AuthApi {
+    fun provideAuthApi(): Api {
         return Retrofit.Builder()
             // La IP actual del dispositivo donde corre la API.
-            .baseUrl("http://192.168.226.229:8080/")
-            // .addConverterFactory(MoshiConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl("http://192.168.178.114:8080/")
+            //.baseUrl("http://192.168.226.229:8080/")
             .build()
-            .create()
+            .create(Api::class.java)
     }
 
     @Provides
@@ -36,7 +39,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAuthRepository(api: AuthApi, prefs: SharedPreferences): AuthRepository {
+    fun provideAuthRepository(api: Api, prefs: SharedPreferences): AuthRepository {
         return AuthRepositoryImpl(api, prefs)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMonstruosRepository(api: Api, prefs: SharedPreferences): MonstruosRepository {
+        return MonstruosRepositoryImpl(api, prefs)
     }
 }

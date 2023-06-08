@@ -25,6 +25,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.bestiario_dq_app.data.repositories.MonstruosRepositoryImpl
+import com.example.bestiario_dq_app.domain.repositories.MonstruosRepository
 import com.example.bestiario_dq_app.ui.auth.AuthScreen
 import com.example.bestiario_dq_app.ui.auth.Screen
 import com.example.bestiario_dq_app.ui.auth.SecretScreen
@@ -50,8 +52,6 @@ fun NavGraph(navController: NavHostController) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-
-
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -81,7 +81,7 @@ fun NavGraph(navController: NavHostController) {
         }
 
         Box(modifier = Modifier.padding(innerPadding)) {
-            NavHost(navController = navController, startDestination = Screen.Monstruos.route) {
+            NavHost(navController = navController, startDestination = Screen.Auth.route) {
                 composable(route = Screen.Auth.route) {
                     AuthScreen(navController = navController)
                 }
@@ -89,7 +89,7 @@ fun NavGraph(navController: NavHostController) {
                     SecretScreen()
                 }
                 composable(route = Screen.Monstruos.route) {
-                    MonstruosScreen(navHostController = navController)
+                    MonstruosScreen(navController)
                 }
                 composable(route = Screen.Favoritos.route) {
                     FavoritosScreen(navHostController = navController)

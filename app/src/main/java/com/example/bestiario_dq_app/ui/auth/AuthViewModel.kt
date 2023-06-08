@@ -50,7 +50,7 @@ class AuthViewModel @Inject constructor(
             }
 
             is AuthUiEvent.Registro -> {
-                prueba()
+                registro()
             }
         }
     }

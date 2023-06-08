@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.bestiario_dq_app.ui.auth.AuthViewModel
 import com.example.bestiario_dq_app.ui.nav.NavGraph
 import com.example.bestiario_dq_app.ui.theme.BestiarioDQAppTheme
 import dagger.hilt.android.AndroidEntryPoint
