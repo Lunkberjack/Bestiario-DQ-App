@@ -87,11 +87,4 @@ class AuthViewModel @Inject constructor(
             state = state.copy(isLoading = false)
         }
     }
-
-    private fun prueba() {
-        viewModelScope.launch {
-            repository.prueba()
-            Log.d("jaja", "te conestaste amiga")
-        }
-    }
 }

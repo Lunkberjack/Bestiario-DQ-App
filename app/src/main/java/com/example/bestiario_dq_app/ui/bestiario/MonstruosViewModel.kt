@@ -8,19 +8,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.bestiario_dq_app.data.remote.responses.Monstruo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class BestiarioViewModel @Inject constructor (
+class MonstruosViewModel @Inject constructor (
     private val repository: MonstruosRepository
 ) : ViewModel() {
     var state by mutableStateOf(AuthState())
+    var monstruos by mutableStateOf<List<Monstruo>>(emptyList())
 
-    fun onEvent(event: BestiarioEvent) {
+    fun onEvent(event: MonstruosEvent) {
         when(event) {
-            is BestiarioEvent.onTraerMonstruos -> {
+            is MonstruosEvent.onTraerMonstruos -> {
                 getMonstruos()
             }
         }
@@ -39,9 +41,7 @@ class BestiarioViewModel @Inject constructor (
 
     public fun getMonstruos() {
         viewModelScope.launch {
-            for (monstruo in repository.getMonstruos()) {
-                Log.d("MONSTRUO", monstruo.nombre)
-            }
+            monstruos = repository.getMonstruos()
         }
     }
 }

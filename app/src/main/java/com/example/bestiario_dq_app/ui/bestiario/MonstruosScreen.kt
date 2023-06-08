@@ -1,28 +1,27 @@
 package com.example.bestiario_dq_app.ui.bestiario
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.bestiario_dq_app.domain.repositories.AuthRepository
-import com.example.bestiario_dq_app.domain.repositories.MonstruosRepository
-import com.example.bestiario_dq_app.ui.auth.AuthUiEvent
-import com.example.bestiario_dq_app.ui.auth.AuthViewModel
-import com.example.bestiario_dq_app.ui.bestiario.componentes.BottomBar
-import com.example.bestiario_dq_app.ui.bestiario.componentes.BottomBarScreen
 
 // https://dragon-quest.org/wiki/Monsters#Families
 
@@ -30,18 +29,30 @@ import com.example.bestiario_dq_app.ui.bestiario.componentes.BottomBarScreen
 @Composable
 fun MonstruosScreen(
     navController: NavController,
-    viewModel: BestiarioViewModel = hiltViewModel()) {
+    viewModel: MonstruosViewModel = hiltViewModel()) {
+
+    // Guardamos la lista de monstruos que el ViewModel muestra como State (mutable).
+    val monstruos = viewModel.monstruos
+    // Y actualizamos su estado.
+    viewModel.onEvent(MonstruosEvent.onTraerMonstruos)
+
+    // Ahora podemos acceder a todos los datos de los monstruos y mostrarlos en
+    // nuestro View. Como estamos suscritos al estado del ViewModel, cualquier
+    // cambio que ocurra en éste se reflejará también en la LazyColumn.
     Box(modifier = Modifier.fillMaxSize()) {
-        Row() {
-            Button(
-                onClick = {
-                    viewModel.onEvent(BestiarioEvent.onTraerMonstruos)
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = "Traer monstruos")
+        LazyColumn {
+            items(monstruos) {monstruo ->
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Text(text = monstruo.nombre, fontSize = 30.sp)
+                    // Si no es nula:
+                    base64ToBitmap(monstruo.imagen)?.let { Image(bitmap = it.asImageBitmap(), contentDescription = "Carta monstruo", modifier = Modifier.width(100.dp).height(100.dp)) }
+                }
             }
         }
     }
+}
 
+fun base64ToBitmap(base64: String): Bitmap? {
+    val decodedBytes = Base64.decode(base64, Base64.DEFAULT)
+    return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
 }
