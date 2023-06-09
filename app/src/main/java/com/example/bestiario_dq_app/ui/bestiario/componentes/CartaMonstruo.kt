@@ -22,9 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.bestiario_dq_app.data.remote.responses.Monstruo
+import com.example.bestiario_dq_app.ui.theme.manrope
 import com.example.bestiario_dq_app.utils.base64ToBitmap
 
 /**
@@ -60,9 +62,9 @@ fun CartaMonstruo(monstruo: Monstruo) {
                     .weight(0.5f)
                     .padding(end = 20.dp), horizontalAlignment = Alignment.End
             ) {
-                Text(text = monstruo.nombre, fontSize = 30.sp)
+                Text(text = monstruo.nombre, fontSize = 28.sp, fontFamily = manrope, fontWeight = FontWeight.ExtraBold)
                 //Text(text = "#${monstruo.id}")
-                Text(text = "#000")
+                Text(text = "#000", fontFamily = manrope, fontWeight = FontWeight.Light)
                 Spacer(Modifier.height(20.dp))
                 Icon(
                     imageVector = Icons.Outlined.Star,

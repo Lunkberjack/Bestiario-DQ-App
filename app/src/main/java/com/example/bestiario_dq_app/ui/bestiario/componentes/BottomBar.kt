@@ -1,17 +1,22 @@
 package com.example.bestiario_dq_app.ui.bestiario.componentes
 
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.bestiario_dq_app.ui.theme.manrope
 
 @Composable
 fun BottomBar(
@@ -19,7 +24,7 @@ fun BottomBar(
     screens: List<BottomBarScreen>,
     currentDestination: NavDestination?
 ) {
-    NavigationBar {
+    NavigationBar(modifier = Modifier.height(40.dp)) {
         screens.forEach { screen ->
             AddItem(
                 screen = screen,
@@ -36,10 +41,7 @@ fun RowScope.AddItem(
     currentDestination: NavDestination?,
     navController: NavHostController
 ) {
-    NavigationBarItem (
-        label = {
-            Text(text = screen.title)
-        },
+    NavigationBarItem(
         icon = {
             Icon(
                 imageVector = screen.icon,
