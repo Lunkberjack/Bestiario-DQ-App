@@ -7,7 +7,7 @@
 
     <!--El nombre es necesario para que la inyección de dependencias funcione-->
     <application
-        android:name=".AuthApp"
+        android:name=".BestiarioApp"
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
