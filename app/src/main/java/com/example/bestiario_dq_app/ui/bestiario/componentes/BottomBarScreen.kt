@@ -4,7 +4,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Icon
+import androidx.compose.material3.contentColorFor
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
+import coil.compose.AsyncImagePainter.State.Empty.painter
+import com.example.bestiario_dq_app.R
 
 sealed class BottomBarScreen(
     val route: String,

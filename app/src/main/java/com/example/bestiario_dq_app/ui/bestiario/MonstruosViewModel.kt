@@ -10,6 +10,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bestiario_dq_app.data.remote.responses.Monstruo
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,6 +21,13 @@ class MonstruosViewModel @Inject constructor (
 ) : ViewModel() {
     var state by mutableStateOf(AuthState())
     var monstruos by mutableStateOf<List<Monstruo>>(emptyList())
+
+    // Búsqueda
+    private val _promptState = MutableStateFlow("")
+    val promptState = _promptState.asStateFlow()
+
+    private val _buscando = MutableStateFlow(false)
+    val buscando = _buscando.asStateFlow()
 
     fun onEvent(event: MonstruosEvent) {
         when(event) {

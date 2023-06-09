@@ -1,6 +1,7 @@
 package com.example.bestiario_dq_app.ui.bestiario
 
 import android.content.res.Resources
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -99,23 +100,27 @@ fun ImageSelector(onImageSelected: (ImageBitmap) -> Unit) {
         R.drawable.punkitorrinco,
         R.drawable.almaignea,
         R.drawable.atlas,
-        R.drawable.bultobrujo,
         R.drawable.chumbo,
         R.drawable.golem,
         R.drawable.macero,
-        R.drawable.marioneta,
         R.drawable.sanguinino,
         R.drawable.seta
     )
+    // Las transformamos en Bitmap.
+    val imagesBitmap = mutableListOf<Bitmap>()
+    for(image in images) {
+        imagesBitmap.add(BitmapFactory.decodeResource(LocalContext.current.resources, image))
+    }
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
     ) {
-        items(images) { imageRes ->
-            val bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, imageRes).asImageBitmap()
+        items(imagesBitmap) { image ->
+            val bitmap = image.asImageBitmap()
+           // val bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, imageRes).asImageBitmap()
             Image(
                 bitmap = bitmap,
-                contentDescription = "Bild",
+                contentDescription = "Avatar",
                 modifier = Modifier
                     .size(100.dp)
                     .padding(bottom = 10.dp)

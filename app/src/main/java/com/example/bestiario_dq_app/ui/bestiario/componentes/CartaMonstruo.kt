@@ -22,9 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.palette.graphics.Palette
 import com.example.bestiario_dq_app.data.remote.responses.Monstruo
 import com.example.bestiario_dq_app.ui.theme.manrope
 import com.example.bestiario_dq_app.utils.base64ToBitmap
@@ -35,41 +37,52 @@ import com.example.bestiario_dq_app.utils.base64ToBitmap
  */
 @Composable
 fun CartaMonstruo(monstruo: Monstruo) {
+    val bitmapPaleta = base64ToBitmap(monstruo.imagen, 200, 200)
+    val paletaMonstruo = bitmapPaleta?.let { Palette.from(it).generate() }
+
     Box(modifier = Modifier.padding(top = 5.dp, start = 10.dp, end = 10.dp, bottom = 5.dp)) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(150.dp)
-                .clip(RoundedCornerShape(20.dp))
-                .background(Color.White)
-                .border(width = 2.dp, color = Color.DarkGray, shape = RoundedCornerShape(20.dp))
-        ) {
-            Column(Modifier.weight(0.5f), horizontalAlignment = Alignment.CenterHorizontally) {
-                // Si la imagen no es nula:
-                base64ToBitmap(monstruo.imagen)?.let {
+        if (paletaMonstruo != null) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(150.dp)
+                    .clip(RoundedCornerShape(20.dp))
+                    // Si por alguna razón Palette API falla al generarla.
+                    .background(Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb())))
+                    //.border(width = 2.dp, color = Color(paletaMonstruo.getVibrantColor(0x00000000)), shape = RoundedCornerShape(20.dp))
+            ) {
+                Column(Modifier.weight(0.5f), horizontalAlignment = Alignment.CenterHorizontally) {
+                    // Si la imagen no es nula:
                     Image(
-                        bitmap = it.asImageBitmap(), // Convertimos el Bitmap a ImageBitmap.
+                        bitmap = bitmapPaleta.asImageBitmap(), // Convertimos el Bitmap a ImageBitmap.
                         contentDescription = "Carta monstruo",
                         modifier = Modifier
                             .width(100.dp)
                             .height(100.dp)
                     )
                 }
-            }
-            Column(
-                Modifier
-                    .weight(0.5f)
-                    .padding(end = 20.dp), horizontalAlignment = Alignment.End
-            ) {
-                Text(text = monstruo.nombre, fontSize = 28.sp, fontFamily = manrope, fontWeight = FontWeight.ExtraBold)
-                //Text(text = "#${monstruo.id}")
-                Text(text = "#000", fontFamily = manrope, fontWeight = FontWeight.Light)
-                Spacer(Modifier.height(20.dp))
-                Icon(
-                    imageVector = Icons.Outlined.Star,
-                    contentDescription = "Agregar a favoritos (descargar)"
-                )
+                Column(
+                    Modifier
+                        .weight(0.5f)
+                        .padding(end = 20.dp), horizontalAlignment = Alignment.End
+                ) {
+                    Text(
+                        text = monstruo.nombre,
+                        fontSize = 28.sp,
+                        fontFamily = manrope,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = Color(paletaMonstruo.getDarkVibrantColor(0xFF000000.toInt()))
+                    )
+                    //Text(text = "#${monstruo.id}")
+                    Text(text = "#000", fontFamily = manrope, fontWeight = FontWeight.Light)
+                    Spacer(Modifier.height(20.dp))
+                    Icon(
+                        imageVector = Icons.Outlined.Star,
+                        contentDescription = "Agregar a favoritos (descargar)",
+                        tint = Color(paletaMonstruo.getDarkVibrantColor(0xFF000000.toInt()))
+                    )
+                }
             }
         }
     }
