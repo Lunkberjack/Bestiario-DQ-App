@@ -8,6 +8,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface ApiService {
     @POST("registro")
@@ -28,11 +29,11 @@ interface ApiService {
     @GET("prueba")
     suspend fun prueba(  )
 
-    @GET("monstruo-id")
-    suspend fun getMonstruoIdLista(idLista: String): Monstruo
+    @GET("monstruo/id/{idLista}")
+    suspend fun getMonstruoIdLista(@Path("idLista") idLista: String): Monstruo
 
-    @GET("monstruo-nombre")
-    suspend fun getMonstruoNombre(nombre: String): Monstruo
+    @GET("monstruo/nombre/{nombre}")
+    suspend fun getMonstruoNombre(@Path("nombre") nombre: String): Monstruo
 
     @GET("monstruos")
     suspend fun getMonstruos(): List<Monstruo>

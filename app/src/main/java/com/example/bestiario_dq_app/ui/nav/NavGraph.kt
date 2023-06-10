@@ -19,9 +19,11 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.navArgument
 import com.example.bestiario_dq_app.ui.auth.AuthScreen
 import com.example.bestiario_dq_app.ui.auth.Screen
 import com.example.bestiario_dq_app.ui.auth.SecretScreen
@@ -92,9 +94,14 @@ fun NavGraph(navController: NavHostController) {
                 composable(route = Screen.Perfil.route) {
                     PerfilScreen(navHostController = navController)
                 }
-                // TODO - Arreglar esto para navegar
-                composable(route = Screen.Detalle.route) {
-                    DetalleScreen(monstruo = null, navController = navController)
+                // En este caso, pasamos el id de cada monstruo como parámetro para navegar a la carta
+                // de detalles.
+                composable(
+                    route = "${Screen.Detalle.route}/{idSeleccionado}",
+                    arguments = listOf(navArgument("idSeleccionado") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val idSeleccionado = backStackEntry.arguments?.getString("idSeleccionado")
+                    DetalleScreen(idSeleccionado = idSeleccionado)
                 }
             }
         }

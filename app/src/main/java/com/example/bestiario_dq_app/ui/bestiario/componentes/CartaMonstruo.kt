@@ -1,5 +1,6 @@
 package com.example.bestiario_dq_app.ui.bestiario.componentes
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -28,10 +29,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.os.bundleOf
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.palette.graphics.Palette
 import com.example.bestiario_dq_app.data.remote.responses.Monstruo
+import com.example.bestiario_dq_app.ui.auth.AuthViewModel
 import com.example.bestiario_dq_app.ui.auth.Screen
+import com.example.bestiario_dq_app.ui.bestiario.MonstruosViewModel
 import com.example.bestiario_dq_app.ui.theme.manrope
 import com.example.bestiario_dq_app.utils.base64ToBitmap
 
@@ -40,13 +44,21 @@ import com.example.bestiario_dq_app.utils.base64ToBitmap
  * TODO - Hacer que los colores se generen desde la imagen con Palette API.
  */
 @Composable
-fun CartaMonstruo(monstruo: Monstruo) {
+fun CartaMonstruo(
+    navController: NavController,
+    monstruo: Monstruo,
+    viewModel: MonstruosViewModel = hiltViewModel()
+) {
     val bitmapPaleta = base64ToBitmap(monstruo.imagen, 200, 200)
     val paletaMonstruo = bitmapPaleta?.let { Palette.from(it).generate() }
 
-    Box(modifier = Modifier.padding(top = 5.dp, start = 10.dp, end = 10.dp, bottom = 5.dp).clickable {
-        // Hacer que navegue a la DetalleScreen
-    }) {
+    Box(
+        modifier = Modifier
+            .padding(top = 5.dp, start = 10.dp, end = 10.dp, bottom = 5.dp)
+            .clickable {
+                navController.navigate(Screen.Detalle.route + "/${monstruo.idLista}")
+            }
+    ) {
         if (paletaMonstruo != null) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -56,7 +68,7 @@ fun CartaMonstruo(monstruo: Monstruo) {
                     .clip(RoundedCornerShape(20.dp))
                     // Si por alguna razón Palette API falla al generarla.
                     .background(Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb())))
-                    //.border(width = 2.dp, color = Color(paletaMonstruo.getVibrantColor(0x00000000)), shape = RoundedCornerShape(20.dp))
+                //.border(width = 2.dp, color = Color(paletaMonstruo.getVibrantColor(0x00000000)), shape = RoundedCornerShape(20.dp))
             ) {
                 Column(Modifier.weight(0.5f), horizontalAlignment = Alignment.CenterHorizontally) {
                     // Si la imagen no es nula:
@@ -81,7 +93,11 @@ fun CartaMonstruo(monstruo: Monstruo) {
                         color = Color(paletaMonstruo.getDarkVibrantColor(0xFF000000.toInt()))
                     )
                     //Text(text = "#${monstruo.id}")
-                    Text(text = "#${monstruo.idLista}", fontFamily = manrope, fontWeight = FontWeight.Light)
+                    Text(
+                        text = "#${monstruo.idLista}",
+                        fontFamily = manrope,
+                        fontWeight = FontWeight.Light
+                    )
                     Spacer(Modifier.height(20.dp))
                     Icon(
                         imageVector = Icons.Outlined.Star,

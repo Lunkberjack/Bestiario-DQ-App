@@ -8,34 +8,40 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import com.example.bestiario_dq_app.data.remote.responses.Monstruo
 import com.example.bestiario_dq_app.utils.base64ToBitmap
 
 @Composable
 fun DetalleScreen(
-    monstruo: Monstruo?,
-    navController: NavController,
+    idSeleccionado: String?,
     viewModel: MonstruosViewModel = hiltViewModel()
 ) {
-    val bitmapPaleta = monstruo?.let { base64ToBitmap(it.imagen, 200, 200) }
+    // Encontramos el monstruo en la base de datos con el id que nos hemos traído de la
+    // pantalla anterior como parámetro de navegación.
+    LaunchedEffect(idSeleccionado) {
+        idSeleccionado?.let { viewModel.getMonstruoId(it) }
+    }
+
+    val monstruoState by viewModel.monstruo.collectAsState(null)
+
+    val bitmapPaleta = monstruoState?.let { base64ToBitmap(it.imagen, 200, 200) }
 
     Box(modifier = Modifier) {
-        Column() {
-            Row() {
-                if (monstruo != null) {
-                    Text(text = monstruo.nombre)
-                    Text(text = monstruo.idLista)
-                }
+        Column {
+            Row {
+                monstruoState?.let { Text(text = it.nombre) }
+                monstruoState?.let { Text(text = it.idLista) }
             }
             Row {
                 if (bitmapPaleta != null) {
                     Image(
-                        bitmap = bitmapPaleta.asImageBitmap(), // Convertimos el Bitmap a ImageBitmap.
+                        bitmap = bitmapPaleta.asImageBitmap(),
                         contentDescription = "Carta monstruo",
                         modifier = Modifier
                             .width(100.dp)

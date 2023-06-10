@@ -75,7 +75,7 @@ fun MonstruosScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn {
             items(monstruos) { monstruo ->
-                CartaMonstruo(monstruo)
+                CartaMonstruo(navController, monstruo)
             }
         }
     }
