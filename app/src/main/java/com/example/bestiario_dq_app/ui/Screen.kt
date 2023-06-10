@@ -1,4 +1,4 @@
-package com.example.bestiario_dq_app.ui.auth
+package com.example.bestiario_dq_app.ui
 
 /**
  * Clase envoltorio para las diferentes rutas (pantallas)

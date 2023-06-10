@@ -5,6 +5,7 @@ import com.example.bestiario_dq_app.data.remote.ApiService
 import com.example.bestiario_dq_app.data.remote.requests.PeticionAuth
 import com.example.bestiario_dq_app.data.remote.responses.AuthResult
 import com.example.bestiario_dq_app.domain.repositories.AuthRepository
+import com.example.bestiario_dq_app.utils.Globals
 import retrofit2.HttpException
 
 class AuthRepositoryImpl(
@@ -44,6 +45,10 @@ class AuthRepositoryImpl(
             prefs.edit()
                 .putString("jwt", response.token)
                 .apply()
+
+            // Porque las SharedPreferences con Dagger Hilt son el infierno
+            Globals.esAdmin = response.admin
+
             AuthResult.Autorizado()
         } catch (e: HttpException) {
             if (e.code() == 401) {

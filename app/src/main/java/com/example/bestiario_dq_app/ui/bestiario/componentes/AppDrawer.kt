@@ -14,7 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import com.example.bestiario_dq_app.ui.auth.Screen
+import com.example.bestiario_dq_app.ui.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

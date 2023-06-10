@@ -1,5 +1,6 @@
 package com.example.bestiario_dq_app.ui.nav
 
+import android.content.SharedPreferences
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -13,9 +14,12 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
@@ -25,7 +29,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.example.bestiario_dq_app.ui.auth.AuthScreen
-import com.example.bestiario_dq_app.ui.auth.Screen
+import com.example.bestiario_dq_app.ui.Screen
 import com.example.bestiario_dq_app.ui.auth.SecretScreen
 import com.example.bestiario_dq_app.ui.bestiario.DetalleScreen
 import com.example.bestiario_dq_app.ui.bestiario.FavoritosScreen
@@ -52,13 +56,22 @@ fun NavGraph(navController: NavHostController) {
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = { DefaultAppBar(scrollBehavior) },
+        topBar = {
+            // Como tenemos una ruta con parámetros, tenemos que comprobar que no pertenezca a una
+            // pantalla de detalle (que se muestra en pantalla completa).
+            if ((navBackStackEntry?.destination?.route)?.contains("detalle") == false) {
+                DefaultAppBar(scrollBehavior)
+            }
+        },
         bottomBar = {
-            BottomBar(
-                navController = navController,
-                screens = screens,
-                currentDestination = currentDestination
-            )
+            // Lo mismo con la barra de navegación.
+            if ((navBackStackEntry?.destination?.route)?.contains("detalle") == false) {
+                BottomBar(
+                    navController = navController,
+                    screens = screens,
+                    currentDestination = currentDestination
+                )
+            }
         }
     ) { innerPadding ->
         Box(

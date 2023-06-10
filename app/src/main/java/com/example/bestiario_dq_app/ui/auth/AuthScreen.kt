@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.bestiario_dq_app.data.remote.responses.AuthResult
+import com.example.bestiario_dq_app.ui.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
