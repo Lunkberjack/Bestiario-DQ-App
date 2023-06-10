@@ -3,15 +3,12 @@ package com.example.bestiario_dq_app.ui.nav
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -25,11 +22,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.bestiario_dq_app.data.repositories.MonstruosRepositoryImpl
-import com.example.bestiario_dq_app.domain.repositories.MonstruosRepository
 import com.example.bestiario_dq_app.ui.auth.AuthScreen
 import com.example.bestiario_dq_app.ui.auth.Screen
 import com.example.bestiario_dq_app.ui.auth.SecretScreen
+import com.example.bestiario_dq_app.ui.bestiario.DetalleScreen
 import com.example.bestiario_dq_app.ui.bestiario.FavoritosScreen
 import com.example.bestiario_dq_app.ui.bestiario.MonstruosScreen
 import com.example.bestiario_dq_app.ui.bestiario.PerfilScreen
@@ -37,7 +33,6 @@ import com.example.bestiario_dq_app.ui.bestiario.componentes.AppDrawer
 import com.example.bestiario_dq_app.ui.bestiario.componentes.BottomBar
 import com.example.bestiario_dq_app.ui.bestiario.componentes.BottomBarScreen
 import com.example.bestiario_dq_app.ui.bestiario.componentes.DefaultAppBar
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -96,6 +91,10 @@ fun NavGraph(navController: NavHostController) {
                 }
                 composable(route = Screen.Perfil.route) {
                     PerfilScreen(navHostController = navController)
+                }
+                // TODO - Arreglar esto para navegar
+                composable(route = Screen.Detalle.route) {
+                    DetalleScreen(monstruo = null, navController = navController)
                 }
             }
         }

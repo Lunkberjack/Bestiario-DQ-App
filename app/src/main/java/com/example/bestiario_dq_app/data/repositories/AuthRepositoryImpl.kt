@@ -1,20 +1,20 @@
 package com.example.bestiario_dq_app.data.repositories
 
 import android.content.SharedPreferences
-import com.example.bestiario_dq_app.data.remote.Api
+import com.example.bestiario_dq_app.data.remote.ApiService
 import com.example.bestiario_dq_app.data.remote.requests.PeticionAuth
 import com.example.bestiario_dq_app.data.remote.responses.AuthResult
 import com.example.bestiario_dq_app.domain.repositories.AuthRepository
 import retrofit2.HttpException
 
 class AuthRepositoryImpl(
-    private val api: Api,
+    private val apiService: ApiService,
     private val prefs: SharedPreferences
 ) : AuthRepository {
 
     override suspend fun registro(username: String, pass: String): AuthResult<Unit> {
         return try {
-            api.registro(
+            apiService.registro(
                 request = PeticionAuth(
                     username = username,
                     pass = pass
@@ -35,7 +35,7 @@ class AuthRepositoryImpl(
 
     override suspend fun login(username: String, pass: String): AuthResult<Unit> {
         return try {
-            val response = api.login(
+            val response = apiService.login(
                 request = PeticionAuth(
                     username = username,
                     pass = pass
@@ -59,7 +59,7 @@ class AuthRepositoryImpl(
     override suspend fun autentificar(): AuthResult<Unit> {
         return try {
             val token = prefs.getString("jwt", null) ?: return AuthResult.NoAutorizado()
-            api.autentificar("Bearer $token")
+            apiService.autentificar("Bearer $token")
             AuthResult.Autorizado()
         } catch (e: HttpException) {
             if (e.code() == 401) {
@@ -73,6 +73,6 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun prueba() {
-        api.prueba()
+        apiService.prueba()
     }
 }

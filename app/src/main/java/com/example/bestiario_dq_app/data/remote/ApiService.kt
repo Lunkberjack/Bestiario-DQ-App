@@ -9,7 +9,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
 
-interface Api {
+interface ApiService {
     @POST("registro")
     suspend fun registro(
         @Body request: PeticionAuth
@@ -27,6 +27,12 @@ interface Api {
 
     @GET("prueba")
     suspend fun prueba(  )
+
+    @GET("monstruo-id")
+    suspend fun getMonstruoIdLista(idLista: String): Monstruo
+
+    @GET("monstruo-nombre")
+    suspend fun getMonstruoNombre(nombre: String): Monstruo
 
     @GET("monstruos")
     suspend fun getMonstruos(): List<Monstruo>

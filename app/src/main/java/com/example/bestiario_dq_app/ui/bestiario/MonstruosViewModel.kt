@@ -41,6 +41,7 @@ class MonstruosViewModel @Inject constructor (
         viewModelScope.launch {
             state = state.copy(isLoading = true)
             val result = repository.newMonstruo(
+                idLista = "",
                 nombre = state.registroUsername,
                 // Convertir la imagen a Base64
                 imagen = state.registroPass
