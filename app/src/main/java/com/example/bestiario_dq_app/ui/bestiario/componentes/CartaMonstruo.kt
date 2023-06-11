@@ -33,7 +33,7 @@ import com.example.bestiario_dq_app.data.remote.responses.Monstruo
 import com.example.bestiario_dq_app.ui.Screen
 import com.example.bestiario_dq_app.ui.bestiario.MonstruosViewModel
 import com.example.bestiario_dq_app.ui.theme.manrope
-import com.example.bestiario_dq_app.utils.base64ToBitmap
+import com.example.bestiario_dq_app.core.utils.base64ToBitmap
 
 /**
  * Cada representación de una entidad de Monstruo en la base de datos.

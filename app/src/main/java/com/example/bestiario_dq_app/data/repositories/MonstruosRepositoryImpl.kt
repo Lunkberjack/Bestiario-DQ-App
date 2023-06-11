@@ -3,6 +3,7 @@ package com.example.bestiario_dq_app.data.repositories
 import android.content.SharedPreferences
 import android.util.Log
 import com.example.bestiario_dq_app.data.remote.ApiService
+import com.example.bestiario_dq_app.data.remote.responses.Atributo
 import com.example.bestiario_dq_app.data.remote.responses.Monstruo
 import com.example.bestiario_dq_app.domain.repositories.MonstruosRepository
 import javax.inject.Inject
@@ -11,13 +12,15 @@ class MonstruosRepositoryImpl @Inject constructor(
     private val apiService: ApiService,
     private val prefs: SharedPreferences
 ): MonstruosRepository {
-    override suspend fun newMonstruo(idLista: String, nombre: String, imagen: String) {
+    override suspend fun newMonstruo(idLista: String, nombre: String, imagen: String, familia: String, atributos: List<Atributo>) {
         try {
             apiService.newMonstruo(
                 request = Monstruo(
                     idLista = idLista,
                     nombre = nombre,
-                    imagen = imagen
+                    imagen = imagen,
+                    familia = familia,
+                    atributos = atributos
                 )
             )
         } catch (e: Exception) {

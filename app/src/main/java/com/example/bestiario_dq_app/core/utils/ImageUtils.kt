@@ -1,4 +1,4 @@
-package com.example.bestiario_dq_app.utils
+package com.example.bestiario_dq_app.core.utils
 
 import android.content.Context
 import android.graphics.Bitmap

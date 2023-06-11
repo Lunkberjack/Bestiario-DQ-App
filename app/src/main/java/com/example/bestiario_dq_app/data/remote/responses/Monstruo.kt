@@ -1,7 +1,9 @@
 package com.example.bestiario_dq_app.data.remote.responses
 
-data class Monstruo (
+data class Monstruo(
+    val atributos: List<Atributo>,
+    val familia: String,
     val idLista: String,
-    val nombre: String,
-    val imagen: String
+    val imagen: String,
+    val nombre: String
 )

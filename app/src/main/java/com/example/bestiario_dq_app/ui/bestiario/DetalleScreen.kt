@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.palette.graphics.Palette
 import com.example.bestiario_dq_app.ui.theme.manrope
-import com.example.bestiario_dq_app.utils.base64ToBitmap
+import com.example.bestiario_dq_app.core.utils.base64ToBitmap
 
 @Composable
 fun DetalleScreen(
@@ -66,7 +66,10 @@ fun DetalleScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // 140dp es la altura del óvalo.
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(start = 20.dp).height(100.dp), horizontalArrangement = Arrangement.Start) {
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp)
+                .height(100.dp), horizontalArrangement = Arrangement.Start) {
                 monstruoState?.let {
                     if (paletaMonstruo != null) {
                         Text(
@@ -79,7 +82,10 @@ fun DetalleScreen(
                     }
                 }
             }
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(start = 20.dp).height(100.dp), horizontalArrangement = Arrangement.Start) {
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp)
+                .height(100.dp), horizontalArrangement = Arrangement.Start) {
                 monstruoState?.let {
                     if (paletaMonstruo != null) {
                         Text(
@@ -104,8 +110,33 @@ fun DetalleScreen(
                     )
                 }
             }
-            Row {
-                Text(text = "Aquí deberían de estar los detalles")
+            Column {
+                monstruoState?.let {
+                    Text(text = it.familia)
+                    for (each in monstruoState?.atributos!!) {
+                        Row {
+                            Text(text = "Juego: ${each.juego}", fontWeight = FontWeight.ExtraBold, fontFamily = manrope)
+                        }
+                        Row {
+                            Text(text = "Experiencia: ${each.experiencia}")
+                        }
+                        Row {
+                            Text(text = "Oro: ${each.oro}")
+                        }
+
+                        for (lugar in each.lugares) {
+                            Row {
+                                Text(text = "Lugar: $lugar")
+
+                            }
+                        }
+                        for (objeto in each.objetos) {
+                            Row {
+                                Text(text = "Objeto: $objeto")
+                            }
+                        }
+                    }
+                }
             }
         }
     }

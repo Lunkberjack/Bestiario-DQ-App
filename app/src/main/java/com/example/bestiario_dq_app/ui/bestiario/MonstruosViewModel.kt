@@ -53,7 +53,7 @@ class MonstruosViewModel @Inject constructor (
         }
     }
 
-    private fun newMonstruo() {
+    /*private fun newMonstruo() {
         viewModelScope.launch {
             state = state.copy(isLoading = true)
             val result = repository.newMonstruo(
@@ -64,6 +64,8 @@ class MonstruosViewModel @Inject constructor (
             )
         }
     }
+
+     */
 
     public fun getMonstruos() {
         viewModelScope.launch {
