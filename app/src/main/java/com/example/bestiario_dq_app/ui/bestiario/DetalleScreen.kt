@@ -66,10 +66,12 @@ fun DetalleScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // 140dp es la altura del óvalo.
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 20.dp)
-                .height(100.dp), horizontalArrangement = Arrangement.Start) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp)
+                    .height(100.dp), horizontalArrangement = Arrangement.Start
+            ) {
                 monstruoState?.let {
                     if (paletaMonstruo != null) {
                         Text(
@@ -77,15 +79,25 @@ fun DetalleScreen(
                             fontFamily = manrope,
                             fontWeight = FontWeight.ExtraBold,
                             fontSize = 40.sp,
-                            color = Color(paletaMonstruo.getDarkVibrantColor(Color(paletaMonstruo.getVibrantColor(Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb())).toArgb())).toArgb()))
+                            color = Color(
+                                paletaMonstruo.getDarkVibrantColor(
+                                    Color(
+                                        paletaMonstruo.getVibrantColor(
+                                            Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb())).toArgb()
+                                        )
+                                    ).toArgb()
+                                )
+                            )
                         )
                     }
                 }
             }
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 20.dp)
-                .height(100.dp), horizontalArrangement = Arrangement.Start) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp)
+                    .height(100.dp), horizontalArrangement = Arrangement.Start
+            ) {
                 monstruoState?.let {
                     if (paletaMonstruo != null) {
                         Text(
@@ -93,7 +105,15 @@ fun DetalleScreen(
                             fontFamily = manrope,
                             fontWeight = FontWeight.Light,
                             fontSize = 15.sp,
-                            color = Color(paletaMonstruo.getDarkVibrantColor(Color(paletaMonstruo.getVibrantColor(Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb())).toArgb())).toArgb()))
+                            color = Color(
+                                paletaMonstruo.getDarkVibrantColor(
+                                    Color(
+                                        paletaMonstruo.getVibrantColor(
+                                            Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb())).toArgb()
+                                        )
+                                    ).toArgb()
+                                )
+                            )
                         )
                     }
                 }
@@ -114,26 +134,22 @@ fun DetalleScreen(
                 monstruoState?.let {
                     Text(text = it.familia)
                     for (each in monstruoState?.atributos!!) {
-                        Row {
-                            Text(text = "Juego: ${each.juego}", fontWeight = FontWeight.ExtraBold, fontFamily = manrope)
-                        }
-                        Row {
-                            Text(text = "Experiencia: ${each.experiencia}")
-                        }
-                        Row {
-                            Text(text = "Oro: ${each.oro}")
-                        }
+                        Text(
+                            text = "Juego: ${each.juego}",
+                            fontWeight = FontWeight.ExtraBold,
+                            fontFamily = manrope
+                        )
+
+                        Text(text = "Experiencia: ${each.experiencia}")
+                        Text(text = "Oro: ${each.oro}")
+
 
                         for (lugar in each.lugares) {
-                            Row {
-                                Text(text = "Lugar: $lugar")
+                            Text(text = "Lugar: $lugar")
 
-                            }
                         }
                         for (objeto in each.objetos) {
-                            Row {
-                                Text(text = "Objeto: $objeto")
-                            }
+                            Text(text = "Objeto: $objeto")
                         }
                     }
                 }

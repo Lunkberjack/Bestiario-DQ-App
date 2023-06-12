@@ -15,6 +15,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,10 +36,12 @@ import com.example.bestiario_dq_app.ui.bestiario.DetalleScreen
 import com.example.bestiario_dq_app.ui.bestiario.FavoritosScreen
 import com.example.bestiario_dq_app.ui.bestiario.MonstruosScreen
 import com.example.bestiario_dq_app.ui.bestiario.PerfilScreen
+import com.example.bestiario_dq_app.ui.bestiario.SettingsScreen
 import com.example.bestiario_dq_app.ui.bestiario.componentes.AppDrawer
 import com.example.bestiario_dq_app.ui.bestiario.componentes.BottomBar
 import com.example.bestiario_dq_app.ui.bestiario.componentes.BottomBarScreen
 import com.example.bestiario_dq_app.ui.bestiario.componentes.DefaultAppBar
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,67 +57,61 @@ fun NavGraph(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            // Como tenemos una ruta con parámetros, tenemos que comprobar que no pertenezca a una
-            // pantalla de detalle (que se muestra en pantalla completa).
-            if ((navBackStackEntry?.destination?.route)?.contains("detalle") == false) {
-                DefaultAppBar(scrollBehavior)
-            }
-        },
-        bottomBar = {
-            // Lo mismo con la barra de navegación.
-            if ((navBackStackEntry?.destination?.route)?.contains("detalle") == false) {
-                BottomBar(
-                    navController = navController,
-                    screens = screens,
-                    currentDestination = currentDestination
-                )
-            }
-        }
-    ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .background(Color.Transparent)
-                .fillMaxHeight()
-                .width(200.dp)
-                .zIndex(100f)
-        ) {
-            ModalNavigationDrawer(
-                modifier = Modifier.padding(innerPadding),
-                drawerContent = { AppDrawer(Screen.Monstruos.route, Modifier, navController) },
-                drawerState = rememberDrawerState(
-                    initialValue = DrawerValue.Open
-                )
-            ) {}
-        }
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
-        Box(modifier = Modifier.padding(innerPadding)) {
-            NavHost(navController = navController, startDestination = Screen.Auth.route) {
-                composable(route = Screen.Auth.route) {
-                    AuthScreen(navController = navController)
+    ModalNavigationDrawer(
+        drawerContent = { AppDrawer(Screen.Monstruos.route, navController) },
+        drawerState = drawerState
+    ) {
+        Scaffold(
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+            topBar = {
+                // Como tenemos una ruta con parámetros, tenemos que comprobar que no pertenezca a una
+                // pantalla de detalle (que se muestra en pantalla completa).
+                if ((navBackStackEntry?.destination?.route)?.contains("detalle") == false) {
+                    DefaultAppBar(scrollBehavior, drawerState)
                 }
-                composable(route = Screen.Secret.route) {
-                    SecretScreen()
+            },
+            bottomBar = {
+                // Lo mismo con la barra de navegación.
+                if ((navBackStackEntry?.destination?.route)?.contains("detalle") == false) {
+                    BottomBar(
+                        navController = navController,
+                        screens = screens,
+                        currentDestination = currentDestination
+                    )
                 }
-                composable(route = Screen.Monstruos.route) {
-                    MonstruosScreen(navController)
-                }
-                composable(route = Screen.Favoritos.route) {
-                    FavoritosScreen(navHostController = navController)
-                }
-                composable(route = Screen.Perfil.route) {
-                    PerfilScreen(navHostController = navController)
-                }
-                // En este caso, pasamos el id de cada monstruo como parámetro para navegar a la carta
-                // de detalles.
-                composable(
-                    route = "${Screen.Detalle.route}/{idSeleccionado}",
-                    arguments = listOf(navArgument("idSeleccionado") { type = NavType.StringType })
-                ) { backStackEntry ->
-                    val idSeleccionado = backStackEntry.arguments?.getString("idSeleccionado")
-                    DetalleScreen(idSeleccionado = idSeleccionado)
+            }
+        ) { innerPadding ->
+            Box(modifier = Modifier.padding(innerPadding)) {
+                NavHost(navController = navController, startDestination = Screen.Auth.route) {
+                    composable(route = Screen.Auth.route) {
+                        AuthScreen(navController = navController)
+                    }
+                    composable(route = Screen.Secret.route) {
+                        SecretScreen()
+                    }
+                    composable(route = Screen.Monstruos.route) {
+                        MonstruosScreen(navController)
+                    }
+                    composable(route = Screen.Favoritos.route) {
+                        FavoritosScreen(navHostController = navController)
+                    }
+                    composable(route = Screen.Perfil.route) {
+                        PerfilScreen(navHostController = navController)
+                    }
+                    composable(route = Screen.Settings.route) {
+                        SettingsScreen()
+                    }
+                    // En este caso, pasamos el id de cada monstruo como parámetro para navegar a la carta
+                    // de detalles.
+                    composable(
+                        route = "${Screen.Detalle.route}/{idSeleccionado}",
+                        arguments = listOf(navArgument("idSeleccionado") { type = NavType.StringType })
+                    ) { backStackEntry ->
+                        val idSeleccionado = backStackEntry.arguments?.getString("idSeleccionado")
+                        DetalleScreen(idSeleccionado = idSeleccionado)
+                    }
                 }
             }
         }

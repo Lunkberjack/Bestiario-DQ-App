@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.bestiario_dq_app.R
+import com.example.bestiario_dq_app.core.utils.Globals
 
 // https://www.artstation.com/artwork/R3vDgA
 

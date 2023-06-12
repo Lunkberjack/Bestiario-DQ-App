@@ -1,6 +1,8 @@
 package com.example.bestiario_dq_app.data.remote
 
 import com.example.bestiario_dq_app.data.remote.requests.PeticionAuth
+import com.example.bestiario_dq_app.data.remote.responses.Familia
+import com.example.bestiario_dq_app.data.remote.responses.Juego
 import com.example.bestiario_dq_app.data.remote.responses.Monstruo
 import com.example.bestiario_dq_app.data.remote.responses.TokenResponse
 
@@ -27,7 +29,7 @@ interface ApiService {
     )
 
     @GET("prueba")
-    suspend fun prueba(  )
+    suspend fun prueba()
 
     @GET("monstruo/id/{idLista}")
     suspend fun getMonstruoIdLista(@Path("idLista") idLista: String): Monstruo
@@ -42,4 +44,28 @@ interface ApiService {
     suspend fun newMonstruo(
         @Body request: Monstruo
     )
+
+    @GET("monstruos/familia/{nombre}")
+    suspend fun getFamilia(
+        @Path("nombre")
+        nombre: String
+    ): Familia
+
+    @GET("monstruos/juego/{abr}")
+    suspend fun getJuego(
+        @Path("abr")
+        abr: String
+    ): Juego
+
+    @GET("monstruos/{familia}")
+    suspend fun filtroFamilia(
+        @Path("familia")
+        familia: String
+    ): List<Monstruo>
+
+    @GET("monstruos/{juego}")
+    suspend fun filtroJuego(
+        @Path("juego")
+        juego: String
+    ): List<Monstruo>
 }
