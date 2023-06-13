@@ -13,13 +13,20 @@ import javax.inject.Inject
 class MonstruosRepositoryImpl @Inject constructor(
     private val apiService: ApiService,
     private val prefs: SharedPreferences
-): MonstruosRepository {
-    override suspend fun newMonstruo(idLista: String, nombre: String, imagen: String, familia: String, atributos: List<Atributo>) {
+) : MonstruosRepository {
+    override suspend fun newMonstruo(
+        idLista: String,
+        nombre: String,
+        imagen: String,
+        familia: String,
+        atributos: List<Atributo>
+    ) {
         try {
             apiService.newMonstruo(
                 request = Monstruo(
                     idLista = idLista,
                     nombre = nombre,
+                    // TODO - Convertir a base64
                     imagen = imagen,
                     familia = familia,
                     atributos = atributos
@@ -40,6 +47,14 @@ class MonstruosRepositoryImpl @Inject constructor(
 
     override suspend fun getMonstruos(): List<Monstruo> {
         return apiService.getMonstruos()
+    }
+
+    override suspend fun getFamilias(): List<Familia> {
+        return apiService.getFamilias()
+    }
+
+    override suspend fun getJuegos(): List<Juego> {
+        return apiService.getJuegos()
     }
 
     override suspend fun getFamilia(nombre: String): Familia {

@@ -10,6 +10,8 @@ interface MonstruosRepository {
     suspend fun getMonstruoIdLista(idLista: String): Monstruo
     suspend fun getMonstruoNombre(nombre: String): Monstruo
     suspend fun getMonstruos(): List<Monstruo>
+    suspend fun getFamilias(): List<Familia>
+    suspend fun getJuegos(): List<Juego>
     suspend fun getFamilia(nombre: String): Familia
     suspend fun getJuego(abr: String): Juego
     suspend fun filtrarFamilia(familia: String): List<Monstruo>

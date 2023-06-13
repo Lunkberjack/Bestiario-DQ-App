@@ -109,6 +109,12 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.0"
+
+    // Que
+    implementation 'androidx.compose.runtime:runtime:1.0.5'
+
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-beta01"
+
 }
 
 // Permite referenciar el código generado

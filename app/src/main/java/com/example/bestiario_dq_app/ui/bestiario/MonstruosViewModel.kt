@@ -14,10 +14,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.bestiario_dq_app.data.remote.responses.Familia
+import com.example.bestiario_dq_app.data.remote.responses.Juego
 import com.example.bestiario_dq_app.data.remote.responses.Monstruo
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,8 +33,14 @@ class MonstruosViewModel @Inject constructor(
 ) : ViewModel() {
     var state by mutableStateOf(AuthState())
 
-    private val _monstruos = mutableStateListOf<Monstruo>()
-    val monstruos: List<Monstruo> = _monstruos
+    private val _monstruos = MutableStateFlow<List<Monstruo>>(emptyList())
+    val monstruos: StateFlow<List<Monstruo>> = _monstruos
+
+    private val _familias = MutableStateFlow<List<Familia>>(emptyList())
+    val familias: StateFlow<List<Familia>> = _familias
+
+    private val _juegos = MutableStateFlow<List<Juego>>(emptyList())
+    val juegos: StateFlow<List<Juego>> = _juegos
 
     private val _monstruo = MutableStateFlow<Monstruo?>(null)
     val monstruo: StateFlow<Monstruo?> = _monstruo
@@ -46,18 +57,18 @@ class MonstruosViewModel @Inject constructor(
             is MonstruosEvent.onTraerFamilia -> {
                 val familia = event.familia
                 viewModelScope.launch {
-                    actualizarMonstruos(familia)
+                    filtrarMonstruos(familia)
                 }
             }
         }
     }
 
-    suspend fun actualizarMonstruos(familia: String) {
-        // Lógica para obtener la lista según la familia seleccionada
-        val nuevaLista = repository.filtrarFamilia(familia)
-        _monstruos.clear()
-        _monstruos.addAll(nuevaLista)
-        Log.d("MonstruosViewModel", "Updated monstruos list: $nuevaLista")
+    fun filtrarMonstruos(familia: String) {
+        viewModelScope.launch {
+            val nuevaLista = repository.filtrarFamilia(familia)
+            _monstruos.value = nuevaLista
+            Log.d("MonstruosViewModel", "Filtered monsters: $nuevaLista")
+        }
     }
 
     fun setMonstruoSeleccionado(monstruoId: String) {
@@ -86,13 +97,23 @@ class MonstruosViewModel @Inject constructor(
 
      */
 
-    public fun getMonstruos() {
+    fun getMonstruos() {
         // Lógica para obtener la lista según la familia seleccionada
         viewModelScope.launch {
             val nuevaLista = repository.getMonstruos()
-            _monstruos.clear()
-            _monstruos.addAll(nuevaLista)
-            Log.d("MonstruosViewModel", "Updated monstruos list: $nuevaLista")
+            _monstruos.value = nuevaLista
+        }
+    }
+
+    fun getFamilias() {
+        viewModelScope.launch {
+            _familias.value = repository.getFamilias()
+        }
+    }
+
+    fun getJuegos() {
+        viewModelScope.launch {
+            _monstruos.value = repository.getMonstruos()
         }
     }
 

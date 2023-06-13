@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -33,8 +34,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -98,11 +102,15 @@ fun MonstruosScreen(
     )
      */
 
-    // Collect the monstruosState as a State object using collectAsState
-    // Rest of the code...
+    //val monstruos: List<Monstruo> by viewModel.monstruos.collectAsState(emptyList())
+
+    // Agregar un mensaje de registro (Log.d) para verificar si se llama a MonstruosScreen nuevamente
+    val monstruos by viewModel.monstruos.collectAsState(emptyList())
+    viewModel.getMonstruos()
+
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn {
-            items(viewModel.monstruos) { monstruo ->
+            items(monstruos) { monstruo ->
                 CartaMonstruo(navController, monstruo)
             }
         }
@@ -115,3 +123,4 @@ fun MonstruosScreen(
         )
     }
 }
+

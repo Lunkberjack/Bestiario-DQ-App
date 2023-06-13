@@ -41,6 +41,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.palette.graphics.Palette
 import com.example.bestiario_dq_app.ui.theme.manrope
 import com.example.bestiario_dq_app.core.utils.base64ToBitmap
+import com.example.bestiario_dq_app.ui.bestiario.componentes.JuegoExpansible
 
 @Composable
 fun DetalleScreen(
@@ -162,6 +163,7 @@ fun DetalleScreen(
                         )
                     }
                     for (each in monstruoState?.atributos!!) {
+                        JuegoExpansible(title = each.juego, description = each.experiencia.toString())
                         Text(
                             buildAnnotatedString {
                                 if (paletaMonstruo != null) {

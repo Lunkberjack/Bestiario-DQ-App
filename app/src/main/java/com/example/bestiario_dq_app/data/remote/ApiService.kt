@@ -40,6 +40,12 @@ interface ApiService {
     @GET("monstruos")
     suspend fun getMonstruos(): List<Monstruo>
 
+    @GET("familias")
+    suspend fun getFamilias(): List<Familia>
+
+    @GET("juegos")
+    suspend fun getJuegos(): List<Juego>
+
     @POST("new-monstruo")
     suspend fun newMonstruo(
         @Body request: Monstruo

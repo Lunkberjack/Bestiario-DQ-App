@@ -26,8 +26,9 @@ object AppModule {
             // La IP actual del dispositivo donde corre la API.
             .addConverterFactory(GsonConverterFactory.create())
             //.baseUrl("http://10.42.2.199:8080/")
-            .baseUrl("http://192.168.178.114:8080/")
+            //.baseUrl("http://192.168.178.114:8080/")
             //.baseUrl("http://192.168.226.229:8080/")
+            .baseUrl("http://192.168.123.168:8080/")
             .build()
             .create(ApiService::class.java)
     }

@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
@@ -30,10 +31,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter.State.Empty.painter
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import coil.transform.CircleCropTransformation
 import com.example.bestiario_dq_app.R
 import com.example.bestiario_dq_app.core.utils.Globals
 
@@ -102,8 +111,6 @@ fun ImageSelector(onImageSelected: (ImageBitmap) -> Unit) {
         R.drawable.almaignea,
         R.drawable.atlas,
         R.drawable.chumbo,
-        R.drawable.golem,
-        R.drawable.macero,
         R.drawable.sanguinino,
         R.drawable.seta
     )
@@ -116,18 +123,23 @@ fun ImageSelector(onImageSelected: (ImageBitmap) -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
     ) {
-        items(imagesBitmap) { image ->
-            val bitmap = image.asImageBitmap()
-            // val bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, imageRes).asImageBitmap()
+
+        items(images) { image ->
+            SubcomposeAsyncImage(
+                model = image,
+                loading = {
+                    CircularProgressIndicator()
+                },
+                contentDescription = "si"
+            )/*
             Image(
-                bitmap = bitmap,
+                painter = painter,
                 contentDescription = "Avatar",
                 modifier = Modifier
-                    .size(100.dp)
                     .padding(bottom = 10.dp)
-                    .safeContentPadding()
-                    .clickable { onImageSelected(bitmap) }
+                    .clickable { onImageSelected(painter.bitmap.asImageBitmap()) }
             )
+            */
         }
     }
 }
