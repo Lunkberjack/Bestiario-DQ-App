@@ -11,6 +11,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
     @POST("registro")
@@ -38,7 +39,10 @@ interface ApiService {
     suspend fun getMonstruoNombre(@Path("nombre") nombre: String): Monstruo
 
     @GET("monstruos")
-    suspend fun getMonstruos(): List<Monstruo>
+    suspend fun getMonstruos(
+        @Query("pagina") page: Int,
+        @Query("por_pagina") porPagina: Int
+    ): List<Monstruo>
 
     @GET("familias")
     suspend fun getFamilias(): List<Familia>
