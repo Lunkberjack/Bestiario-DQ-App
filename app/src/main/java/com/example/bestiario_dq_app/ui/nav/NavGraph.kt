@@ -34,6 +34,7 @@ import com.example.bestiario_dq_app.ui.Screen
 import com.example.bestiario_dq_app.ui.auth.SecretScreen
 import com.example.bestiario_dq_app.ui.bestiario.DetalleScreen
 import com.example.bestiario_dq_app.ui.bestiario.FavoritosScreen
+import com.example.bestiario_dq_app.ui.bestiario.MonstruosEvent
 import com.example.bestiario_dq_app.ui.bestiario.MonstruosScreen
 import com.example.bestiario_dq_app.ui.bestiario.PerfilScreen
 import com.example.bestiario_dq_app.ui.bestiario.SettingsScreen

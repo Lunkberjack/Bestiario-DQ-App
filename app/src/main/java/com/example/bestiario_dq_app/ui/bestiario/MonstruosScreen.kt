@@ -29,6 +29,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,7 +64,7 @@ fun MonstruosScreen(
     navController: NavController,
     viewModel: MonstruosViewModel = hiltViewModel()
 ) {
-    // TODO - Borrar esto. Es una prueba para desarrollar la interfaz sin conexión a la API
+    /* TODO - Borrar esto. Es una prueba para desarrollar la interfaz sin conexión a la API
     val monstruos = listOf(
         Monstruo(
             idLista = "0001",
@@ -90,23 +96,22 @@ fun MonstruosScreen(
             )
         ),
     )
+     */
 
-    // Guardamos la lista de monstruos que el ViewModel muestra como State (mutable).
-    //val monstruos = viewModel.monstruos
-    // Y actualizamos su estado.
-    //viewModel.onEvent(MonstruosEvent.onTraerMonstruos)
-
-    // Ahora podemos acceder a todos los datos de los monstruos y mostrarlos en
-    // nuestro View. Como estamos suscritos al estado del ViewModel, cualquier
-    // cambio que ocurra en éste se reflejará también en la LazyColumn.
+    // Collect the monstruosState as a State object using collectAsState
+    // Rest of the code...
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn {
-            items(monstruos) { monstruo ->
+            items(viewModel.monstruos) { monstruo ->
                 CartaMonstruo(navController, monstruo)
             }
         }
-        if(Globals.esAdmin) {
-            Text(text = "ADMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIINNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN", fontSize = 40.sp)
-        }
+    }
+
+    if (Globals.esAdmin) {
+        Text(
+            text = "ADMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIINNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
+            fontSize = 40.sp
+        )
     }
 }

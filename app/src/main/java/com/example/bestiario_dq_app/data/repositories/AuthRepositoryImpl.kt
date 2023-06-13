@@ -48,6 +48,7 @@ class AuthRepositoryImpl(
 
             // Porque las SharedPreferences con Dagger Hilt son el infierno
             Globals.esAdmin = response.admin
+            Globals.username = username
 
             AuthResult.Autorizado()
         } catch (e: HttpException) {

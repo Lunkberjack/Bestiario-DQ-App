@@ -9,23 +9,34 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.alpha
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.palette.graphics.Palette
 import com.example.bestiario_dq_app.ui.theme.manrope
@@ -74,50 +85,47 @@ fun DetalleScreen(
             ) {
                 monstruoState?.let {
                     if (paletaMonstruo != null) {
-                        Text(
-                            text = it.nombre,
-                            fontFamily = manrope,
-                            fontWeight = FontWeight.ExtraBold,
-                            fontSize = 40.sp,
-                            color = Color(
-                                paletaMonstruo.getDarkVibrantColor(
-                                    Color(
-                                        paletaMonstruo.getVibrantColor(
-                                            Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb())).toArgb()
-                                        )
-                                    ).toArgb()
+                        Box {
+                            Text(
+                                text = "#${it.idLista}",
+                                fontFamily = manrope,
+                                fontWeight = FontWeight.ExtraBold,
+                                fontSize = 70.sp,
+                                color = Color(
+                                    paletaMonstruo.getLightVibrantColor(
+                                        Color(
+                                            paletaMonstruo.getVibrantColor(
+                                                Color(paletaMonstruo.getDominantColor(Color.LightGray.toArgb())).toArgb()
+                                            )
+                                        ).toArgb()
+                                    )
+                                ),
+                                modifier = Modifier
+                                    .offset(y = 625.dp, x = (-95).dp)
+                                    .rotate(-90f)
+                            )
+
+                            Text(
+                                text = it.nombre,
+                                fontFamily = manrope,
+                                fontWeight = FontWeight.ExtraBold,
+                                fontSize = 70.sp,
+                                color = Color(
+                                    paletaMonstruo.getDarkVibrantColor(
+                                        Color(
+                                            paletaMonstruo.getVibrantColor(
+                                                Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb())).toArgb()
+                                            )
+                                        ).toArgb()
+                                    )
                                 )
                             )
-                        )
+                        }
+
                     }
                 }
             }
-            Row(
-                verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 20.dp)
-                    .height(100.dp), horizontalArrangement = Arrangement.Start
-            ) {
-                monstruoState?.let {
-                    if (paletaMonstruo != null) {
-                        Text(
-                            text = "#${it.idLista}",
-                            fontFamily = manrope,
-                            fontWeight = FontWeight.Light,
-                            fontSize = 15.sp,
-                            color = Color(
-                                paletaMonstruo.getDarkVibrantColor(
-                                    Color(
-                                        paletaMonstruo.getVibrantColor(
-                                            Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb())).toArgb()
-                                        )
-                                    ).toArgb()
-                                )
-                            )
-                        )
-                    }
-                }
-            }
+
 
             Row {
                 if (bitmapPaleta != null) {
@@ -130,26 +138,120 @@ fun DetalleScreen(
                     )
                 }
             }
+            // Familia, atributos por juego
             Column {
                 monstruoState?.let {
-                    Text(text = it.familia)
+                    if (paletaMonstruo != null) {
+                        Text(
+                            buildAnnotatedString {
+                                withStyle(
+                                    style = SpanStyle(
+                                        fontFamily = manrope,
+                                        fontWeight = FontWeight.ExtraBold,
+                                        fontSize = 20.sp,
+                                        color = Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb()))
+                                    )
+                                ) {
+                                    append("Familia: ")
+                                }
+                                append(it.familia)
+                            },
+                            fontFamily = manrope,
+                            fontWeight = FontWeight.Light,
+                            fontSize = 18.sp,
+                        )
+                    }
                     for (each in monstruoState?.atributos!!) {
                         Text(
-                            text = "Juego: ${each.juego}",
-                            fontWeight = FontWeight.ExtraBold,
+                            buildAnnotatedString {
+                                if (paletaMonstruo != null) {
+                                    withStyle(
+                                        style = SpanStyle(
+                                            fontFamily = manrope,
+                                            fontWeight = FontWeight.ExtraBold,
+                                            fontSize = 20.sp,
+                                            color = Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb()))
+                                        )
+                                    ) {
+                                        append("Juego: ")
+                                    }
+                                }
+                                append(each.juego)
+                            },
+                            fontFamily = manrope,
+                            fontWeight = FontWeight.Light,
+                            fontSize = 18.sp,
+                        )
+
+                        Text(
+                            buildAnnotatedString {
+                                if (paletaMonstruo != null) {
+                                    withStyle(
+                                        style = SpanStyle(
+                                            fontFamily = manrope,
+                                            fontWeight = FontWeight.ExtraBold,
+                                            fontSize = 15.sp,
+                                        )
+                                    ) {
+                                        append("Experiencia: ")
+                                    }
+                                }
+                                append(each.experiencia.toString())
+                            },
+                            fontFamily = manrope,
+                            fontWeight = FontWeight.Light,
+                            fontSize = 15.sp,
+                        )
+
+                        Text(
+                            buildAnnotatedString {
+                                if (paletaMonstruo != null) {
+                                    withStyle(
+                                        style = SpanStyle(
+                                            fontFamily = manrope,
+                                            fontWeight = FontWeight.ExtraBold,
+                                            fontSize = 15.sp,
+                                        )
+                                    ) {
+                                        append("Oro: ")
+                                    }
+                                }
+                                append(each.oro.toString())
+                            },
+                            fontFamily = manrope,
+                            fontWeight = FontWeight.Light,
+                            fontSize = 15.sp,
+                        )
+
+
+                        Text(
+                            text = "Lugares:",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 15.sp,
                             fontFamily = manrope
                         )
 
-                        Text(text = "Experiencia: ${each.experiencia}")
-                        Text(text = "Oro: ${each.oro}")
-
-
                         for (lugar in each.lugares) {
-                            Text(text = "Lugar: $lugar")
-
+                            Text(
+                                text = "- $lugar",
+                                fontWeight = FontWeight.Light,
+                                fontSize = 15.sp,
+                                fontFamily = manrope
+                            )
                         }
+                        Text(
+                            text = "Objetos:",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 15.sp,
+                            fontFamily = manrope
+                        )
                         for (objeto in each.objetos) {
-                            Text(text = "Objeto: $objeto")
+                            Text(
+                                text = "- $objeto",
+                                fontWeight = FontWeight.Light,
+                                fontSize = 15.sp,
+                                fontFamily = manrope
+                            )
                         }
                     }
                 }
@@ -172,3 +274,4 @@ fun EllipticalShape(color: Color) {
         )
     }
 }
+

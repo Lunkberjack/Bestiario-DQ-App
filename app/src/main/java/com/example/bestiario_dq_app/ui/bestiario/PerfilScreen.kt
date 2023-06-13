@@ -1,14 +1,11 @@
 package com.example.bestiario_dq_app.ui.bestiario
 
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
@@ -17,8 +14,9 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -52,7 +50,9 @@ fun PerfilScreen(navHostController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Primero convierte el recurso a Bitmap usando su id, y después convierte ese Bitmap a ImageBitmap.
-        val default: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.limo).asImageBitmap()
+        val default: ImageBitmap =
+            BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.limo)
+                .asImageBitmap()
         Image(
             bitmap = selectedImage ?: default,
             contentDescription = "Profilbild",
@@ -63,7 +63,7 @@ fun PerfilScreen(navHostController: NavHostController) {
         )
 
         // Nombre de usuario
-        Text(text = "Username", fontWeight = FontWeight.Black, fontSize = 30.sp)
+        Text(text = Globals.username, fontWeight = FontWeight.Black, fontSize = 30.sp)
 
         // Descripción, estado, acciones, etc
         Text(text = "Description, todo", fontWeight = FontWeight.Light, fontSize = 18.sp)
@@ -109,7 +109,7 @@ fun ImageSelector(onImageSelected: (ImageBitmap) -> Unit) {
     )
     // Las transformamos en Bitmap.
     val imagesBitmap = mutableListOf<Bitmap>()
-    for(image in images) {
+    for (image in images) {
         imagesBitmap.add(BitmapFactory.decodeResource(LocalContext.current.resources, image))
     }
 
@@ -118,7 +118,7 @@ fun ImageSelector(onImageSelected: (ImageBitmap) -> Unit) {
     ) {
         items(imagesBitmap) { image ->
             val bitmap = image.asImageBitmap()
-           // val bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, imageRes).asImageBitmap()
+            // val bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, imageRes).asImageBitmap()
             Image(
                 bitmap = bitmap,
                 contentDescription = "Avatar",
