@@ -29,6 +29,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
+import com.example.bestiario_dq_app.core.utils.hayInternet
 import com.example.bestiario_dq_app.ui.auth.AuthScreen
 import com.example.bestiario_dq_app.ui.Screen
 import com.example.bestiario_dq_app.ui.auth.SecretScreen
@@ -48,6 +49,10 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavGraph(navController: NavHostController) {
+    if(!hayInternet(LocalContext.current)) {
+        navController.navigate(Screen.Favoritos.route)
+    }
+
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     val screens = listOf(
@@ -112,7 +117,7 @@ fun NavGraph(navController: NavHostController) {
                         arguments = listOf(navArgument("idSeleccionado") { type = NavType.StringType })
                     ) { backStackEntry ->
                         val idSeleccionado = backStackEntry.arguments?.getString("idSeleccionado")
-                        DetalleScreen(idSeleccionado = idSeleccionado)
+                        DetalleScreen(navController = navController, idSeleccionado = idSeleccionado)
                     }
                     composable(
                         route = "${Screen.Familia.route}/{nombre}",

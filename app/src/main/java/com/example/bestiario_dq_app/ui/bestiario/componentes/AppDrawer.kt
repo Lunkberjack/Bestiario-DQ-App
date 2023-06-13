@@ -9,11 +9,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
@@ -35,7 +40,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -71,31 +78,58 @@ fun AppDrawer(
 
     if (dialogFamilias.value) {
         Dialog(onDismissRequest = { dialogFamilias.value = false }) {
-            Column(modifier = Modifier.padding(16.dp).background(Color.White).height(500.dp)) {
-                Text(text = "Select a Family")
+            Column(
+                modifier = Modifier
+                    .height(500.dp)
+                    .width(300.dp)
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(Color.White)
+            ) {
+                Row(
+                    Modifier
+                        .weight(1f).fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Elige una familia",
+                        fontFamily = manrope,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 25.sp
+                    )
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Lista todas las familias en tiempo real.
-                for(each in familias) {
-                    FamilyOption(each.nombre, selectedFamily) { family ->
-                        selectedFamily = family
-                    }
                 }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Button(
-                    onClick = {
-                        dialogFamilias.value = false
-                        if (selectedFamily.isNotEmpty()) {
-                            viewModel.viewModelScope.launch {
-                                navController.navigate(Screen.Familia.route + "/${selectedFamily}")
+                Row(Modifier.weight(7f)) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .fillMaxWidth()
+                    ) {
+                        items(familias) { familia ->
+                            FamilyOption(familia.nombre, selectedFamily) { family ->
+                                selectedFamily = family
                             }
                         }
                     }
-                ) {
-                    Text(text = "Filtrar")
+                }
+                Row(Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+                    Button(modifier = Modifier.fillMaxWidth().padding(10.dp),
+                        onClick = {
+                            dialogFamilias.value = false
+                            if (selectedFamily.isNotEmpty()) {
+                                viewModel.viewModelScope.launch {
+                                    navController.navigate(Screen.Familia.route + "/${selectedFamily}") {
+                                        popUpTo(Screen.Familia.route + "/${selectedFamily}") {
+                                            inclusive = true
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+                    ) {
+                        Text(text = "Filtrar")
+                    }
                 }
             }
         }
@@ -211,14 +245,18 @@ fun FamilyOption(
 ) {
     Text(
         text = familyName,
+        fontFamily = manrope,
+        fontSize = 18.sp,
+        fontWeight = FontWeight.Light,
         modifier = Modifier
             .clickable {
                 onFamilySelected(familyName)
-            }
-            .padding(8.dp)
-            .background(
+            }.background(
                 color = if (selectedFamily == familyName) Color.LightGray else Color.Transparent,
                 shape = RoundedCornerShape(4.dp)
             )
+            .padding(10.dp)
+            .fillMaxWidth()
+
     )
 }

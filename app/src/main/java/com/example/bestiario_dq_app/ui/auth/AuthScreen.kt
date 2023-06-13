@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.bestiario_dq_app.core.utils.hayInternet
 import com.example.bestiario_dq_app.data.remote.responses.AuthResult
 import com.example.bestiario_dq_app.ui.Screen
 
@@ -26,6 +27,10 @@ fun AuthScreen(
     navController: NavController,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
+    if(!hayInternet(LocalContext.current)) {
+        navController.navigate(Screen.Favoritos.route)
+    }
+
     val state = viewModel.state
     val context = LocalContext.current
     LaunchedEffect(viewModel, context) {

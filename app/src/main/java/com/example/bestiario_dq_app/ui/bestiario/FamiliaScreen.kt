@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,7 +58,28 @@ fun FamiliaScreen(
         viewModel.filtrarMonstruos(familia)
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            buildAnnotatedString {
+                append("Familia\n")
+                withStyle(
+                    style = SpanStyle(
+                        fontFamily = manrope,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 20.sp
+                    )
+                ) {
+                    append(familia)
+                }
+            },
+            fontFamily = manrope,
+            fontWeight = FontWeight.Light,
+            fontSize = 18.sp,
+            textAlign = TextAlign.Center
+        )
         LazyColumn {
             items(monstruos) { monstruo ->
                 CartaMonstruo(navController, monstruo)

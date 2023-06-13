@@ -56,7 +56,9 @@ import androidx.navigation.NavController
 import com.example.bestiario_dq_app.data.remote.responses.Monstruo
 import com.example.bestiario_dq_app.ui.bestiario.componentes.CartaMonstruo
 import com.example.bestiario_dq_app.core.utils.Globals
+import com.example.bestiario_dq_app.core.utils.hayInternet
 import com.example.bestiario_dq_app.data.remote.responses.Atributo
+import com.example.bestiario_dq_app.ui.Screen
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ApplicationContext
 
@@ -68,6 +70,9 @@ fun MonstruosScreen(
     navController: NavController,
     viewModel: MonstruosViewModel = hiltViewModel()
 ) {
+    if(!hayInternet(LocalContext.current)) {
+        navController.navigate(Screen.Favoritos.route)
+    }
     /* TODO - Borrar esto. Es una prueba para desarrollar la interfaz sin conexión a la API
     val monstruos = listOf(
         Monstruo(
