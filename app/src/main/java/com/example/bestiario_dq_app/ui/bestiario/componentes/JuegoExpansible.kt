@@ -4,28 +4,36 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.InspectableModifier
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
@@ -49,7 +57,7 @@ fun JuegoExpansible(
 
     Card(
         modifier = Modifier
-            .fillMaxWidth()
+            .width(200.dp)
             .animateContentSize(
                 animationSpec = tween(
                     durationMillis = 300,
@@ -58,7 +66,11 @@ fun JuegoExpansible(
             ),
         onClick = {
             expandidoState = !expandidoState
-        }
+        },
+        colors = CardDefaults.cardColors(
+            // Copiamos el color para poder modificar su transparencia.
+            containerColor = Color(paletaMonstruo.getVibrantColor(Color.White.toArgb())).copy(alpha = 0.2f)
+        )
     ) {
         Column(
             modifier = Modifier
@@ -67,7 +79,8 @@ fun JuegoExpansible(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
                 Text(
                     buildAnnotatedString {
@@ -76,7 +89,7 @@ fun JuegoExpansible(
                                 fontFamily = manrope,
                                 fontWeight = FontWeight.ExtraBold,
                                 fontSize = 20.sp,
-                                color = Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb()))
+                                color = Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb())),
                             )
                         ) {
                             append("Juego: ")
@@ -86,17 +99,18 @@ fun JuegoExpansible(
                     fontFamily = manrope,
                     fontWeight = FontWeight.Light,
                     fontSize = 18.sp,
+                    textAlign = TextAlign.Center
                 )
                 IconButton(
                     modifier = Modifier
-                        .weight(1f)
+                        .offset(x = 20.dp)
                         .rotate(giroState),
                     onClick = {
                         expandidoState = !expandidoState
                     }) {
                     Icon(
                         imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = "Drop-Down Arrow"
+                        contentDescription = "Flechita"
                     )
                 }
             }

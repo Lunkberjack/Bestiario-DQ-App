@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,6 +32,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -91,8 +93,7 @@ fun DetalleScreen(
             Row(
                 verticalAlignment = Alignment.CenterVertically, modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 20.dp)
-                    .height(120.dp), horizontalArrangement = Arrangement.Start
+                    .padding(start = 20.dp), horizontalArrangement = Arrangement.Start
             ) {
                 monstruoState?.let {
                     if (paletaMonstruo != null) {
@@ -112,15 +113,19 @@ fun DetalleScreen(
                                     )
                                 ),
                                 modifier = Modifier
-                                    .offset(y = 625.dp, x = (-95).dp)
+                                    .offset(y = 525.dp, x = (-95).dp)
                                     .rotate(-90f)
                             )
 
                             Text(
                                 text = it.nombre,
+                                style = TextStyle(
+                                    lineHeight = 35.sp // Establece el interlineado a 24sp
+                                ),
                                 fontFamily = manrope,
                                 fontWeight = FontWeight.ExtraBold,
-                                fontSize = 50.sp,
+                                // Si el nombre es demasiado largo se reduce la letra.
+                                fontSize = if(it.nombre.length > 10) 40.sp else 50.sp,
                                 color = Color(
                                     paletaMonstruo.getDarkVibrantColor(
                                         Color(
@@ -150,7 +155,7 @@ fun DetalleScreen(
                 }
             }
             // Familia, atributos por juego
-            Column {
+            Column(modifier = Modifier.width(300.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 monstruoState?.let {
                     if (paletaMonstruo != null) {
                         Text(
@@ -175,6 +180,7 @@ fun DetalleScreen(
                     for (each in monstruoState?.atributos!!) {
                         if (paletaMonstruo != null) {
                             JuegoExpansible(atributo = each, paletaMonstruo = paletaMonstruo)
+                            Spacer(modifier = Modifier.height(10.dp))
                         }
                     }
                 }

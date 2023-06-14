@@ -40,6 +40,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -118,7 +119,10 @@ fun CartaMonstruo(
                 ) {
                     Text(
                         text = monstruo.nombre,
+                        textAlign = TextAlign.End,
+                        // No creo (no deberíamos) pasarnos de 2 líneas (pero nunca se sabe, es Dragon Quest T_T).
                         maxLines = 2,
+                        // Si el nombre es demasiado largo se reduce la letra.
                         fontSize = if(monstruo.nombre.length > 10) 17.5.sp else 28.sp,
                         fontFamily = manrope,
                         fontWeight = FontWeight.ExtraBold,
