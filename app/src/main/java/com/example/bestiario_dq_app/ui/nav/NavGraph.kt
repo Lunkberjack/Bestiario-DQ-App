@@ -41,6 +41,7 @@ import com.example.bestiario_dq_app.ui.bestiario.FavoritosScreen
 import com.example.bestiario_dq_app.ui.bestiario.JuegoScreen
 import com.example.bestiario_dq_app.ui.bestiario.MonstruosEvent
 import com.example.bestiario_dq_app.ui.bestiario.MonstruosScreen
+import com.example.bestiario_dq_app.ui.bestiario.OrdenadaScreen
 import com.example.bestiario_dq_app.ui.bestiario.PerfilScreen
 import com.example.bestiario_dq_app.ui.bestiario.SettingsScreen
 import com.example.bestiario_dq_app.ui.bestiario.componentes.AppDrawer
@@ -52,7 +53,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavGraph(navController: NavHostController, monstruoDao: MonstruoDao) {
-    if(!hayInternet(LocalContext.current)) {
+    if (!hayInternet(LocalContext.current)) {
         navController.navigate(Screen.Favoritos.route)
     }
 
@@ -117,24 +118,54 @@ fun NavGraph(navController: NavHostController, monstruoDao: MonstruoDao) {
                     // de detalles.
                     composable(
                         route = "${Screen.Detalle.route}/{idSeleccionado}",
-                        arguments = listOf(navArgument("idSeleccionado") { type = NavType.StringType })
+                        arguments = listOf(navArgument("idSeleccionado") {
+                            type = NavType.StringType
+                        })
                     ) { backStackEntry ->
                         val idSeleccionado = backStackEntry.arguments?.getString("idSeleccionado")
-                        DetalleScreen(navController = navController, idSeleccionado = idSeleccionado)
+                        DetalleScreen(
+                            navController = navController,
+                            idSeleccionado = idSeleccionado
+                        )
                     }
                     composable(
                         route = "${Screen.Familia.route}/{nombre}",
                         arguments = listOf(navArgument("nombre") { type = NavType.StringType })
                     ) { backStackEntry ->
                         val nombre = backStackEntry.arguments?.getString("nombre")
-                        FamiliaScreen(familia = nombre, navController = navController, monstruoDao = monstruoDao)
+                        FamiliaScreen(
+                            familia = nombre,
+                            navController = navController,
+                            monstruoDao = monstruoDao
+                        )
                     }
                     composable(
                         route = "${Screen.Juego.route}/{abr}",
                         arguments = listOf(navArgument("abr") { type = NavType.StringType })
                     ) { backStackEntry ->
                         val abr = backStackEntry.arguments?.getString("abr")
-                        JuegoScreen(abr = abr, navController = navController, monstruoDao = monstruoDao)
+                        JuegoScreen(
+                            abr = abr,
+                            navController = navController,
+                            monstruoDao = monstruoDao
+                        )
+                    }
+                    composable(
+                        route = "${Screen.Orden.route}/{orden}/{tipo}",
+                        arguments = listOf(
+                            navArgument("orden") { type = NavType.StringType },
+                            navArgument("tipo") { type = NavType.StringType })
+                    ) { backStackEntry ->
+                        val orden = backStackEntry.arguments?.getString("orden")
+                        val tipo = backStackEntry.arguments?.getString("tipo")
+                        if (orden != null && tipo != null) {
+                            OrdenadaScreen(
+                                orden = orden,
+                                tipo = tipo,
+                                navController = navController,
+                                monstruoDao = monstruoDao
+                            )
+                        }
                     }
                 }
             }

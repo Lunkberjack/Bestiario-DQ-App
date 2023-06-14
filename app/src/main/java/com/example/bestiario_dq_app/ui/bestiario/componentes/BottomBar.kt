@@ -18,6 +18,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.bestiario_dq_app.R
+import com.example.bestiario_dq_app.ui.Screen
 import com.example.bestiario_dq_app.ui.theme.manrope
 
 @Composable
@@ -56,12 +57,8 @@ fun RowScope.AddItem(
         //unselectedContentColor = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
         onClick = {
             navController.navigate(screen.route) {
-                navController.graph.findStartDestination().route?.let {
-                    popUpTo(it) {
-                        saveState = false
-                    }
-                }
-                launchSingleTop = true
+                // Si pulsamos atrás, siempre volvemos a la Home (MonstruosScreen).
+                navController.popBackStack(Screen.Monstruos.route, inclusive = false, saveState = false)
             }
         }
     )

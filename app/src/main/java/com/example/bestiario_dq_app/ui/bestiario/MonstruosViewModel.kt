@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.bestiario_dq_app.core.utils.TipoOrden
 import com.example.bestiario_dq_app.data.local.MonstruoDao
 import com.example.bestiario_dq_app.data.remote.responses.Familia
 import com.example.bestiario_dq_app.data.remote.responses.Juego
@@ -17,6 +18,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,10 +34,10 @@ class MonstruosViewModel @Inject constructor(
     val monstruos: StateFlow<List<Monstruo>> = _monstruos
 
     private val _familias = MutableStateFlow<List<Familia>>(emptyList())
-    val familias: StateFlow<List<Familia>> = _familias
+    val familias: StateFlow<List<Familia>> = _familias.asStateFlow()
 
     private val _juegos = MutableStateFlow<List<Juego>>(emptyList())
-    val juegos: StateFlow<List<Juego>> = _juegos
+    val juegos: StateFlow<List<Juego>> = _juegos.asStateFlow()
 
     private val _monstruo = MutableStateFlow<Monstruo?>(null)
     val monstruo: StateFlow<Monstruo?> = _monstruo
@@ -46,31 +49,23 @@ class MonstruosViewModel @Inject constructor(
     val monstruoSeleccionado: State<String> = _monstruoSeleccionado
 
     fun onEvent(event: MonstruosEvent) {
-        when (event) {
-            is MonstruosEvent.onTraerMonstruos -> {
-                getMonstruos()
-            }
 
-            is MonstruosEvent.onTraerFamilia -> {
-                val familia = event.familia
-                viewModelScope.launch {
-                    filtrarFamilia(familia)
-                }
-            }
-        }
     }
 
     fun filtrarFamilia(familia: String) {
         viewModelScope.launch {
-            val nuevaLista = repository.filtrarFamilia(familia)
-            _monstruos.value = nuevaLista
+           repository.filtrarFamilia(familia).collect { listaFiltrada ->
+               _monstruos.value = listaFiltrada
+               _monstruos.emit(listaFiltrada)
+           }
         }
     }
 
     fun filtrarJuego(juego: String) {
         viewModelScope.launch {
-            val nuevaLista = repository.filtrarJuego(juego)
-            _monstruos.value = nuevaLista
+            repository.filtrarJuego(juego).collect { listaFiltrada ->
+                _monstruos.value = listaFiltrada
+            }
         }
     }
 
@@ -99,23 +94,27 @@ class MonstruosViewModel @Inject constructor(
 
      */
 
-    fun getMonstruos() {
-        // Lógica para obtener la lista según la familia seleccionada
+    fun getMonstruos(orden: String?, tipo: String?) {
+        // Lógica para obtener la lista según el orden seleccionado
         viewModelScope.launch {
-            val nuevaLista = repository.getMonstruos()
-            _monstruos.value = nuevaLista
+            val nuevosMonstruos = repository.getMonstruos(orden, tipo)
+            _monstruos.emitAll(nuevosMonstruos)
         }
     }
 
-    fun getFamilias() {
-        viewModelScope.launch {
-            _familias.value = repository.getFamilias()
-        }
+   fun getFamilias() {
+       viewModelScope.launch {
+           repository.getFamilias().collect { listaFamilias ->
+               _familias.value = listaFamilias
+           }
+       }
     }
 
     fun getJuegos() {
         viewModelScope.launch {
-            _juegos.value = repository.getJuegos()
+            repository.getJuegos().collect { listaJuegos ->
+                _juegos.value = listaJuegos
+            }
         }
     }
 

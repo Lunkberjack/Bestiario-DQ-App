@@ -14,4 +14,5 @@ sealed class Screen(val route: String) {
     object Settings: Screen(route = "settings")
     object Familia: Screen(route = "familia")
     object Juego: Screen(route = "juego")
+    object Orden: Screen(route = "orden")
 }

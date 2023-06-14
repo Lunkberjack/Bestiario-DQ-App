@@ -48,11 +48,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.bestiario_dq_app.R
-import com.example.bestiario_dq_app.data.remote.responses.Juego
+import com.example.bestiario_dq_app.core.utils.TipoOrden
 import com.example.bestiario_dq_app.ui.Screen
+import com.example.bestiario_dq_app.ui.bestiario.MonstruosScreen
 import com.example.bestiario_dq_app.ui.bestiario.MonstruosViewModel
 import com.example.bestiario_dq_app.ui.theme.manrope
 import kotlinx.coroutines.launch
@@ -66,11 +66,14 @@ fun AppDrawer(
     viewModel: MonstruosViewModel = hiltViewModel()
 ) {
     var selectedFamily by remember { mutableStateOf("") }
-
     var selectedJuego by remember { mutableStateOf("") }
+    var selectedOrden by remember { mutableStateOf("") }
+    var selectedCriterio by remember { mutableStateOf("") }
+
 
     val dialogFamilias = remember { mutableStateOf(false) }
     val dialogJuegos = remember { mutableStateOf(false) }
+    val dialogTipoOrden = remember { mutableStateOf(false) }
 
     val familias by viewModel.familias.collectAsState(emptyList())
     viewModel.getFamilias()
@@ -78,6 +81,7 @@ fun AppDrawer(
     val juegos by viewModel.juegos.collectAsState(emptyList())
     viewModel.getJuegos()
 
+    // Familia ----------------------------------------------------------------------------------------
     if (dialogFamilias.value) {
         Dialog(onDismissRequest = { dialogFamilias.value = false }) {
             Column(
@@ -128,11 +132,8 @@ fun AppDrawer(
                             if (selectedFamily.isNotEmpty()) {
                                 viewModel.viewModelScope.launch {
                                     navController.navigate(Screen.Familia.route + "/${selectedFamily}") {
-                                        popUpTo(Screen.Familia.route + "/${selectedFamily}") {
-                                            inclusive = true
-                                        }
+                                        navController.popBackStack(Screen.Monstruos.route, inclusive = false, saveState = false)
                                     }
-
                                 }
                             }
                         }
@@ -144,6 +145,7 @@ fun AppDrawer(
         }
     }
 
+    // Juego ----------------------------------------------------------------------------------------
     if (dialogJuegos.value) {
         Dialog(onDismissRequest = { dialogJuegos.value = false }) {
             Column(
@@ -166,7 +168,6 @@ fun AppDrawer(
                         fontWeight = FontWeight.ExtraBold,
                         fontSize = 25.sp
                     )
-
                 }
 
                 Row(Modifier.weight(7f)) {
@@ -196,11 +197,8 @@ fun AppDrawer(
                             if (selectedJuego.isNotEmpty()) {
                                 viewModel.viewModelScope.launch {
                                     navController.navigate(Screen.Juego.route + "/${selectedJuego}") {
-                                        popUpTo(Screen.Juego.route + "/${selectedJuego}") {
-                                            inclusive = true
-                                        }
+                                        navController.popBackStack(Screen.Monstruos.route, inclusive = false, saveState = false)
                                     }
-
                                 }
                             }
                         }
@@ -211,6 +209,86 @@ fun AppDrawer(
             }
         }
     }
+
+    // Orden ----------------------------------------------------------------------------------------
+    if (dialogTipoOrden.value) {
+        Dialog(onDismissRequest = { dialogJuegos.value = false }) {
+            Column(
+                modifier = Modifier
+                    .height(500.dp)
+                    .width(300.dp)
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(Color.White)
+            ) {
+                Row(
+                    Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Orden...",
+                        fontFamily = manrope,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 25.sp
+                    )
+                }
+
+                Row(Modifier.weight(7f)) {
+                    Column(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .fillMaxWidth()
+                    ) {
+                        OpcionOrden(
+                            tipoOrden = "Ascendente",
+                            selectedOrden = selectedOrden,
+                            onOrdenSelected = {
+                                selectedOrden = "Ascendente"
+                            }
+                        )
+                        OpcionOrden(
+                            tipoOrden = "Descendente",
+                            selectedOrden = selectedOrden,
+                            onOrdenSelected = {
+                                selectedOrden = "Descendente"
+                            }
+                        )
+                    }
+                }
+
+                Row(
+                    Modifier.weight(1f),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Button(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                        onClick = {
+                            dialogJuegos.value = false
+                            if (selectedOrden.isNotEmpty()) {
+                                val criterio = if (selectedCriterio.equals("Número", ignoreCase = true)) "idLista" else "nombre"
+                                viewModel.getMonstruos(
+                                    criterio,
+                                    selectedOrden
+                                )
+                                navController.navigate(Screen.Orden.route + "/$criterio/${selectedOrden}") {
+                                    // ESTA ES LA BUENA
+                                    navController.popBackStack(Screen.Monstruos.route, inclusive = false, saveState = false)
+                                }
+                                dialogTipoOrden.value = false
+                            }
+                        }
+                    ) {
+                        Text(text = "Ordenar")
+                    }
+                }
+            }
+        }
+    }
+
 
     ModalDrawerSheet(modifier = Modifier.width(275.dp)) {
         Box(modifier = Modifier, contentAlignment = Alignment.Center) {
@@ -281,8 +359,10 @@ fun AppDrawer(
             },
             icon = { Icon(Icons.Filled.Home, null) },
             selected = currentRoute == Screen.Monstruos.route,
-            // TODO - Pop backstack in all of these
-            onClick = { navController.navigate(Screen.Monstruos.route) },
+            onClick = {
+                selectedCriterio = "Número"
+                dialogTipoOrden.value = true
+            },
             modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
         )
         NavigationDrawerItem(
@@ -295,7 +375,10 @@ fun AppDrawer(
             },
             icon = { Icon(Icons.Filled.Star, null) },
             selected = currentRoute == Screen.Favoritos.route,
-            onClick = { navController.navigate(Screen.Favoritos.route) },
+            onClick = {
+                selectedCriterio = "Alfabéticamente"
+                dialogTipoOrden.value = true
+            },
             modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
         )
         Row(
@@ -337,7 +420,6 @@ fun OpcionFamilia(
             )
             .padding(10.dp)
             .fillMaxWidth()
-
     )
 }
 
@@ -358,6 +440,30 @@ fun OpcionJuego(
             }
             .background(
                 color = if (selectedJuego == juegoAbr) Color.LightGray else Color.Transparent,
+                shape = RoundedCornerShape(4.dp)
+            )
+            .padding(10.dp)
+            .fillMaxWidth()
+    )
+}
+
+@Composable
+fun OpcionOrden(
+    tipoOrden: String,
+    selectedOrden: String,
+    onOrdenSelected: (String) -> Unit
+) {
+    Text(
+        text = tipoOrden,
+        fontFamily = manrope,
+        fontSize = 18.sp,
+        fontWeight = FontWeight.Light,
+        modifier = Modifier
+            .clickable {
+                onOrdenSelected(tipoOrden)
+            }
+            .background(
+                color = if (selectedOrden == tipoOrden) Color.LightGray else Color.Transparent,
                 shape = RoundedCornerShape(4.dp)
             )
             .padding(10.dp)

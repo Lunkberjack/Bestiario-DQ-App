@@ -8,6 +8,9 @@ import com.example.bestiario_dq_app.data.remote.responses.Familia
 import com.example.bestiario_dq_app.data.remote.responses.Juego
 import com.example.bestiario_dq_app.data.remote.responses.Monstruo
 import com.example.bestiario_dq_app.domain.repositories.MonstruosRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class MonstruosRepositoryImpl @Inject constructor(
@@ -45,16 +48,25 @@ class MonstruosRepositoryImpl @Inject constructor(
         return apiService.getMonstruoNombre(nombre)
     }
 
-    override suspend fun getMonstruos(): List<Monstruo> {
-        return apiService.getMonstruos()
+    override suspend fun getMonstruos(orden: String?, tipo: String?): Flow<List<Monstruo>> {
+        return flow {
+            val monstruos = apiService.getMonstruos(orden, tipo)
+            emit(monstruos)
+        }
     }
 
-    override suspend fun getFamilias(): List<Familia> {
-        return apiService.getFamilias()
+    override suspend fun getFamilias(): Flow<List<Familia>> {
+        return flow {
+            val familias = apiService.getFamilias()
+            emit(familias)
+        }
     }
 
-    override suspend fun getJuegos(): List<Juego> {
-        return apiService.getJuegos()
+    override suspend fun getJuegos(): Flow<List<Juego>> {
+        return flow {
+            val juegos = apiService.getJuegos()
+            emit(juegos)
+        }
     }
 
     override suspend fun getFamilia(nombre: String): Familia {
@@ -65,13 +77,19 @@ class MonstruosRepositoryImpl @Inject constructor(
         return apiService.getJuego(abr)
     }
 
-    override suspend fun filtrarFamilia(familia: String): List<Monstruo> {
-        return apiService.filtroFamilia(familia)
+    override suspend fun filtrarFamilia(familia: String): Flow<List<Monstruo>> {
+        return flow {
+            val filtro = apiService.filtroFamilia(familia)
+            emit(filtro)
+        }
     }
 
-    override suspend fun filtrarJuego(juego: String): List<Monstruo> {
-        val juego = getJuego(juego)
+    override suspend fun filtrarJuego(juegoP: String): Flow<List<Monstruo>> {
+        val juego = getJuego(juegoP)
         // Buscamos por abreviatura
-        return apiService.filtroJuego(juego.abr)
+        return flow {
+            val filtro = apiService.filtroJuego(juego.abr)
+            emit(filtro)
+        }
     }
 }

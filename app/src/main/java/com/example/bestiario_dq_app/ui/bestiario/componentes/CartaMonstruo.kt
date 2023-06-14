@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.palette.graphics.Palette
 import com.example.bestiario_dq_app.data.remote.responses.Monstruo
 import com.example.bestiario_dq_app.ui.Screen
@@ -120,7 +121,7 @@ fun CartaMonstruo(
                     Text(
                         text = monstruo.nombre,
                         textAlign = TextAlign.End,
-                        // No creo (no deberíamos) pasarnos de 2 líneas (pero nunca se sabe, es Dragon Quest T_T).
+                        // Creo que no deberíamos pasarnos de 2 líneas (pero nunca se sabe, es Dragon Quest T_T).
                         maxLines = 2,
                         // Si el nombre es demasiado largo se reduce la letra.
                         fontSize = if(monstruo.nombre.length > 10) 17.5.sp else 28.sp,
@@ -153,8 +154,10 @@ fun CartaMonstruo(
                     Spacer(Modifier.height(20.dp))
 
                     val _isFavoritoFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
-                    val isFavoritoFlow = _isFavoritoFlow.asStateFlow()
                     val icono = remember { mutableStateOf(Icons.Outlined.Add) }
+
+                    //val currentBackStackEntry by navController.currentBackStackEntryAsState()
+                    //val currentRoute = currentBackStackEntry?.destination?.route
 
                     IconButton(onClick = {
                         coroutineScope.launch {
@@ -162,12 +165,29 @@ fun CartaMonstruo(
                                 val favorito = monstruoDao.isFavorito(monstruo.idLista)
                                 if (favorito) {
                                     monstruoDao.deleteMonstruo(monstruo.toMonstruoEntity())
+
+                                    withContext(Dispatchers.Main) {
+                                        // Cómo lo explico. Para evitar que un usuario traviesillo quiera entrar a los detalles
+                                        // de un monstruo que ya se ha borrado de Room, actualizamos la página en tiempo real.
+                                        // Al no tener la posibilidad de usar Flows, lo hacemos un poco rudimentario pero que
+                                        // funciona 👍
+                                        val currentRoute = navController.currentBackStackEntry?.destination?.route
+                                        if (currentRoute == Screen.Favoritos.route) {
+                                            navController.navigate(Screen.Favoritos.route) {
+                                                navController.popBackStack(Screen.Monstruos.route, inclusive = false, saveState = false)
+                                            }
+                                        }
+                                    }
                                     icono.value = Icons.Outlined.Add
                                 } else {
                                     monstruoDao.insertMonstruo(monstruo.toMonstruoEntity())
-                                    icono.value = Icons.Outlined.Star
+                                    withContext(Dispatchers.Main) {
+                                        icono.value = Icons.Outlined.Star
+                                    }
                                 }
-                                _isFavoritoFlow.value = !favorito
+                                withContext(Dispatchers.Main) {
+                                    _isFavoritoFlow.value = !favorito
+                                }
                             }
                         }
                     }) {

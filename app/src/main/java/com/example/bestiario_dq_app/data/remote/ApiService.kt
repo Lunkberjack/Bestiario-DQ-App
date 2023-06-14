@@ -5,6 +5,7 @@ import com.example.bestiario_dq_app.data.remote.responses.Familia
 import com.example.bestiario_dq_app.data.remote.responses.Juego
 import com.example.bestiario_dq_app.data.remote.responses.Monstruo
 import com.example.bestiario_dq_app.data.remote.responses.TokenResponse
+import kotlinx.coroutines.flow.Flow
 
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -44,8 +45,11 @@ interface ApiService {
         @Query("por_pagina") porPagina: Int
     ): List<Monstruo>
 
-    @GET("monstruos")
-    suspend fun getMonstruos( ): List<Monstruo>
+    @GET("monstruos/{order}/{tipo}")
+    suspend fun getMonstruos(
+        @Path("order") order: String?,
+        @Path("tipo") tipo: String?
+    ): List<Monstruo>
 
     @GET("familias")
     suspend fun getFamilias(): List<Familia>
