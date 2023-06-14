@@ -35,7 +35,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -113,7 +118,8 @@ fun CartaMonstruo(
                 ) {
                     Text(
                         text = monstruo.nombre,
-                        fontSize = 28.sp,
+                        maxLines = 2,
+                        fontSize = if(monstruo.nombre.length > 10) 17.5.sp else 28.sp,
                         fontFamily = manrope,
                         fontWeight = FontWeight.ExtraBold,
                         color = Color(

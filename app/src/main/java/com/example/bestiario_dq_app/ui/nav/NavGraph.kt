@@ -38,6 +38,7 @@ import com.example.bestiario_dq_app.ui.auth.SecretScreen
 import com.example.bestiario_dq_app.ui.bestiario.DetalleScreen
 import com.example.bestiario_dq_app.ui.bestiario.FamiliaScreen
 import com.example.bestiario_dq_app.ui.bestiario.FavoritosScreen
+import com.example.bestiario_dq_app.ui.bestiario.JuegoScreen
 import com.example.bestiario_dq_app.ui.bestiario.MonstruosEvent
 import com.example.bestiario_dq_app.ui.bestiario.MonstruosScreen
 import com.example.bestiario_dq_app.ui.bestiario.PerfilScreen
@@ -127,6 +128,13 @@ fun NavGraph(navController: NavHostController, monstruoDao: MonstruoDao) {
                     ) { backStackEntry ->
                         val nombre = backStackEntry.arguments?.getString("nombre")
                         FamiliaScreen(familia = nombre, navController = navController, monstruoDao = monstruoDao)
+                    }
+                    composable(
+                        route = "${Screen.Juego.route}/{abr}",
+                        arguments = listOf(navArgument("abr") { type = NavType.StringType })
+                    ) { backStackEntry ->
+                        val abr = backStackEntry.arguments?.getString("abr")
+                        JuegoScreen(abr = abr, navController = navController, monstruoDao = monstruoDao)
                     }
                 }
             }

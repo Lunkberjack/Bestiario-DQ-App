@@ -1,5 +1,6 @@
 package com.example.bestiario_dq_app.ui.bestiario.componentes
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,9 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
@@ -42,7 +41,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -50,13 +48,16 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.bestiario_dq_app.R
+import com.example.bestiario_dq_app.data.remote.responses.Juego
 import com.example.bestiario_dq_app.ui.Screen
 import com.example.bestiario_dq_app.ui.bestiario.MonstruosViewModel
 import com.example.bestiario_dq_app.ui.theme.manrope
 import kotlinx.coroutines.launch
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppDrawer(
@@ -64,8 +65,9 @@ fun AppDrawer(
     navController: NavHostController,
     viewModel: MonstruosViewModel = hiltViewModel()
 ) {
-// Create a mutable state to hold the selected family
     var selectedFamily by remember { mutableStateOf("") }
+
+    var selectedJuego by remember { mutableStateOf("") }
 
     val dialogFamilias = remember { mutableStateOf(false) }
     val dialogJuegos = remember { mutableStateOf(false) }
@@ -87,7 +89,8 @@ fun AppDrawer(
             ) {
                 Row(
                     Modifier
-                        .weight(1f).fillMaxWidth(),
+                        .weight(1f)
+                        .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
@@ -106,20 +109,94 @@ fun AppDrawer(
                             .fillMaxWidth()
                     ) {
                         items(familias) { familia ->
-                            FamilyOption(familia.nombre, selectedFamily) { family ->
+                            OpcionFamilia(familia.nombre, selectedFamily) { family ->
                                 selectedFamily = family
                             }
                         }
                     }
                 }
-                Row(Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                    Button(modifier = Modifier.fillMaxWidth().padding(10.dp),
+                Row(
+                    Modifier.weight(1f),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Button(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
                         onClick = {
                             dialogFamilias.value = false
                             if (selectedFamily.isNotEmpty()) {
                                 viewModel.viewModelScope.launch {
                                     navController.navigate(Screen.Familia.route + "/${selectedFamily}") {
                                         popUpTo(Screen.Familia.route + "/${selectedFamily}") {
+                                            inclusive = true
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+                    ) {
+                        Text(text = "Filtrar")
+                    }
+                }
+            }
+        }
+    }
+
+    if (dialogJuegos.value) {
+        Dialog(onDismissRequest = { dialogJuegos.value = false }) {
+            Column(
+                modifier = Modifier
+                    .height(500.dp)
+                    .width(300.dp)
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(Color.White)
+            ) {
+                Row(
+                    Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Elige un juego",
+                        fontFamily = manrope,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 25.sp
+                    )
+
+                }
+
+                Row(Modifier.weight(7f)) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .fillMaxWidth()
+                    ) {
+                        items(juegos) { juego ->
+                            OpcionJuego(juego.abr, selectedJuego) { jue ->
+                                selectedJuego = jue
+                            }
+                        }
+                    }
+                }
+
+                Row(
+                    Modifier.weight(1f),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Button(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                        onClick = {
+                            dialogJuegos.value = false
+                            if (selectedJuego.isNotEmpty()) {
+                                viewModel.viewModelScope.launch {
+                                    navController.navigate(Screen.Juego.route + "/${selectedJuego}") {
+                                        popUpTo(Screen.Juego.route + "/${selectedJuego}") {
                                             inclusive = true
                                         }
                                     }
@@ -176,7 +253,9 @@ fun AppDrawer(
             },
             icon = { Icon(Icons.Filled.Star, null) },
             selected = currentRoute == Screen.Favoritos.route,
-            onClick = { navController.navigate(Screen.Favoritos.route) },
+            onClick = {
+                dialogJuegos.value = true
+            },
             modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
         )
 
@@ -238,7 +317,7 @@ fun AppDrawer(
 }
 
 @Composable
-fun FamilyOption(
+fun OpcionFamilia(
     familyName: String,
     selectedFamily: String,
     onFamilySelected: (String) -> Unit
@@ -251,12 +330,37 @@ fun FamilyOption(
         modifier = Modifier
             .clickable {
                 onFamilySelected(familyName)
-            }.background(
+            }
+            .background(
                 color = if (selectedFamily == familyName) Color.LightGray else Color.Transparent,
                 shape = RoundedCornerShape(4.dp)
             )
             .padding(10.dp)
             .fillMaxWidth()
 
+    )
+}
+
+@Composable
+fun OpcionJuego(
+    juegoAbr: String,
+    selectedJuego: String,
+    onJuegoSelected: (String) -> Unit
+) {
+    Text(
+        text = juegoAbr,
+        fontFamily = manrope,
+        fontSize = 18.sp,
+        fontWeight = FontWeight.Light,
+        modifier = Modifier
+            .clickable {
+                onJuegoSelected(juegoAbr)
+            }
+            .background(
+                color = if (selectedJuego == juegoAbr) Color.LightGray else Color.Transparent,
+                shape = RoundedCornerShape(4.dp)
+            )
+            .padding(10.dp)
+            .fillMaxWidth()
     )
 }

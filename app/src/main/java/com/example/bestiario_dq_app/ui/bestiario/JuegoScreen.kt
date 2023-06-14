@@ -28,15 +28,15 @@ import com.example.bestiario_dq_app.ui.theme.manrope
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FamiliaScreen(
-    familia: String?,
+fun JuegoScreen(
+    abr: String?,
     navController: NavController,
     monstruoDao: MonstruoDao,
     viewModel: MonstruosViewModel = hiltViewModel()
 ) {
     val monstruos by viewModel.monstruos.collectAsState(emptyList())
-    if (familia != null) {
-        viewModel.filtrarFamilia(familia)
+    if (abr != null) {
+        viewModel.filtrarJuego(abr)
     }
 
     Column(
@@ -45,7 +45,7 @@ fun FamiliaScreen(
     ) {
         Text(
             buildAnnotatedString {
-                append("Familia\n")
+                append("Juego\n")
                 withStyle(
                     style = SpanStyle(
                         fontFamily = manrope,
@@ -53,7 +53,7 @@ fun FamiliaScreen(
                         fontSize = 20.sp
                     )
                 ) {
-                    append(familia)
+                    append(abr)
                 }
             },
             fontFamily = manrope,

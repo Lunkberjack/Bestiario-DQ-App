@@ -58,25 +58,25 @@ interface ApiService {
         @Body request: Monstruo
     )
 
-    @GET("monstruos/familia/{nombre}")
+    @GET("familia/{nombre}")
     suspend fun getFamilia(
         @Path("nombre")
         nombre: String
     ): Familia
 
-    @GET("monstruos/juego/{abr}")
+    @GET("juego/{abr}")
     suspend fun getJuego(
         @Path("abr")
         abr: String
     ): Juego
 
-    @GET("monstruos/{familia}")
+    @GET("monstruos/familia/{familia}")
     suspend fun filtroFamilia(
         @Path("familia")
         familia: String
     ): List<Monstruo>
 
-    @GET("monstruos/{juego}")
+    @GET("monstruos/juego/{juego}")
     suspend fun filtroJuego(
         @Path("juego")
         juego: String

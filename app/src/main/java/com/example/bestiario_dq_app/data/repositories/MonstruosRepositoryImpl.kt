@@ -70,6 +70,8 @@ class MonstruosRepositoryImpl @Inject constructor(
     }
 
     override suspend fun filtrarJuego(juego: String): List<Monstruo> {
-        return apiService.filtroJuego(juego)
+        val juego = getJuego(juego)
+        // Buscamos por abreviatura
+        return apiService.filtroJuego(juego.abr)
     }
 }

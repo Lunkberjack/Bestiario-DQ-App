@@ -3,31 +3,19 @@ package com.example.bestiario_dq_app.ui.bestiario
 import com.example.bestiario_dq_app.domain.repositories.MonstruosRepository
 import com.example.bestiario_dq_app.ui.auth.AuthState
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bestiario_dq_app.data.local.MonstruoDao
-import com.example.bestiario_dq_app.data.mappers.toMonstruoEntity
 import com.example.bestiario_dq_app.data.remote.responses.Familia
 import com.example.bestiario_dq_app.data.remote.responses.Juego
 import com.example.bestiario_dq_app.data.remote.responses.Monstruo
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -51,6 +39,9 @@ class MonstruosViewModel @Inject constructor(
     private val _monstruo = MutableStateFlow<Monstruo?>(null)
     val monstruo: StateFlow<Monstruo?> = _monstruo
 
+    private val _juego = MutableStateFlow<Juego?>(null)
+    val juego: StateFlow<Juego?> = _juego
+
     private val _monstruoSeleccionado = mutableStateOf("")
     val monstruoSeleccionado: State<String> = _monstruoSeleccionado
 
@@ -63,23 +54,28 @@ class MonstruosViewModel @Inject constructor(
             is MonstruosEvent.onTraerFamilia -> {
                 val familia = event.familia
                 viewModelScope.launch {
-                    filtrarMonstruos(familia)
+                    filtrarFamilia(familia)
                 }
             }
         }
     }
 
-    fun filtrarMonstruos(familia: String) {
+    fun filtrarFamilia(familia: String) {
         viewModelScope.launch {
             val nuevaLista = repository.filtrarFamilia(familia)
             _monstruos.value = nuevaLista
-            Log.d("MonstruosViewModel", "Filtered monsters: $nuevaLista")
+        }
+    }
+
+    fun filtrarJuego(juego: String) {
+        viewModelScope.launch {
+            val nuevaLista = repository.filtrarJuego(juego)
+            _monstruos.value = nuevaLista
         }
     }
 
     fun setMonstruoSeleccionado(monstruoId: String) {
         _monstruoSeleccionado.value = monstruoId
-        Log.d("MonstruosViewModel", "Selected monster ID: $monstruoId")
     }
 
     // Búsqueda
@@ -119,7 +115,13 @@ class MonstruosViewModel @Inject constructor(
 
     fun getJuegos() {
         viewModelScope.launch {
-            _monstruos.value = repository.getMonstruos()
+            _juegos.value = repository.getJuegos()
+        }
+    }
+
+    fun getJuego(abr: String) {
+        viewModelScope.launch {
+            _juego.value = repository.getJuego(abr)
         }
     }
 
@@ -127,14 +129,6 @@ class MonstruosViewModel @Inject constructor(
         viewModelScope.launch {
             val fetchedMonstruo = repository.getMonstruoIdLista(monstruoId)
             _monstruo.value = fetchedMonstruo
-        }
-    }
-
-
-
-    fun toggleFavorito(monstruo: Monstruo) {
-        viewModelScope.launch {
-
         }
     }
 }
