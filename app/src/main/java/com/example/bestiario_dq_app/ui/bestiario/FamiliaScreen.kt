@@ -41,6 +41,7 @@ import com.example.bestiario_dq_app.data.remote.responses.Monstruo
 import com.example.bestiario_dq_app.ui.bestiario.componentes.CartaMonstruo
 import com.example.bestiario_dq_app.core.utils.Globals
 import com.example.bestiario_dq_app.core.utils.base64ToBitmap
+import com.example.bestiario_dq_app.data.local.MonstruoDao
 import com.example.bestiario_dq_app.ui.bestiario.componentes.JuegoExpansible
 import com.example.bestiario_dq_app.ui.theme.manrope
 
@@ -51,6 +52,7 @@ import com.example.bestiario_dq_app.ui.theme.manrope
 fun FamiliaScreen(
     familia: String?,
     navController: NavController,
+    monstruoDao: MonstruoDao,
     viewModel: MonstruosViewModel = hiltViewModel()
 ) {
     val monstruos by viewModel.monstruos.collectAsState(emptyList())
@@ -82,7 +84,7 @@ fun FamiliaScreen(
         )
         LazyColumn {
             items(monstruos) { monstruo ->
-                CartaMonstruo(navController, monstruo)
+                CartaMonstruo(navController, monstruo, monstruoDao)
             }
         }
     }

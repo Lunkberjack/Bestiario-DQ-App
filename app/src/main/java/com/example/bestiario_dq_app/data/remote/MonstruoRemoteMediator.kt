@@ -38,7 +38,7 @@ class MonstruoRemoteMediator(
                 }
             }
 
-            val monstruos = apiService.getMonstruos(
+            val monstruos = apiService.getMonstruosPaginacion(
                 page = loadKey,
                 porPagina = state.config.pageSize
             )

@@ -39,10 +39,13 @@ interface ApiService {
     suspend fun getMonstruoNombre(@Path("nombre") nombre: String): Monstruo
 
     @GET("monstruos")
-    suspend fun getMonstruos(
+    suspend fun getMonstruosPaginacion(
         @Query("pagina") page: Int,
         @Query("por_pagina") porPagina: Int
     ): List<Monstruo>
+
+    @GET("monstruos")
+    suspend fun getMonstruos( ): List<Monstruo>
 
     @GET("familias")
     suspend fun getFamilias(): List<Familia>

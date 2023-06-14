@@ -10,7 +10,7 @@ import com.example.bestiario_dq_app.data.mappers.toMonstruo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
-
+/*
 @HiltViewModel
 class MonstruosRoomViewModel @Inject constructor(
     pager: Pager<Int, MonstruoEntity>
@@ -19,3 +19,5 @@ class MonstruosRoomViewModel @Inject constructor(
         data.map { it.toMonstruo() }
     }.cachedIn(viewModelScope)
 }
+
+ */

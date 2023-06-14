@@ -1,5 +1,9 @@
 package com.example.bestiario_dq_app.data.local
 
+import androidx.room.Entity
+
+@Entity(primaryKeys = ["experiencia", "juego", "oro"])
+
 data class AtributoEntity(
     val experiencia: Int,
     val juego: String,

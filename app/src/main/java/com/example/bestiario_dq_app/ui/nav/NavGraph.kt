@@ -30,6 +30,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.example.bestiario_dq_app.core.utils.hayInternet
+import com.example.bestiario_dq_app.data.local.MonstruoDao
+import com.example.bestiario_dq_app.data.local.MonstruoDao_Impl
 import com.example.bestiario_dq_app.ui.auth.AuthScreen
 import com.example.bestiario_dq_app.ui.Screen
 import com.example.bestiario_dq_app.ui.auth.SecretScreen
@@ -48,7 +50,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NavGraph(navController: NavHostController) {
+fun NavGraph(navController: NavHostController, monstruoDao: MonstruoDao) {
     if(!hayInternet(LocalContext.current)) {
         navController.navigate(Screen.Favoritos.route)
     }
@@ -99,13 +101,13 @@ fun NavGraph(navController: NavHostController) {
                         SecretScreen()
                     }
                     composable(route = Screen.Monstruos.route) {
-                        MonstruosScreen(navController)
+                        MonstruosScreen(navController, monstruoDao = monstruoDao)
                     }
                     composable(route = Screen.Favoritos.route) {
-                        FavoritosScreen(navHostController = navController)
+                        FavoritosScreen(navController, monstruoDao = monstruoDao)
                     }
                     composable(route = Screen.Perfil.route) {
-                        PerfilScreen(navHostController = navController)
+                        PerfilScreen(navController)
                     }
                     composable(route = Screen.Settings.route) {
                         SettingsScreen()
@@ -124,7 +126,7 @@ fun NavGraph(navController: NavHostController) {
                         arguments = listOf(navArgument("nombre") { type = NavType.StringType })
                     ) { backStackEntry ->
                         val nombre = backStackEntry.arguments?.getString("nombre")
-                        FamiliaScreen(familia = nombre, navController = navController)
+                        FamiliaScreen(familia = nombre, navController = navController, monstruoDao = monstruoDao)
                     }
                 }
             }

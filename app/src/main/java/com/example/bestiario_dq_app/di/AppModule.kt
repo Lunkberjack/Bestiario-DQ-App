@@ -3,6 +3,9 @@ package com.example.bestiario_dq_app.di
 import android.app.Application
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import androidx.room.Room
+import com.example.bestiario_dq_app.data.local.MonstruoDao
+import com.example.bestiario_dq_app.data.local.MonstruoDatabase
 import com.example.bestiario_dq_app.data.remote.ApiService
 import com.example.bestiario_dq_app.data.repositories.AuthRepositoryImpl
 import com.example.bestiario_dq_app.data.repositories.MonstruosRepositoryImpl
@@ -49,5 +52,21 @@ object AppModule {
     @Singleton
     fun provideMonstruosRepository(apiService: ApiService, prefs: SharedPreferences): MonstruosRepository {
         return MonstruosRepositoryImpl(apiService, prefs)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMonstruoDatabase(application: Application): MonstruoDatabase {
+        return Room.databaseBuilder(
+            application,
+            MonstruoDatabase::class.java,
+            "monstruo_database"
+        ).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMonstruoDao(database: MonstruoDatabase): MonstruoDao {
+        return database.dao
     }
 }

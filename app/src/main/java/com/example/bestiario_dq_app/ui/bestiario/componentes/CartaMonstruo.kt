@@ -15,8 +15,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,6 +37,11 @@ import com.example.bestiario_dq_app.ui.Screen
 import com.example.bestiario_dq_app.ui.bestiario.MonstruosViewModel
 import com.example.bestiario_dq_app.ui.theme.manrope
 import com.example.bestiario_dq_app.core.utils.base64ToBitmap
+import com.example.bestiario_dq_app.data.local.MonstruoDao
+import com.example.bestiario_dq_app.data.mappers.toMonstruoEntity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Cada representación de una entidad de Monstruo en la base de datos.
@@ -43,8 +51,10 @@ import com.example.bestiario_dq_app.core.utils.base64ToBitmap
 fun CartaMonstruo(
     navController: NavController,
     monstruo: Monstruo,
+    monstruoDao: MonstruoDao,
     viewModel: MonstruosViewModel = hiltViewModel()
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val bitmapPaleta = base64ToBitmap(monstruo.imagen, 200, 200)
     val paletaMonstruo = bitmapPaleta?.let { Palette.from(it).generate() }
 
@@ -63,7 +73,17 @@ fun CartaMonstruo(
                     .height(150.dp)
                     .clip(RoundedCornerShape(20.dp))
                     // Si por alguna razón Palette API falla al generarla -> se pasa al color vibrante -> después al gris claro.
-                    .background(Color(paletaMonstruo.getLightVibrantColor(Color(paletaMonstruo.getVibrantColor(Color(paletaMonstruo.getDominantColor(Color.LightGray.toArgb())).toArgb())).toArgb())))
+                    .background(
+                        Color(
+                            paletaMonstruo.getLightVibrantColor(
+                                Color(
+                                    paletaMonstruo.getVibrantColor(
+                                        Color(paletaMonstruo.getDominantColor(Color.LightGray.toArgb())).toArgb()
+                                    )
+                                ).toArgb()
+                            )
+                        )
+                    )
                 //.border(width = 2.dp, color = Color(paletaMonstruo.getVibrantColor(0x00000000)), shape = RoundedCornerShape(20.dp))
             ) {
                 Column(Modifier.weight(0.5f), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -86,21 +106,53 @@ fun CartaMonstruo(
                         fontSize = 28.sp,
                         fontFamily = manrope,
                         fontWeight = FontWeight.ExtraBold,
-                        color = Color(paletaMonstruo.getDarkVibrantColor(Color(paletaMonstruo.getVibrantColor(Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb())).toArgb())).toArgb()))
+                        color = Color(
+                            paletaMonstruo.getDarkVibrantColor(
+                                Color(
+                                    paletaMonstruo.getVibrantColor(
+                                        Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb())).toArgb()
+                                    )
+                                ).toArgb()
+                            )
+                        )
                     )
                     //Text(text = "#${monstruo.id}")
                     Text(
                         text = "#${monstruo.idLista}",
                         fontFamily = manrope,
                         fontWeight = FontWeight.Light,
-                        color = Color(paletaMonstruo.getDarkVibrantColor(Color(paletaMonstruo.getVibrantColor(Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb())).toArgb())).toArgb()))
+                        color = Color(
+                            paletaMonstruo.getDarkVibrantColor(
+                                Color(
+                                    paletaMonstruo.getVibrantColor(
+                                        Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb())).toArgb()
+                                    )
+                                ).toArgb()
+                            )
+                        )
                     )
                     Spacer(Modifier.height(20.dp))
-                    Icon(
-                        imageVector = Icons.Outlined.Star,
-                        contentDescription = "Agregar a favoritos (descargar)",
-                        tint = Color(paletaMonstruo.getDarkVibrantColor(Color(paletaMonstruo.getVibrantColor(Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb())).toArgb())).toArgb()))
-                    )
+                    IconButton(onClick = {
+                        coroutineScope.launch {
+                            withContext(Dispatchers.IO) {
+                                monstruoDao.insertMonstruo(monstruo.toMonstruoEntity())
+                            }
+                        }
+                    }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Star,
+                            contentDescription = "Agregar a favoritos (descargar)",
+                            tint = Color(
+                                paletaMonstruo.getDarkVibrantColor(
+                                    Color(
+                                        paletaMonstruo.getVibrantColor(
+                                            Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb())).toArgb()
+                                        )
+                                    ).toArgb()
+                                )
+                            )
+                        )
+                    }
                 }
             }
         }

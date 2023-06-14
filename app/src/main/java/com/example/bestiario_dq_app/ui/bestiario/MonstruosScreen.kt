@@ -57,6 +57,7 @@ import com.example.bestiario_dq_app.data.remote.responses.Monstruo
 import com.example.bestiario_dq_app.ui.bestiario.componentes.CartaMonstruo
 import com.example.bestiario_dq_app.core.utils.Globals
 import com.example.bestiario_dq_app.core.utils.hayInternet
+import com.example.bestiario_dq_app.data.local.MonstruoDao
 import com.example.bestiario_dq_app.data.remote.responses.Atributo
 import com.example.bestiario_dq_app.ui.Screen
 import dagger.hilt.android.AndroidEntryPoint
@@ -68,7 +69,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 @Composable
 fun MonstruosScreen(
     navController: NavController,
-    viewModel: MonstruosViewModel = hiltViewModel()
+    viewModel: MonstruosViewModel = hiltViewModel(),
+    monstruoDao: MonstruoDao
 ) {
     if(!hayInternet(LocalContext.current)) {
         navController.navigate(Screen.Favoritos.route)
@@ -116,7 +118,7 @@ fun MonstruosScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn {
             items(monstruos) { monstruo ->
-                CartaMonstruo(navController, monstruo)
+                CartaMonstruo(navController, monstruo, monstruoDao)
             }
         }
     }

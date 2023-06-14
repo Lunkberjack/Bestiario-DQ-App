@@ -19,7 +19,7 @@ import com.example.bestiario_dq_app.ui.bestiario.componentes.BottomBarScreen
 import com.example.bestiario_dq_app.ui.bestiario.componentes.DefaultAppBar
 
 @Composable
-fun FavoritosScreen(navHostController: NavHostController) {
+fun FavoritosScreen2(navHostController: NavHostController) {
     Box(modifier = Modifier.fillMaxSize()) {
         Text(text = "Pantalla favoritos", fontSize = 10.sp)
     }
