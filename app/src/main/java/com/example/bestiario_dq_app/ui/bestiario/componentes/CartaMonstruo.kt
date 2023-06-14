@@ -1,5 +1,6 @@
 package com.example.bestiario_dq_app.ui.bestiario.componentes
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,13 +14,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,6 +49,9 @@ import com.example.bestiario_dq_app.core.utils.base64ToBitmap
 import com.example.bestiario_dq_app.data.local.MonstruoDao
 import com.example.bestiario_dq_app.data.mappers.toMonstruoEntity
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -47,6 +59,7 @@ import kotlinx.coroutines.withContext
  * Cada representación de una entidad de Monstruo en la base de datos.
  * TODO - Hacer que los colores se generen desde la imagen con Palette API.
  */
+@SuppressLint("StateFlowValueCalledInComposition", "CoroutineCreationDuringComposition")
 @Composable
 fun CartaMonstruo(
     navController: NavController,
@@ -72,7 +85,6 @@ fun CartaMonstruo(
                     .fillMaxWidth()
                     .height(150.dp)
                     .clip(RoundedCornerShape(20.dp))
-                    // Si por alguna razón Palette API falla al generarla -> se pasa al color vibrante -> después al gris claro.
                     .background(
                         Color(
                             paletaMonstruo.getLightVibrantColor(
@@ -84,12 +96,10 @@ fun CartaMonstruo(
                             )
                         )
                     )
-                //.border(width = 2.dp, color = Color(paletaMonstruo.getVibrantColor(0x00000000)), shape = RoundedCornerShape(20.dp))
             ) {
                 Column(Modifier.weight(0.5f), horizontalAlignment = Alignment.CenterHorizontally) {
-                    // Si la imagen no es nula:
                     Image(
-                        bitmap = bitmapPaleta.asImageBitmap(), // Convertimos el Bitmap a ImageBitmap.
+                        bitmap = bitmapPaleta.asImageBitmap(),
                         contentDescription = "Carta monstruo",
                         modifier = Modifier
                             .width(100.dp)
@@ -116,7 +126,6 @@ fun CartaMonstruo(
                             )
                         )
                     )
-                    //Text(text = "#${monstruo.id}")
                     Text(
                         text = "#${monstruo.idLista}",
                         fontFamily = manrope,
@@ -132,15 +141,39 @@ fun CartaMonstruo(
                         )
                     )
                     Spacer(Modifier.height(20.dp))
+
+                    val _isFavoritoFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
+                    val isFavoritoFlow = _isFavoritoFlow.asStateFlow()
+                    val icono = remember { mutableStateOf(Icons.Outlined.Add) }
+
                     IconButton(onClick = {
                         coroutineScope.launch {
                             withContext(Dispatchers.IO) {
-                                monstruoDao.insertMonstruo(monstruo.toMonstruoEntity())
+                                val favorito = monstruoDao.isFavorito(monstruo.idLista)
+                                if (favorito) {
+                                    monstruoDao.deleteMonstruo(monstruo.toMonstruoEntity())
+                                    icono.value = Icons.Outlined.Add
+                                } else {
+                                    monstruoDao.insertMonstruo(monstruo.toMonstruoEntity())
+                                    icono.value = Icons.Outlined.Star
+                                }
+                                _isFavoritoFlow.value = !favorito
                             }
                         }
                     }) {
+                        coroutineScope.launch {
+                            withContext(Dispatchers.IO) {
+                                val favorito = monstruoDao.isFavorito(monstruo.idLista)
+                                if (favorito) {
+                                    icono.value = Icons.Outlined.Star
+                                } else {
+                                    icono.value = Icons.Outlined.Add
+                                }
+                                _isFavoritoFlow.value = !favorito
+                            }
+                        }
                         Icon(
-                            imageVector = Icons.Outlined.Star,
+                            imageVector = icono.value,
                             contentDescription = "Agregar a favoritos (descargar)",
                             tint = Color(
                                 paletaMonstruo.getDarkVibrantColor(

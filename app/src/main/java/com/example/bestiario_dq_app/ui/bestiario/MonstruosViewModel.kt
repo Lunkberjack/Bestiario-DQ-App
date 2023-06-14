@@ -7,17 +7,22 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.bestiario_dq_app.data.local.MonstruoDao
+import com.example.bestiario_dq_app.data.mappers.toMonstruoEntity
 import com.example.bestiario_dq_app.data.remote.responses.Familia
 import com.example.bestiario_dq_app.data.remote.responses.Juego
 import com.example.bestiario_dq_app.data.remote.responses.Monstruo
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +34,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MonstruosViewModel @Inject constructor(
-    private val repository: MonstruosRepository
+    private val repository: MonstruosRepository,
+    private val monstruoDao: MonstruoDao,
 ) : ViewModel() {
     var state by mutableStateOf(AuthState())
 
@@ -121,6 +127,14 @@ class MonstruosViewModel @Inject constructor(
         viewModelScope.launch {
             val fetchedMonstruo = repository.getMonstruoIdLista(monstruoId)
             _monstruo.value = fetchedMonstruo
+        }
+    }
+
+
+
+    fun toggleFavorito(monstruo: Monstruo) {
+        viewModelScope.launch {
+
         }
     }
 }
