@@ -142,11 +142,9 @@ fun DetalleScreenRoom(
                                 )
                             )
                         }
-
                     }
                 }
             }
-
 
             Row {
                 if (bitmapPaleta != null) {
@@ -159,6 +157,7 @@ fun DetalleScreenRoom(
                     )
                 }
             }
+
             // Familia, atributos por juego
             Column(modifier = Modifier.width(300.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 monstruoState?.let {

@@ -11,6 +11,7 @@ sealed class Screen(val route: String) {
     object Perfil: Screen(route = "perfil")
     object Favoritos: Screen(route = "favoritos")
     object Detalle: Screen(route = "detalle")
+    object DetalleRoom: Screen(route = "detalleroom")
     object Settings: Screen(route = "settings")
     object Familia: Screen(route = "familia")
     object Juego: Screen(route = "juego")

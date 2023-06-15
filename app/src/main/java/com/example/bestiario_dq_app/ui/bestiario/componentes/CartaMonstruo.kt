@@ -82,7 +82,17 @@ fun CartaMonstruo(
         modifier = Modifier
             .padding(top = 5.dp, start = 10.dp, end = 10.dp, bottom = 5.dp)
             .clickable {
-                navController.navigate(Screen.Detalle.route + "/${monstruo.idLista}")
+                // Si venimos de la Screen favoritos, cogemos los detalles de Room. Además poppeamos la
+                // backstack sólo hasta Favoritos, no hasta Monstruos (lo otro significaría que, cada vez
+                // que cerramos la carta de un monstruo favorito, cambiemos de pantalla y no no).
+                val currentRoute = navController.currentBackStackEntry?.destination?.route
+                if (currentRoute == Screen.Favoritos.route) {
+                    navController.navigate(Screen.DetalleRoom.route + "/${monstruo.idLista}") {
+                        navController.popBackStack(Screen.Favoritos.route, inclusive = false, saveState = false)
+                    }
+                } else {
+                    navController.navigate(Screen.Detalle.route + "/${monstruo.idLista}")
+                }
             }
     ) {
         if (paletaMonstruo != null) {

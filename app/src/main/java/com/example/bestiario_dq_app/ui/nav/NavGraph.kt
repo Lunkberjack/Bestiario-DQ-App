@@ -39,6 +39,7 @@ import com.example.bestiario_dq_app.ui.Screen
 import com.example.bestiario_dq_app.ui.auth.SecretScreen
 import com.example.bestiario_dq_app.ui.bestiario.AdminScreen
 import com.example.bestiario_dq_app.ui.bestiario.DetalleScreen
+import com.example.bestiario_dq_app.ui.bestiario.DetalleScreenRoom
 import com.example.bestiario_dq_app.ui.bestiario.FamiliaScreen
 import com.example.bestiario_dq_app.ui.bestiario.FavoritosScreen
 import com.example.bestiario_dq_app.ui.bestiario.JuegoScreen
@@ -131,6 +132,19 @@ fun NavGraph(navController: NavHostController, monstruoDao: MonstruoDao, context
                     ) { backStackEntry ->
                         val idSeleccionado = backStackEntry.arguments?.getString("idSeleccionado")
                         DetalleScreen(
+                            navController = navController,
+                            idSeleccionado = idSeleccionado
+                        )
+                    }
+                    // Detalles pero usando los datos locales (favoritos).
+                    composable(
+                        route = "${Screen.DetalleRoom.route}/{idSeleccionado}",
+                        arguments = listOf(navArgument("idSeleccionado") {
+                            type = NavType.StringType
+                        })
+                    ) { backStackEntry ->
+                        val idSeleccionado = backStackEntry.arguments?.getString("idSeleccionado")
+                        DetalleScreenRoom(
                             navController = navController,
                             idSeleccionado = idSeleccionado
                         )

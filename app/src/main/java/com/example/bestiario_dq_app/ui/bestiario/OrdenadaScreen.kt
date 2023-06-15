@@ -50,16 +50,6 @@ fun OrdenadaScreen(
                 }
             }
         }
-
-        /* Todo - cambiar por sharedprefs
-        if (Globals.esAdmin) {
-            Text(
-                text = "ADMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIINNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
-                fontSize = 40.sp
-            )
-        }
-
-         */
     }
 }
 

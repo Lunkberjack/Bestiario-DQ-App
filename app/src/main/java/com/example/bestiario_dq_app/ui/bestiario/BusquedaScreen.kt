@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.room.util.query
 import com.example.bestiario_dq_app.ui.bestiario.componentes.ResultadoBusqueda
 import com.example.bestiario_dq_app.ui.theme.manrope
 
