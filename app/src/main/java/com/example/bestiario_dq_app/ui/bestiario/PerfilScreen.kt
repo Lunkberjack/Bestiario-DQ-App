@@ -1,20 +1,20 @@
 package com.example.bestiario_dq_app.ui.bestiario
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -31,31 +31,78 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import androidx.preference.PreferenceManager
-import coil.compose.SubcomposeAsyncImage
 import com.example.bestiario_dq_app.R
-import dagger.hilt.android.qualifiers.ApplicationContext
+import com.example.bestiario_dq_app.core.utils.imagenPreferencias
+import com.example.bestiario_dq_app.core.utils.setImagenPreferencias
 
 // https://www.artstation.com/artwork/R3vDgA
 
 @Composable
-fun PerfilScreen(navHostController: NavHostController, @ApplicationContext context: Context) {
+fun PerfilScreen(context: Context) {
+    // Cada bitmap lleva su R.drawable.id "atado" mediante un mapa. Podemos recuperar el valor
+    // de R.drawable.id para guardarlo en SharedPreferences y que el avatar del usuario persista.
+    val bitmapMap: Map<Int, ImageBitmap> = mapOf(
+        R.drawable.dientecillos to BitmapFactory.decodeResource(
+            LocalContext.current.resources,
+            R.drawable.dientecillos
+        ).asImageBitmap(),
+        R.drawable.limo to BitmapFactory.decodeResource(
+            LocalContext.current.resources,
+            R.drawable.limo
+        ).asImageBitmap(),
+        R.drawable.dracanino to BitmapFactory.decodeResource(
+            LocalContext.current.resources,
+            R.drawable.dracanino
+        ).asImageBitmap(),
+        R.drawable.punkitorrinco to BitmapFactory.decodeResource(
+            LocalContext.current.resources,
+            R.drawable.punkitorrinco
+        ).asImageBitmap(),
+        R.drawable.almaignea to BitmapFactory.decodeResource(
+            LocalContext.current.resources,
+            R.drawable.almaignea
+        ).asImageBitmap(),
+        R.drawable.atlas to BitmapFactory.decodeResource(
+            LocalContext.current.resources,
+            R.drawable.atlas
+        ).asImageBitmap(),
+        R.drawable.chumbo to BitmapFactory.decodeResource(
+            LocalContext.current.resources,
+            R.drawable.chumbo
+        ).asImageBitmap(),
+        R.drawable.sanguinino to BitmapFactory.decodeResource(
+            LocalContext.current.resources,
+            R.drawable.sanguinino
+        ).asImageBitmap(),
+        R.drawable.seta to BitmapFactory.decodeResource(
+            LocalContext.current.resources,
+            R.drawable.seta
+        ).asImageBitmap()
+    )
+
     var showDialog by remember { mutableStateOf(false) }
-    var selectedImage: ImageBitmap? by remember { mutableStateOf(null) }
+    var selectedImage by remember { mutableStateOf<ImageBitmap?>(null) }
+
+    // No tiene ningún sentido poner otra vez R.drawable.limo (ya estamos seguros de que
+    // será el default por imagenPreferencias()) pero es un poco más legible que poner 0.
+    var selectedImageId by remember { mutableStateOf<Int?>(R.drawable.limo) }
 
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Traemos el avatar que el usuario ha guardado anteriormente como SharedPreference.
+        // Si no ha guardado ninguno aún, tiene un precioso limo como perfil (impl. de imagenPreferencias).
+        val avatarPreferencias = imagenPreferencias(context)
+
         // Primero convierte el recurso a Bitmap usando su id, y después convierte ese Bitmap a ImageBitmap.
-        val default: ImageBitmap =
-            BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.limo)
-                .asImageBitmap()
+        val avatar: ImageBitmap =
+            BitmapFactory.decodeResource(LocalContext.current.resources, avatarPreferencias).asImageBitmap()
         Image(
-            bitmap = selectedImage ?: default,
-            contentDescription = "Profilbild",
+            bitmap = avatar,
+            contentDescription = "Avatar",
             modifier = Modifier
                 .size(150.dp)
                 .clip(CircleShape)
@@ -76,25 +123,31 @@ fun PerfilScreen(navHostController: NavHostController, @ApplicationContext conte
             fontSize = 30.sp
         )
 
-
         // Descripción, estado, acciones, etc
-        val isAdmin = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("admin", false)
-        Text(text = if(isAdmin) "Eres un admin \uD83E\uDD13" else "Plebeyo \uD83E\uDD7A", fontWeight = FontWeight.Light, fontSize = 18.sp)
+        val isAdmin =
+            PreferenceManager.getDefaultSharedPreferences(context).getBoolean("admin", false)
+        Text(
+            // Estas monstruosidades son actually emojis.
+            text = if (isAdmin) "Eres un admin \uD83E\uDD13" else "Plebeyo \uD83E\uDD7A",
+            fontWeight = FontWeight.Light,
+            fontSize = 18.sp
+        )
     }
 
-    // AlertDialog para cambiar el avatar
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
             title = { Text(text = "Elige tu avatar") },
-            // No mostramos un texto sino nuestro selector de avatar
             text = {
-                ImageSelector(
-                    onImageSelected = { image ->
-                        selectedImage = image
-                        showDialog = false
-                    }
-                )
+                // Explico lo que hace esto: selectedImage es un ImageBitmap y lo que "físicamente" se va a mostrar
+                // a tiempo real en el círculo de la UI. Lo settea a la seleccionada en el ImageSelector.
+                ImageSelector (bitmapMap) { image ->
+                    selectedImage = image
+                    // Busca el key (id) mapeado con la ImageBitmap y lo guarda en SharedPrefs para uso futuro.
+                    selectedImageId = getImagenID(imageBitmap = image, bitmapMap = bitmapMap)
+                    selectedImageId?.let { setImagenPreferencias(context, it) }
+                    showDialog = false
+                }
             },
             confirmButton = {
                 TextButton(onClick = { showDialog = false }) {
@@ -106,44 +159,28 @@ fun PerfilScreen(navHostController: NavHostController, @ApplicationContext conte
 }
 
 @Composable
-fun ImageSelector(onImageSelected: (ImageBitmap) -> Unit) {
-    val images = listOf(
-        R.drawable.dientecillos,
-        R.drawable.limo,
-        R.drawable.dracanino,
-        R.drawable.punkitorrinco,
-        R.drawable.almaignea,
-        R.drawable.atlas,
-        R.drawable.chumbo,
-        R.drawable.sanguinino,
-        R.drawable.seta
-    )
-    // Las transformamos en Bitmap.
-    val imagesBitmap = mutableListOf<Bitmap>()
-    for (image in images) {
-        imagesBitmap.add(BitmapFactory.decodeResource(LocalContext.current.resources, image))
-    }
-
+fun ImageSelector(
+    bitmapMap: Map<Int, ImageBitmap>,
+    onImageSelected: (ImageBitmap) -> Unit
+) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
     ) {
-
-        items(images) { image ->
-            SubcomposeAsyncImage(
-                model = image,
-                loading = {
-                    CircularProgressIndicator()
-                },
-                contentDescription = "si"
-            )/*
+        items(bitmapMap.values.toList()) { bitmap ->
             Image(
-                painter = painter,
-                contentDescription = "Avatar",
+                bitmap = bitmap,
+                contentDescription = "Si",
                 modifier = Modifier
-                    .padding(bottom = 10.dp)
-                    .clickable { onImageSelected(painter.bitmap.asImageBitmap()) }
+                    .size(100.dp)
+                    .padding(bottom = 5.dp)
+                    .clip(RoundedCornerShape(20.dp))
+                    .clickable { onImageSelected(bitmap) }
             )
-            */
         }
     }
+}
+
+// Para obtener el R.drawable.id de un ImageBitmap.
+fun getImagenID(imageBitmap: ImageBitmap, bitmapMap: Map<Int, ImageBitmap>): Int? {
+    return bitmapMap.entries.find { it.value == imageBitmap }?.key
 }

@@ -7,6 +7,8 @@ import android.util.Base64
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.preference.PreferenceManager
+import com.example.bestiario_dq_app.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -18,11 +20,15 @@ import kotlinx.coroutines.withContext
  * a Bitmap para poder agregarlas a el elemento Composable Image.
 
 fun base64ToBitmap(base64: String): Bitmap? {
-    val decodedBytes = Base64.decode(base64, Base64.DEFAULT)
-    return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+val decodedBytes = Base64.decode(base64, Base64.DEFAULT)
+return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
 }
-*/
+ */
 
+/**
+ * Convierte de base64 a Bitmap pero en tamanio más pequenio por motivos de rapidez.
+ * Por supuesto que es de StackOverflow.
+ */
 fun base64ToBitmap(base64: String, desiredWidth: Int, desiredHeight: Int): Bitmap? {
     val decodedBytes = Base64.decode(base64, Base64.DEFAULT)
 
@@ -42,7 +48,12 @@ fun base64ToBitmap(base64: String, desiredWidth: Int, desiredHeight: Int): Bitma
     return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size, options)
 }
 
-fun calculateInSampleSize(actualWidth: Int, actualHeight: Int, desiredWidth: Int, desiredHeight: Int): Int {
+fun calculateInSampleSize(
+    actualWidth: Int,
+    actualHeight: Int,
+    desiredWidth: Int,
+    desiredHeight: Int
+): Int {
     var inSampleSize = 1
 
     if (actualHeight > desiredHeight || actualWidth > desiredWidth) {
@@ -54,12 +65,30 @@ fun calculateInSampleSize(actualWidth: Int, actualHeight: Int, desiredWidth: Int
             inSampleSize *= 2
         }
     }
-
     return inSampleSize
 }
 
 
-suspend fun decodeImageBitmap(imageRes: Int, context: Context): ImageBitmap = withContext(Dispatchers.Default) {
-    val bitmap = BitmapFactory.decodeResource(context.resources, imageRes)
-    return@withContext bitmap.asImageBitmap()
+suspend fun decodeImageBitmap(imageRes: Int, context: Context): ImageBitmap =
+    withContext(Dispatchers.Default) {
+        val bitmap = BitmapFactory.decodeResource(context.resources, imageRes)
+        return@withContext bitmap.asImageBitmap()
+    }
+
+/**
+ * Recupera la imagen de perfil (avatar) de las SharedPrefs.
+ */
+fun imagenPreferencias(context: Context): Int {
+    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    return sharedPreferences.getInt("imagenID", R.drawable.limo)
+}
+
+/**
+ * Settea el id de recurso del avatar en SharedPrefs.
+ */
+fun setImagenPreferencias(context: Context, imagenID: Int) {
+    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    val editor = sharedPreferences.edit()
+    editor.putInt("imagenID", imagenID)
+    editor.apply()
 }
