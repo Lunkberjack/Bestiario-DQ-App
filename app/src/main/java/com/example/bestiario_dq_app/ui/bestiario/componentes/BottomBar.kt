@@ -2,6 +2,7 @@ package com.example.bestiario_dq_app.ui.bestiario.componentes
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -46,10 +47,18 @@ fun RowScope.AddItem(
 ) {
     NavigationBarItem(
         icon = {
-            Icon(
-                painter = painterResource(id = R.drawable.slimefilled),
-                contentDescription = "Navigation Icon"
-            )
+            if (screen.route == "monstruos") {
+                Icon(
+                    painter = painterResource(id = R.drawable.slimefilled),
+                    contentDescription = "Navigation Icon",
+                    modifier = Modifier.size(18.dp)
+                )
+            } else {
+                Icon(
+                    imageVector = screen.icon,
+                    contentDescription = "Navigation Icon"
+                )
+            }
         },
         selected = currentDestination?.hierarchy?.any {
             it.route == screen.route
@@ -58,7 +67,11 @@ fun RowScope.AddItem(
         onClick = {
             navController.navigate(screen.route) {
                 // Si pulsamos atrás, siempre volvemos a la Home (MonstruosScreen).
-                navController.popBackStack(Screen.Monstruos.route, inclusive = false, saveState = false)
+                navController.popBackStack(
+                    Screen.Monstruos.route,
+                    inclusive = false,
+                    saveState = false
+                )
             }
         }
     )

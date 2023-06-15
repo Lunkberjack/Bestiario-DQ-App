@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bestiario_dq_app.core.utils.TipoOrden
 import com.example.bestiario_dq_app.data.local.MonstruoDao
+import com.example.bestiario_dq_app.data.mappers.toMonstruo
 import com.example.bestiario_dq_app.data.remote.responses.Familia
 import com.example.bestiario_dq_app.data.remote.responses.Juego
 import com.example.bestiario_dq_app.data.remote.responses.Monstruo
@@ -128,6 +129,15 @@ class MonstruosViewModel @Inject constructor(
         viewModelScope.launch {
             val fetchedMonstruo = repository.getMonstruoIdLista(monstruoId)
             _monstruo.value = fetchedMonstruo
+        }
+    }
+
+    fun getMonstruoRoom(id: String) {
+        viewModelScope.launch {
+            val monstruo = monstruoDao.getMonstruoId(id)
+            if (monstruo != null) {
+                _monstruo.value = monstruo.toMonstruo()
+            }
         }
     }
 }

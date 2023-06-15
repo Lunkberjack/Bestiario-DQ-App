@@ -10,11 +10,5 @@ import androidx.compose.ui.platform.LocalContext
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BarraBusqueda(context: Context) {
-    SearchBar(
-        query = "Search",
-        onQueryChange = { },
-        onSearch = { Toast.makeText(context, "Wenas", Toast.LENGTH_SHORT).show() },
-        active = true,
-        onActiveChange = { }) {
-    }
+
 }

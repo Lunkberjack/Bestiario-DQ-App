@@ -32,4 +32,7 @@ interface MonstruoDao {
 
     @Query("SELECT COUNT(*) FROM monstruoentity WHERE idLista = :idLista")
     suspend fun isFavorito(idLista: String): Boolean
+
+    @Query("SELECT * FROM monstruoentity WHERE idLista = :idLista LIMIT 1")
+    suspend fun getMonstruoId(idLista: String): MonstruoEntity?
 }
