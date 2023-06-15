@@ -36,6 +36,7 @@ import com.example.bestiario_dq_app.data.local.MonstruoDao_Impl
 import com.example.bestiario_dq_app.ui.auth.AuthScreen
 import com.example.bestiario_dq_app.ui.Screen
 import com.example.bestiario_dq_app.ui.auth.SecretScreen
+import com.example.bestiario_dq_app.ui.bestiario.AdminScreen
 import com.example.bestiario_dq_app.ui.bestiario.DetalleScreen
 import com.example.bestiario_dq_app.ui.bestiario.FamiliaScreen
 import com.example.bestiario_dq_app.ui.bestiario.FavoritosScreen
@@ -114,6 +115,9 @@ fun NavGraph(navController: NavHostController, monstruoDao: MonstruoDao, context
                     }
                     composable(route = Screen.Settings.route) {
                         SettingsScreen()
+                    }
+                    composable(route = Screen.Admin.route) {
+                        AdminScreen(navController)
                     }
                     // En este caso, pasamos el id de cada monstruo como parámetro para navegar a la carta
                     // de detalles.
