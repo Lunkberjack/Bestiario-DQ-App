@@ -5,7 +5,6 @@ import com.example.bestiario_dq_app.data.remote.ApiService
 import com.example.bestiario_dq_app.data.remote.requests.PeticionAuth
 import com.example.bestiario_dq_app.data.remote.responses.AuthResult
 import com.example.bestiario_dq_app.domain.repositories.AuthRepository
-import com.example.bestiario_dq_app.core.utils.Globals
 import retrofit2.HttpException
 
 class AuthRepositoryImpl(
@@ -44,11 +43,9 @@ class AuthRepositoryImpl(
             )
             prefs.edit()
                 .putString("jwt", response.token)
+                .putString("username", response.username)
+                .putBoolean("admin", response.admin)
                 .apply()
-
-            // Porque las SharedPreferences con Dagger Hilt son el infierno
-            Globals.esAdmin = response.admin
-            Globals.username = username
 
             AuthResult.Autorizado()
         } catch (e: HttpException) {
@@ -65,6 +62,7 @@ class AuthRepositoryImpl(
     override suspend fun autentificar(): AuthResult<Unit> {
         return try {
             val token = prefs.getString("jwt", null) ?: return AuthResult.NoAutorizado()
+
             apiService.autentificar("Bearer $token")
             AuthResult.Autorizado()
         } catch (e: HttpException) {

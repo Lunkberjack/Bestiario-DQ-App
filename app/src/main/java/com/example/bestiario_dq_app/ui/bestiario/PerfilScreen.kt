@@ -1,5 +1,6 @@
 package com.example.bestiario_dq_app.ui.bestiario
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
@@ -7,8 +8,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -16,8 +15,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -31,25 +28,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter.State.Empty.painter
+import androidx.preference.PreferenceManager
 import coil.compose.SubcomposeAsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
-import coil.transform.CircleCropTransformation
 import com.example.bestiario_dq_app.R
-import com.example.bestiario_dq_app.core.utils.Globals
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 // https://www.artstation.com/artwork/R3vDgA
 
 @Composable
-fun PerfilScreen(navHostController: NavHostController) {
+fun PerfilScreen(navHostController: NavHostController, @ApplicationContext context: Context) {
     var showDialog by remember { mutableStateOf(false) }
     var selectedImage: ImageBitmap? by remember { mutableStateOf(null) }
 
@@ -71,11 +62,24 @@ fun PerfilScreen(navHostController: NavHostController) {
                 .clickable { showDialog = true }
         )
 
-        // Nombre de usuario
-        Text(text = Globals.username, fontWeight = FontWeight.Black, fontSize = 30.sp)
+        // Nombre de usuario que traemos desde el token de la API.
+        PreferenceManager.getDefaultSharedPreferences(context)
+            .getString("username", "Tu quién eres")?.let {
+                Text(
+                    text = it,
+                    fontWeight = FontWeight.Black,
+                    fontSize = 30.sp
+                )
+            } ?: Text(
+            text = "si",
+            fontWeight = FontWeight.Black,
+            fontSize = 30.sp
+        )
+
 
         // Descripción, estado, acciones, etc
-        Text(text = "Description, todo", fontWeight = FontWeight.Light, fontSize = 18.sp)
+        val isAdmin = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("admin", false)
+        Text(text = if(isAdmin) "Eres un admin \uD83E\uDD13" else "Plebeyo \uD83E\uDD7A", fontWeight = FontWeight.Light, fontSize = 18.sp)
     }
 
     // AlertDialog para cambiar el avatar

@@ -1,5 +1,6 @@
 package com.example.bestiario_dq_app.ui.nav
 
+import android.content.Context
 import android.content.SharedPreferences
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -52,7 +53,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NavGraph(navController: NavHostController, monstruoDao: MonstruoDao) {
+fun NavGraph(navController: NavHostController, monstruoDao: MonstruoDao, context: Context) {
     if (!hayInternet(LocalContext.current)) {
         navController.navigate(Screen.Favoritos.route)
     }
@@ -103,13 +104,13 @@ fun NavGraph(navController: NavHostController, monstruoDao: MonstruoDao) {
                         SecretScreen()
                     }
                     composable(route = Screen.Monstruos.route) {
-                        MonstruosScreen(navController, monstruoDao = monstruoDao)
+                        MonstruosScreen(navController, monstruoDao = monstruoDao, context = context)
                     }
                     composable(route = Screen.Favoritos.route) {
                         FavoritosScreen(navController, monstruoDao = monstruoDao)
                     }
                     composable(route = Screen.Perfil.route) {
-                        PerfilScreen(navController)
+                        PerfilScreen(navController, context)
                     }
                     composable(route = Screen.Settings.route) {
                         SettingsScreen()

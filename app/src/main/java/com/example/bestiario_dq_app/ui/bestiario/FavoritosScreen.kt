@@ -52,10 +52,12 @@ fun FavoritosScreen(
 
     // No se puede acceder a la base de datos en el hilo principal.
     LaunchedEffect(Unit) {
-        val dao = monstruoDao // Retrieve the DAO instance
+        val dao = monstruoDao
         val fetchedMonstruos = withContext(Dispatchers.IO) {
             dao.getMonstruosDao()
         }
+        // Estos monstruos no vienen de la API sino de la base local.
+        // Mappeamos las MonstruoEntity a Monstruo.
         monstruos = fetchedMonstruos.map { it.toMonstruo() }
     }
 

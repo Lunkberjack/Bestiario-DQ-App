@@ -117,6 +117,9 @@ dependencies {
 
     // To use Kotlin annotation processing tool (kapt)
     kapt "androidx.room:room-compiler:$room_version"
+
+    // SharedPreferences
+    implementation "androidx.preference:preference-ktx:1.2.0"
 }
 
 // Permite referenciar el código generado

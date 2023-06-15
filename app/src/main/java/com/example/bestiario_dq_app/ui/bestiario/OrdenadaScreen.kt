@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,11 +16,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.bestiario_dq_app.ui.bestiario.componentes.CartaMonstruo
-import com.example.bestiario_dq_app.core.utils.Globals
 import com.example.bestiario_dq_app.data.local.MonstruoDao
 import com.example.bestiario_dq_app.ui.theme.manrope
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OrdenadaScreen(
     orden: String,
@@ -54,12 +51,15 @@ fun OrdenadaScreen(
             }
         }
 
+        /* Todo - cambiar por sharedprefs
         if (Globals.esAdmin) {
             Text(
                 text = "ADMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIINNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
                 fontSize = 40.sp
             )
         }
+
+         */
     }
 }
 

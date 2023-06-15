@@ -1,5 +1,6 @@
 package com.example.bestiario_dq_app.ui
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -27,9 +28,9 @@ class MainActivity : ComponentActivity() {
                 if(!hayInternet(LocalContext.current)) {
                     navController.navigate(Screen.Favoritos.route)
                 }
-
                 navController = rememberNavController()
-                NavGraph(navController = navController, monstruoDao = monstruoDao)
+                // El contexto es para que las SharedPrefs sean compartidas en toda la aplicación.
+                NavGraph(navController = navController, monstruoDao = monstruoDao, context = LocalContext.current)
             }
         }
     }
