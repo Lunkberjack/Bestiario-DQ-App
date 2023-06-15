@@ -84,7 +84,7 @@ fun NavGraph(navController: NavHostController, monstruoDao: MonstruoDao, context
                 // Como tenemos una ruta con parámetros, tenemos que comprobar que no pertenezca a una
                 // pantalla de detalle (que se muestra en pantalla completa).
                 if ((navBackStackEntry?.destination?.route)?.contains("detalle") == false) {
-                    DefaultAppBar(scrollBehavior, drawerState)
+                    DefaultAppBar(navController = navController, scrollBehavior, drawerState)
                 }
             },
             bottomBar = {

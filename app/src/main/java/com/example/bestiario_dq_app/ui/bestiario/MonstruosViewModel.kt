@@ -31,13 +31,13 @@ class MonstruosViewModel @Inject constructor(
 ) : ViewModel() {
     var state by mutableStateOf(AuthState())
 
-    private val _monstruos = MutableStateFlow<List<Monstruo>>(emptyList())
-    val monstruos: StateFlow<List<Monstruo>> = _monstruos
+    private val _monstruos = MutableStateFlow(listOf<Monstruo>())
+    val monstruos: StateFlow<List<Monstruo>> = _monstruos.asStateFlow()
 
-    private val _familias = MutableStateFlow<List<Familia>>(emptyList())
+    private val _familias = MutableStateFlow(listOf<Familia>())
     val familias: StateFlow<List<Familia>> = _familias.asStateFlow()
 
-    private val _juegos = MutableStateFlow<List<Juego>>(emptyList())
+    private val _juegos = MutableStateFlow(listOf<Juego>())
     val juegos: StateFlow<List<Juego>> = _juegos.asStateFlow()
 
     private val _monstruo = MutableStateFlow<Monstruo?>(null)
@@ -51,6 +51,75 @@ class MonstruosViewModel @Inject constructor(
 
     fun onEvent(event: MonstruosEvent) {
 
+    }
+
+    fun monstruosBusqueda(query: String) {
+        viewModelScope.launch {
+            val busqueda = mutableListOf<Monstruo>()
+            // Primero aparecerán los que EMPIEZAN por la query.
+            for(each in monstruos.value) {
+                if(each.nombre.startsWith(query, ignoreCase = true)) {
+                    busqueda.add(each)
+                } else {
+                    busqueda.remove(each)
+                }
+            }
+            // Después, los que la CONTIENEN.
+            for(each in monstruos.value) {
+                if(each.nombre.contains(query, ignoreCase = true) && !(each.nombre.startsWith(query, ignoreCase = true))) {
+                    busqueda.add(each)
+                } else if(!(each.nombre.startsWith(query, ignoreCase = true))) {
+                    busqueda.remove(each)
+                }
+                _monstruos.emit(busqueda)
+            }
+        }
+    }
+
+    fun familiasBusqueda(query: String) {
+        viewModelScope.launch {
+            val busqueda = mutableListOf<Familia>()
+            // Primero aparecerán los que EMPIEZAN por la query.
+            for(each in familias.value) {
+                if(each.nombre.startsWith(query, ignoreCase = true)) {
+                    busqueda.add(each)
+                } else {
+                    busqueda.remove(each)
+                }
+            }
+            // Después, los que la CONTIENEN.
+            for(each in familias.value) {
+                if(each.nombre.contains(query, ignoreCase = true) && !(each.nombre.startsWith(query, ignoreCase = true))) {
+                    busqueda.add(each)
+                } else if(!(each.nombre.startsWith(query, ignoreCase = true))) {
+                    busqueda.remove(each)
+                }
+                _familias.emit(busqueda)
+            }
+        }
+    }
+
+    fun juegosBusqueda(query: String) {
+        viewModelScope.launch {
+            val busqueda = mutableListOf<Juego>()
+            // Primero aparecerán los que EMPIEZAN por la query.
+            for(each in juegos.value) {
+                if(each.nombre.startsWith(query, ignoreCase = true) || each.abr.startsWith(query, ignoreCase = true)) {
+                    busqueda.add(each)
+                } else {
+                    busqueda.remove(each)
+                }
+            }
+            // Después, los que la CONTIENEN.
+            for(each in juegos.value) {
+                if(each.nombre.contains(query, ignoreCase = true) && !(each.nombre.startsWith(query, ignoreCase = true))) {
+                    busqueda.add(each)
+                } else if(!(each.nombre.startsWith(query, ignoreCase = true))) {
+                    busqueda.remove(each)
+                }
+                _juegos.emit(busqueda)
+            }
+        }
     }
 
     fun filtrarFamilia(familia: String) {

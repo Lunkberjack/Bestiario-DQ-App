@@ -30,15 +30,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.room.util.query
 import com.example.bestiario_dq_app.R
+import com.example.bestiario_dq_app.ui.bestiario.BusquedaScreen
+import com.example.bestiario_dq_app.ui.bestiario.MonstruosViewModel
+import com.example.bestiario_dq_app.ui.bestiario.SearchViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DefaultAppBar(scrollBehavior: TopAppBarScrollBehavior, drawerState: DrawerState) {
+fun DefaultAppBar(
+    navController: NavController,
+    scrollBehavior: TopAppBarScrollBehavior,
+    drawerState: DrawerState,
+    viewModel: MonstruosViewModel = hiltViewModel(),
+    searchViewModel: SearchViewModel = hiltViewModel()
+) {
     val coroutineScope = rememberCoroutineScope()
-    var searchActive by remember { mutableStateOf(false) }
+    //var searchActive by remember { mutableStateOf(false) }
 
     TopAppBar(
         scrollBehavior = scrollBehavior,
@@ -82,7 +93,7 @@ fun DefaultAppBar(scrollBehavior: TopAppBarScrollBehavior, drawerState: DrawerSt
         actions = {
             IconButton(
                 onClick = {
-                    searchActive = true
+                    searchViewModel.setSearchActive(true)
                 }
             ) {
                 Icon(
@@ -99,15 +110,25 @@ fun DefaultAppBar(scrollBehavior: TopAppBarScrollBehavior, drawerState: DrawerSt
             containerColor = Color.White
         )
     )
-    if (searchActive) {
+    if (searchViewModel.searchActive.value) {
         var query by remember { mutableStateOf("") }
+        viewModel.getMonstruos("idLista", "Ascendente")
+        viewModel.getFamilias()
+        viewModel.getJuegos()
 
         SearchBar(
             query = query,
-            onQueryChange = { query = it },
-            onSearch = { searchActive = false },
-            active = searchActive,
-            onActiveChange = { searchActive = it },
+            onQueryChange = {
+                query = it
+                if(query.isNotEmpty()) {
+                    viewModel.monstruosBusqueda(query)
+                    viewModel.familiasBusqueda(query)
+                    viewModel.juegosBusqueda(query)
+                }
+            },
+            onSearch = { searchViewModel.setSearchActive(false) },
+            active = searchViewModel.searchActive.value,
+            onActiveChange = { searchViewModel.setSearchActive(it) },
             placeholder = { Text(text = "Buscar...") },
             trailingIcon = {
                 // Si pulsamos en la X y tenemos algo escrito, lo borra.
@@ -116,14 +137,14 @@ fun DefaultAppBar(scrollBehavior: TopAppBarScrollBehavior, drawerState: DrawerSt
                     if (query.isNotEmpty()) {
                         query = ""
                     } else {
-                        searchActive = false
+                        searchViewModel.setSearchActive(false)
                     }
                 }) {
                     Icon(imageVector = Icons.Default.Clear, contentDescription = "Dejar de buscar")
                 }
             }
         ) {
-
+            BusquedaScreen(navController = navController, viewModel, searchViewModel)
         }
     }
 }
