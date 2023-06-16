@@ -76,8 +76,8 @@ fun NavGraph(navController: NavHostController, monstruoDao: MonstruoDao, context
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
     ModalNavigationDrawer(
-        drawerContent = { AppDrawer(Screen.Monstruos.route, navController) },
-        drawerState = drawerState
+        drawerState = drawerState,
+        drawerContent = { AppDrawer(Screen.Monstruos.route, navController, drawerState = drawerState) },
     ) {
         Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),

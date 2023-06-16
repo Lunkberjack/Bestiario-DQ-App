@@ -24,6 +24,8 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -36,11 +38,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.PathNode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -55,7 +59,9 @@ import com.example.bestiario_dq_app.ui.Screen
 import com.example.bestiario_dq_app.ui.bestiario.MonstruosScreen
 import com.example.bestiario_dq_app.ui.bestiario.MonstruosViewModel
 import com.example.bestiario_dq_app.ui.theme.manrope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,6 +69,7 @@ import kotlinx.coroutines.launch
 fun AppDrawer(
     currentRoute: String,
     navController: NavHostController,
+    drawerState: DrawerState,
     viewModel: MonstruosViewModel = hiltViewModel()
 ) {
     var selectedFamily by remember { mutableStateOf("") }
@@ -74,6 +81,8 @@ fun AppDrawer(
     val dialogFamilias = remember { mutableStateOf(false) }
     val dialogJuegos = remember { mutableStateOf(false) }
     val dialogTipoOrden = remember { mutableStateOf(false) }
+
+    var scope = rememberCoroutineScope()
 
     val familias by viewModel.familias.collectAsState(emptyList())
     viewModel.getFamilias()
@@ -130,6 +139,12 @@ fun AppDrawer(
                         onClick = {
                             dialogFamilias.value = false
                             if (selectedFamily.isNotEmpty()) {
+                                scope.launch {
+                                    withContext(Dispatchers.IO) {
+                                        drawerState.close()
+
+                                    }
+                                }
                                 viewModel.viewModelScope.launch {
                                     navController.navigate(Screen.Familia.route + "/${selectedFamily}") {
                                         navController.popBackStack(Screen.Monstruos.route, inclusive = false, saveState = false)
@@ -195,6 +210,12 @@ fun AppDrawer(
                         onClick = {
                             dialogJuegos.value = false
                             if (selectedJuego.isNotEmpty()) {
+                                scope.launch {
+                                    withContext(Dispatchers.IO) {
+                                        drawerState.close()
+
+                                    }
+                                }
                                 viewModel.viewModelScope.launch {
                                     navController.navigate(Screen.Juego.route + "/${selectedJuego}") {
                                         navController.popBackStack(Screen.Monstruos.route, inclusive = false, saveState = false)
