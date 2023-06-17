@@ -1,5 +1,6 @@
 package com.example.bestiario_dq_app.ui.bestiario
 
+import android.content.Context
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -12,9 +13,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,6 +28,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -43,22 +50,58 @@ import androidx.core.graphics.alpha
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.palette.graphics.Palette
+import androidx.preference.PreferenceManager
 import com.example.bestiario_dq_app.ui.theme.manrope
 import com.example.bestiario_dq_app.core.utils.base64ToBitmap
 import com.example.bestiario_dq_app.core.utils.hayInternet
+import com.example.bestiario_dq_app.data.local.MonstruoDao
+import com.example.bestiario_dq_app.data.mappers.toMonstruoEntity
 import com.example.bestiario_dq_app.data.remote.responses.Atributo
 import com.example.bestiario_dq_app.ui.Screen
 import com.example.bestiario_dq_app.ui.bestiario.componentes.JuegoExpansible
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun DetalleScreen(
     navController: NavController,
     idSeleccionado: String?,
+    monstruoDao: MonstruoDao,
+    context: Context,
     viewModel: MonstruosViewModel = hiltViewModel()
 ) {
-    if (!hayInternet(LocalContext.current)) {
-        navController.navigate(Screen.Favoritos.route)
+    val coroutineScope = rememberCoroutineScope()
+    val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+    val isAdmin = prefs.getBoolean("admin", false)
+
+    if (isAdmin) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
+            FloatingActionButton(
+                onClick = {
+                    coroutineScope.launch {
+                        withContext(Dispatchers.IO) {
+                            if (idSeleccionado != null) {
+                                viewModel.borrarMonstruo(idSeleccionado)
+                            }
+                            val monstruo = idSeleccionado?.let { monstruoDao.getMonstruoId(it) }
+                            if (monstruo != null) {
+                                monstruoDao.deleteMonstruo(monstruo)
+                            }
+                        }
+                    }
+                },
+                modifier = Modifier.padding(20.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Borrar monstruo",
+                    Modifier.size(20.dp)
+                )
+            }
+        }
     }
+
 
     Box(modifier = Modifier.fillMaxSize()) {
         // Encontramos el monstruo en la base de datos con el id que nos hemos traído de la

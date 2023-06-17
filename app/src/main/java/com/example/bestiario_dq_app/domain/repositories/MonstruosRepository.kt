@@ -7,7 +7,8 @@ import com.example.bestiario_dq_app.data.remote.responses.Monstruo
 import kotlinx.coroutines.flow.Flow
 
 interface MonstruosRepository {
-    suspend fun newMonstruo(idLista: String, nombre: String, imagen: String, familia: String, atributos: List<Atributo>)
+    suspend fun newMonstruo(monstruo: Monstruo)
+    suspend fun borrarMonstruo(idLista: String)
     suspend fun getMonstruoIdLista(idLista: String): Monstruo
     suspend fun getMonstruoNombre(nombre: String): Monstruo
     suspend fun getMonstruos(orden: String?, tipo: String?): Flow<List<Monstruo>>

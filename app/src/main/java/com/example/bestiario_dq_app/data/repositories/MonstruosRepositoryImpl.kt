@@ -17,27 +17,14 @@ class MonstruosRepositoryImpl @Inject constructor(
     private val apiService: ApiService,
     private val prefs: SharedPreferences
 ) : MonstruosRepository {
-    override suspend fun newMonstruo(
-        idLista: String,
-        nombre: String,
-        imagen: String,
-        familia: String,
-        atributos: List<Atributo>
-    ) {
-        try {
-            apiService.newMonstruo(
-                request = Monstruo(
-                    idLista = idLista,
-                    nombre = nombre,
-                    // TODO - Convertir a base64
-                    imagen = imagen,
-                    familia = familia,
-                    atributos = atributos
-                )
-            )
-        } catch (e: Exception) {
-            Log.d("asdf", "OH NO NO SE AÑADIÓ TU MONSTRUO")
-        }
+
+    override suspend fun newMonstruo(monstruo: Monstruo) {
+        return apiService.newMonstruo(monstruo)
+    }
+
+
+    override suspend fun borrarMonstruo(idLista: String) {
+        return apiService.borrarMonstruo(idLista)
     }
 
     override suspend fun getMonstruoIdLista(idLista: String): Monstruo {

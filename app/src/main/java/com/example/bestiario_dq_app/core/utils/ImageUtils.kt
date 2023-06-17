@@ -5,12 +5,14 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.preference.PreferenceManager
 import com.example.bestiario_dq_app.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
 
 // TODO - Aniadir a la documentación:
 //  https://medium.com/@gangulysourik/a-definitive-guide-to-clean-architecture-in-android-with-mvvm-d74a0533ef2c
@@ -48,6 +50,13 @@ fun base64ToBitmap(base64: String, desiredWidth: Int, desiredHeight: Int): Bitma
     return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size, options)
 }
 
+fun encodeImageToBase64(image: ImageBitmap): String {
+    val byteArrayOutputStream = ByteArrayOutputStream()
+    image.asAndroidBitmap().compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+    val byteArray = byteArrayOutputStream.toByteArray()
+    return Base64.encodeToString(byteArray, Base64.DEFAULT)
+}
+
 fun calculateInSampleSize(
     actualWidth: Int,
     actualHeight: Int,
@@ -67,13 +76,6 @@ fun calculateInSampleSize(
     }
     return inSampleSize
 }
-
-
-suspend fun decodeImageBitmap(imageRes: Int, context: Context): ImageBitmap =
-    withContext(Dispatchers.Default) {
-        val bitmap = BitmapFactory.decodeResource(context.resources, imageRes)
-        return@withContext bitmap.asImageBitmap()
-    }
 
 /**
  * Recupera la imagen de perfil (avatar) de las SharedPrefs.

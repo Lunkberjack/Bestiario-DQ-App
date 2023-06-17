@@ -8,6 +8,7 @@ import com.example.bestiario_dq_app.data.remote.responses.TokenResponse
 import kotlinx.coroutines.flow.Flow
 
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -15,6 +16,16 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
+    @POST("new-monstruo")
+    suspend fun newMonstruo(
+        @Body request: Monstruo
+    )
+    @DELETE("monstruo/{idLista}/borrar")
+    suspend fun borrarMonstruo(
+        @Path("idLista")
+        idLista: String
+    )
+
     @POST("registro")
     suspend fun registro(
         @Body request: PeticionAuth
@@ -56,11 +67,6 @@ interface ApiService {
 
     @GET("juegos")
     suspend fun getJuegos(): List<Juego>
-
-    @POST("new-monstruo")
-    suspend fun newMonstruo(
-        @Body request: Monstruo
-    )
 
     @GET("familia/{nombre}")
     suspend fun getFamilia(

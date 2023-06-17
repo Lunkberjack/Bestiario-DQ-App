@@ -150,19 +150,17 @@ class MonstruosViewModel @Inject constructor(
     private val _buscando = MutableStateFlow(false)
     val buscando = _buscando.asStateFlow()
 
-    /*private fun newMonstruo() {
+    fun newMonstruo(monstruo: Monstruo) {
         viewModelScope.launch {
-            state = state.copy(isLoading = true)
-            val result = repository.newMonstruo(
-                idLista = "",
-                nombre = state.registroUsername,
-                // Convertir la imagen a Base64
-                imagen = state.registroPass
-            )
+            repository.newMonstruo(monstruo)
         }
     }
 
-     */
+    fun borrarMonstruo(idLista: String) {
+        viewModelScope.launch {
+            repository.borrarMonstruo(idLista)
+        }
+    }
 
     fun getMonstruos(orden: String?, tipo: String?) {
         // Lógica para obtener la lista según el orden seleccionado

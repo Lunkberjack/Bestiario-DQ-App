@@ -25,9 +25,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             BestiarioDQAppTheme {
-                if(!hayInternet(LocalContext.current)) {
-                    navController.navigate(Screen.Favoritos.route)
-                }
                 navController = rememberNavController()
                 // El contexto es para que las SharedPrefs sean compartidas en toda la aplicación.
                 NavGraph(navController = navController, monstruoDao = monstruoDao, context = LocalContext.current)

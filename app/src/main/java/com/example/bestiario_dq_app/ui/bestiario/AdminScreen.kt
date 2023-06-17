@@ -1,6 +1,7 @@
 package com.example.bestiario_dq_app.ui.bestiario
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.bestiario_dq_app.R
+import com.example.bestiario_dq_app.ui.Screen
 import com.example.bestiario_dq_app.ui.theme.manrope
 
 @Composable
@@ -40,22 +42,33 @@ fun AdminScreen(navController: NavController) {
         Divider()
         Spacer(modifier = Modifier.height(17.5.dp))
 
-        ComponenteAdmin(titulo = "Nuevo monstruo")
-        ComponenteAdmin(titulo = "Nueva familia")
-        ComponenteAdmin(titulo = "Nuevo juego")
+        ComponenteAdmin(navController, titulo = "Nuevo monstruo", ruta = Screen.AniadirMonstruo.route)
+        ComponenteAdmin(navController, titulo = "Nueva familia", ruta = Screen.AniadirMonstruo.route)
+        ComponenteAdmin(navController, titulo = "Nuevo juego", ruta = Screen.AniadirMonstruo.route)
     }
 }
 
 @Composable
-fun ComponenteAdmin(titulo: String, icono: Int = R.drawable.slimeoutline) {
-    // Todo - hacer una column con texto + icono.
-    Column(verticalArrangement = Arrangement.Center, modifier = Modifier.height(80.dp)) {
+fun ComponenteAdmin(
+    navController: NavController,
+    modifier: Modifier = Modifier,
+    titulo: String,
+    icono: Int = R.drawable.slimeoutline,
+    ruta: String
+) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        modifier = modifier
+            .clickable {
+                navController.navigate(ruta)
+            }
+            .height(80.dp)
+            .padding(start = 20.dp, end = 20.dp)
+            .fillMaxWidth()
+    ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .padding(start = 20.dp, end = 20.dp)
-                .fillMaxWidth()
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = titulo,

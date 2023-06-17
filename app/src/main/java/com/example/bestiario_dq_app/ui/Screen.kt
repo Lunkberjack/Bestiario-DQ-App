@@ -17,4 +17,5 @@ sealed class Screen(val route: String) {
     object Juego: Screen(route = "juego")
     object Orden: Screen(route = "orden")
     object Admin: Screen(route = "admin")
+    object AniadirMonstruo: Screen(route = "aniadirMonstruo")
 }

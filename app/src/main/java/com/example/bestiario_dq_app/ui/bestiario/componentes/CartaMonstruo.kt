@@ -1,6 +1,7 @@
 package com.example.bestiario_dq_app.ui.bestiario.componentes
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -8,16 +9,22 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -48,6 +55,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.palette.graphics.Palette
+import androidx.preference.PreferenceManager
 import com.example.bestiario_dq_app.data.remote.responses.Monstruo
 import com.example.bestiario_dq_app.ui.Screen
 import com.example.bestiario_dq_app.ui.bestiario.MonstruosViewModel
@@ -55,6 +63,7 @@ import com.example.bestiario_dq_app.ui.theme.manrope
 import com.example.bestiario_dq_app.core.utils.base64ToBitmap
 import com.example.bestiario_dq_app.data.local.MonstruoDao
 import com.example.bestiario_dq_app.data.mappers.toMonstruoEntity
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -71,8 +80,7 @@ import kotlinx.coroutines.withContext
 fun CartaMonstruo(
     navController: NavController,
     monstruo: Monstruo,
-    monstruoDao: MonstruoDao,
-    viewModel: MonstruosViewModel = hiltViewModel()
+    monstruoDao: MonstruoDao
 ) {
     val coroutineScope = rememberCoroutineScope()
     val bitmapPaleta = base64ToBitmap(monstruo.imagen, 200, 200)
@@ -88,7 +96,11 @@ fun CartaMonstruo(
                 val currentRoute = navController.currentBackStackEntry?.destination?.route
                 if (currentRoute == Screen.Favoritos.route) {
                     navController.navigate(Screen.DetalleRoom.route + "/${monstruo.idLista}") {
-                        navController.popBackStack(Screen.Favoritos.route, inclusive = false, saveState = false)
+                        navController.popBackStack(
+                            Screen.Favoritos.route,
+                            inclusive = false,
+                            saveState = false
+                        )
                     }
                 } else {
                     navController.navigate(Screen.Detalle.route + "/${monstruo.idLista}")
@@ -134,7 +146,7 @@ fun CartaMonstruo(
                         // Creo que no deberíamos pasarnos de 2 líneas (pero nunca se sabe, es Dragon Quest T_T).
                         maxLines = 2,
                         // Si el nombre es demasiado largo se reduce la letra.
-                        fontSize = if(monstruo.nombre.length > 10) 17.5.sp else 28.sp,
+                        fontSize = if (monstruo.nombre.length > 10) 17.5.sp else 28.sp,
                         fontFamily = manrope,
                         fontWeight = FontWeight.ExtraBold,
                         color = Color(
@@ -181,10 +193,15 @@ fun CartaMonstruo(
                                         // de un monstruo que ya se ha borrado de Room, actualizamos la página en tiempo real.
                                         // Al no tener la posibilidad de usar Flows, lo hacemos un poco rudimentario pero que
                                         // funciona 👍
-                                        val currentRoute = navController.currentBackStackEntry?.destination?.route
+                                        val currentRoute =
+                                            navController.currentBackStackEntry?.destination?.route
                                         if (currentRoute == Screen.Favoritos.route) {
                                             navController.navigate(Screen.Favoritos.route) {
-                                                navController.popBackStack(Screen.Monstruos.route, inclusive = false, saveState = false)
+                                                navController.popBackStack(
+                                                    Screen.Monstruos.route,
+                                                    inclusive = false,
+                                                    saveState = false
+                                                )
                                             }
                                         }
                                     }
