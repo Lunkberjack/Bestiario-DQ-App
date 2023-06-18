@@ -6,7 +6,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -15,6 +17,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -23,23 +26,28 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.preference.PreferenceManager
 import com.example.bestiario_dq_app.R
 import com.example.bestiario_dq_app.core.utils.imagenPreferencias
 import com.example.bestiario_dq_app.core.utils.setImagenPreferencias
+import com.example.bestiario_dq_app.ui.Screen
+import com.example.bestiario_dq_app.ui.theme.manrope
 
 // https://www.artstation.com/artwork/R3vDgA
 
 @Composable
-fun PerfilScreen(context: Context) {
+fun PerfilScreen(context: Context, navController: NavController) {
     // Cada bitmap lleva su R.drawable.id "atado" mediante un mapa. Podemos recuperar el valor
     // de R.drawable.id para guardarlo en SharedPreferences y que el avatar del usuario persista.
     val bitmapMap: Map<Int, ImageBitmap> = mapOf(
@@ -99,7 +107,8 @@ fun PerfilScreen(context: Context) {
 
         // Primero convierte el recurso a Bitmap usando su id, y después convierte ese Bitmap a ImageBitmap.
         val avatar: ImageBitmap =
-            BitmapFactory.decodeResource(LocalContext.current.resources, avatarPreferencias).asImageBitmap()
+            BitmapFactory.decodeResource(LocalContext.current.resources, avatarPreferencias)
+                .asImageBitmap()
         Image(
             bitmap = avatar,
             contentDescription = "Avatar",
@@ -132,6 +141,24 @@ fun PerfilScreen(context: Context) {
             fontWeight = FontWeight.Light,
             fontSize = 18.sp
         )
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        // Una manera un poco ortopédica de cerrar sesión (que funciona así que por mí chillin).
+        Button(onClick = {
+            val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+            // Borramos el token de las SharedPrefs.
+            prefs.edit().remove("jwt").apply()
+            // Y obligamos a ir de vuelta a registrarse o iniciar sesión.
+            navController.navigate(Screen.Auth.route) {
+                // Y borramos toda la backstack en caso de que alguien se crea listo.
+                navController.popBackStack(Screen.Auth.route, inclusive = true, saveState = false)
+            }
+        },
+            modifier = Modifier.align(CenterHorizontally)
+        ) {
+            Text(text = "Cerrar sesión", fontSize = 15.sp, fontFamily = manrope)
+        }
     }
 
     if (showDialog) {
@@ -141,7 +168,7 @@ fun PerfilScreen(context: Context) {
             text = {
                 // Explico lo que hace esto: selectedImage es un ImageBitmap y lo que "físicamente" se va a mostrar
                 // a tiempo real en el círculo de la UI. Lo settea a la seleccionada en el ImageSelector.
-                ImageSelector (bitmapMap) { image ->
+                ImageSelector(bitmapMap) { image ->
                     selectedImage = image
                     // Busca el key (id) mapeado con la ImageBitmap y lo guarda en SharedPrefs para uso futuro.
                     selectedImageId = getImagenID(imageBitmap = image, bitmapMap = bitmapMap)

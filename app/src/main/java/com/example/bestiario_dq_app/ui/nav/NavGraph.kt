@@ -108,7 +108,7 @@ fun NavGraph(
                         FavoritosScreen(navController, monstruoDao = monstruoDao)
                     }
                     composable(route = Screen.Perfil.route) {
-                        PerfilScreen(context)
+                        PerfilScreen(context, navController)
                     }
                     composable(route = Screen.Settings.route) {
                         SettingsScreen()
