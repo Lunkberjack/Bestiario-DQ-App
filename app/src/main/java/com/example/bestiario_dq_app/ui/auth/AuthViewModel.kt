@@ -8,16 +8,21 @@ import androidx.lifecycle.viewModelScope
 import com.example.bestiario_dq_app.data.remote.responses.AuthResult
 import com.example.bestiario_dq_app.domain.repositories.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val repository: AuthRepository
 ) : ViewModel() {
-    var state by mutableStateOf(AuthState())
+    private val _state = MutableStateFlow(AuthState())
+    var state by mutableStateOf(_state.value)
+    var isRegistroDialogOpen by mutableStateOf(false)
+    var passLoginValida by mutableStateOf(true)
+    var passRegistroValida by mutableStateOf(true)
 
     private val resultChannel = Channel<AuthResult<Unit>>()
     val authResults = resultChannel.receiveAsFlow()
@@ -33,6 +38,8 @@ class AuthViewModel @Inject constructor(
             }
 
             is AuthUiEvent.onLoginPassChanged -> {
+                // Válida si tiene más de 8 caracteres
+                passLoginValida = event.value.length >= 8
                 state = state.copy(loginPass = event.value)
             }
 
@@ -45,11 +52,20 @@ class AuthViewModel @Inject constructor(
             }
 
             is AuthUiEvent.onRegistroPassChanged -> {
+                // Válida si tiene más de 8 caracteres
+                passRegistroValida = event.value.length >= 8
                 state = state.copy(registroPass = event.value)
             }
 
             is AuthUiEvent.Registro -> {
                 registro()
+            }
+
+            is AuthUiEvent.OpenRegistroDialog -> {
+                isRegistroDialogOpen = true
+            }
+            is AuthUiEvent.CloseRegistroDialog -> {
+                isRegistroDialogOpen = false
             }
         }
     }

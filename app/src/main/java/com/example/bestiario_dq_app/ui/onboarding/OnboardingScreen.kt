@@ -79,9 +79,9 @@ fun OnboardingScreen(
         }
         BotonFinal(modifier = Modifier, pagerState = pagerState, onClick = {
             prefs.edit().putBoolean("onboardingCompletado", true).apply()
-            navController.navigate(Screen.Monstruos.route) {
+            navController.navigate(Screen.Auth.route) {
                 navController.popBackStack(
-                    Screen.Monstruos.route,
+                    Screen.Auth.route,
                     inclusive = true,
                     saveState = false
                 )

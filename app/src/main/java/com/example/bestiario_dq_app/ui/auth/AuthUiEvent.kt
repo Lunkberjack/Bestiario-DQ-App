@@ -9,4 +9,6 @@ sealed class AuthUiEvent {
     data class onLoginPassChanged(val value: String): AuthUiEvent()
     object Login: AuthUiEvent()
 
+    object OpenRegistroDialog : AuthUiEvent()
+    object CloseRegistroDialog : AuthUiEvent()
 }

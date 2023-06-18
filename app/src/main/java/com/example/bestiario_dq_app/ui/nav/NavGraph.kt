@@ -21,6 +21,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
+import com.example.bestiario_dq_app.core.utils.containsAny
 import com.example.bestiario_dq_app.data.local.MonstruoDao
 import com.example.bestiario_dq_app.ui.auth.AuthScreen
 import com.example.bestiario_dq_app.ui.Screen
@@ -43,7 +44,12 @@ import com.example.bestiario_dq_app.ui.onboarding.OnboardingScreen
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
-fun NavGraph(navController: NavHostController, monstruoDao: MonstruoDao, context: Context, initialDestination: String) {
+fun NavGraph(
+    navController: NavHostController,
+    monstruoDao: MonstruoDao,
+    context: Context,
+    initialDestination: String
+) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     val screens = listOf(
@@ -57,23 +63,28 @@ fun NavGraph(navController: NavHostController, monstruoDao: MonstruoDao, context
 
     // El estado del menú lateral
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val rutasExcluidas = listOf("detalle", Screen.Auth.route, Screen.OnBoarding.route)
 
     ModalNavigationDrawer(
         drawerState = drawerState,
-        drawerContent = { AppDrawer(Screen.Monstruos.route, navController, drawerState = drawerState) },
+        drawerContent = {                 // pantalla de detalle (que se muestra en pantalla completa).
+            if ((navBackStackEntry?.destination?.route)?.containsAny(rutasExcluidas) == false) {
+                AppDrawer(Screen.Monstruos.route, navController, drawerState = drawerState)
+            }
+        },
     ) {
         Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
                 // Como tenemos una ruta con parámetros, tenemos que comprobar que no pertenezca a una
                 // pantalla de detalle (que se muestra en pantalla completa).
-                if ((navBackStackEntry?.destination?.route)?.contains("detalle") == false) {
+                if ((navBackStackEntry?.destination?.route)?.containsAny(rutasExcluidas) == false) {
                     DefaultAppBar(navController = navController, scrollBehavior, drawerState)
                 }
             },
             bottomBar = {
                 // Lo mismo con la barra de navegación.
-                if ((navBackStackEntry?.destination?.route)?.contains("detalle") == false) {
+                if ((navBackStackEntry?.destination?.route)?.containsAny(rutasExcluidas) == false) {
                     BottomBar(
                         navController = navController,
                         screens = screens,

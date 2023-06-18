@@ -63,9 +63,17 @@ fun EditarMonstruo(
     val selectedImage = remember { mutableStateOf<ImageBitmap?>(null) }
 
     // El Monstruo buscado está ahora guardado como State en el ViewModel para acceder.
-    LaunchedEffect(idSeleccionado) {
+
+    LaunchedEffect(viewModel.monstruo.value) {
         if (idSeleccionado != null) {
             viewModel.getMonstruoId(idSeleccionado)
+        }
+
+        viewModel.monstruo.value?.let { monster ->
+            monsterIdState.value = monsterIdState.value.copy(text = monster.idLista)
+            monsterNameState.value = monsterNameState.value.copy(text = monster.nombre)
+            monsterFamilyState.value = monsterFamilyState.value.copy(text = monster.familia)
+            monsterImageState.value = monsterImageState.value.copy(text = monster.imagen)
         }
     }
 
@@ -105,26 +113,27 @@ fun EditarMonstruo(
         Button(onClick = { launcher.launch("image/*") }) {
             Text("Select Image")
         }
-
         TextField(
-            value = viewModel.monstruo.value?.idLista ?: "",
-            onValueChange = { viewModel.monstruo.value?.idLista = it },
+            value = monsterIdState.value.text,
+            onValueChange = { monsterIdState.value = monsterIdState.value.copy(text = it) },
             label = { Text("Monster Id") },
             modifier = Modifier.fillMaxWidth()
         )
+
         TextField(
-            value = viewModel.monstruo.value?.nombre ?: "",
-            onValueChange = { viewModel.monstruo.value?.nombre = it },
+            value = monsterNameState.value.text,
+            onValueChange = { monsterNameState.value = monsterNameState.value.copy(text = it) },
             label = { Text("Monster Name") },
             modifier = Modifier.fillMaxWidth()
         )
 
         TextField(
-            value = viewModel.monstruo.value?.familia ?: "",
-            onValueChange = { viewModel.monstruo.value?.familia = it },
+            value = monsterFamilyState.value.text,
+            onValueChange = { monsterFamilyState.value = monsterFamilyState.value.copy(text = it) },
             label = { Text("Monster Family") },
             modifier = Modifier.fillMaxWidth()
         )
+
 
         LaunchedEffect(viewModel.monstruo.value?.atributos) {
             viewModel.monstruo.value?.atributos?.let { atributos ->
@@ -155,10 +164,10 @@ fun EditarMonstruo(
             val monstruo = viewModel.monstruo.value?.let { it ->
                 Monstruo(
                     atributos = attributesState.map { it }.toMutableList(),
-                    familia = it.familia,
-                    idLista = it.idLista,
-                    imagen = it.imagen,
-                    nombre = it.nombre
+                    familia = monsterFamilyState.value.text,
+                    idLista = monsterIdState.value.text,
+                    imagen = monsterImageState.value.text,
+                    nombre = monsterNameState.value.text
                 )
             }
             if (monstruo != null) {

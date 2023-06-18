@@ -1,6 +1,5 @@
 package com.example.bestiario_dq_app.ui
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,9 +7,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.preference.PreferenceManager
-import com.example.bestiario_dq_app.core.utils.hayInternet
 import com.example.bestiario_dq_app.data.local.MonstruoDao
-import com.example.bestiario_dq_app.ui.auth.AuthViewModel
 import com.example.bestiario_dq_app.ui.nav.NavGraph
 import com.example.bestiario_dq_app.ui.theme.BestiarioDQAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,11 +29,16 @@ class MainActivity : ComponentActivity() {
                 val prefs = PreferenceManager.getDefaultSharedPreferences(context)
                 var initialDestination = Screen.OnBoarding.route
 
-                if(prefs.getBoolean("onboardingCompletado", true)) {
+                if (prefs.getBoolean("onboardingCompletado", false)) {
                     initialDestination = Screen.Auth.route
                 }
 
-                NavGraph(navController = navController, monstruoDao = monstruoDao, context = context, initialDestination)
+                NavGraph(
+                    navController = navController,
+                    monstruoDao = monstruoDao,
+                    context = context,
+                    initialDestination
+                )
             }
         }
     }

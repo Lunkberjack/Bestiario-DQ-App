@@ -54,7 +54,6 @@ import androidx.palette.graphics.Palette
 import androidx.preference.PreferenceManager
 import com.example.bestiario_dq_app.ui.theme.manrope
 import com.example.bestiario_dq_app.core.utils.base64ToBitmap
-import com.example.bestiario_dq_app.core.utils.hayInternet
 import com.example.bestiario_dq_app.data.local.MonstruoDao
 import com.example.bestiario_dq_app.data.mappers.toMonstruoEntity
 import com.example.bestiario_dq_app.data.remote.responses.Atributo

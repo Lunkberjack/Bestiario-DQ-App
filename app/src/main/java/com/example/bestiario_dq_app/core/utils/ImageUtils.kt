@@ -94,3 +94,7 @@ fun setImagenPreferencias(context: Context, imagenID: Int) {
     editor.putInt("imagenID", imagenID)
     editor.apply()
 }
+
+fun String?.containsAny(strings: List<String>): Boolean {
+    return strings.any { this?.contains(it) == true }
+}

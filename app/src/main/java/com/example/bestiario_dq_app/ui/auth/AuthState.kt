@@ -5,5 +5,6 @@ data class AuthState(
     val registroUsername: String = "",
     val registroPass: String = "",
     val loginUsername: String = "",
-    val loginPass: String = ""
+    val loginPass: String = "",
+    val isRegistroDialogOpen: Boolean = false
 )

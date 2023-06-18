@@ -45,7 +45,6 @@ import androidx.navigation.NavController
 import androidx.palette.graphics.Palette
 import com.example.bestiario_dq_app.ui.theme.manrope
 import com.example.bestiario_dq_app.core.utils.base64ToBitmap
-import com.example.bestiario_dq_app.core.utils.hayInternet
 import com.example.bestiario_dq_app.data.local.MonstruoDao
 import com.example.bestiario_dq_app.data.remote.responses.Atributo
 import com.example.bestiario_dq_app.ui.Screen
@@ -62,10 +61,6 @@ fun DetalleScreenRoom(
     idSeleccionado: String?,
     viewModel: MonstruosViewModel = hiltViewModel()
 ) {
-    if (!hayInternet(LocalContext.current)) {
-        navController.navigate(Screen.Favoritos.route)
-    }
-
     Box(modifier = Modifier.fillMaxSize()) {
         // Esta vez traemos el monstruo de Room.
         LaunchedEffect(idSeleccionado) {
