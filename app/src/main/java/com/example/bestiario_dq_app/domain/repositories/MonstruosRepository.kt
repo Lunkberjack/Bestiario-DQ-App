@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface MonstruosRepository {
     suspend fun newMonstruo(monstruo: Monstruo)
+    suspend fun actualizarMonstruo(idLista: String, monstruo: Monstruo)
     suspend fun borrarMonstruo(idLista: String)
     suspend fun getMonstruoIdLista(idLista: String): Monstruo
     suspend fun getMonstruoNombre(nombre: String): Monstruo

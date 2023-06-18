@@ -49,10 +49,6 @@ class MonstruosViewModel @Inject constructor(
     private val _monstruoSeleccionado = mutableStateOf("")
     val monstruoSeleccionado: State<String> = _monstruoSeleccionado
 
-    fun onEvent(event: MonstruosEvent) {
-
-    }
-
     fun monstruosBusqueda(query: String) {
         viewModelScope.launch {
             val busqueda = mutableListOf<Monstruo>()
@@ -139,8 +135,16 @@ class MonstruosViewModel @Inject constructor(
         }
     }
 
-    fun setMonstruoSeleccionado(monstruoId: String) {
-        _monstruoSeleccionado.value = monstruoId
+fun actualizarNombre(nombre: String) {
+    _monstruo.value?.nombre = nombre
+}
+
+    fun actualizarFamilia(familia: String) {
+        _monstruo.value?.familia = familia
+    }
+
+    fun actualizarIdLista(idLista: String) {
+        _monstruo.value?.idLista = idLista
     }
 
     // Búsqueda
@@ -153,6 +157,12 @@ class MonstruosViewModel @Inject constructor(
     fun newMonstruo(monstruo: Monstruo) {
         viewModelScope.launch {
             repository.newMonstruo(monstruo)
+        }
+    }
+
+    fun actualizarMonstruo(idLista: String, monstruo: Monstruo) {
+        viewModelScope.launch {
+            repository.actualizarMonstruo(idLista, monstruo)
         }
     }
 

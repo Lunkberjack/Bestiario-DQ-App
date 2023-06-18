@@ -2,6 +2,7 @@ package com.example.bestiario_dq_app.ui.nav
 
 import com.example.bestiario_dq_app.ui.bestiario.adminscreens.AniadirMonstruo
 import android.content.Context
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
@@ -14,18 +15,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
-import com.example.bestiario_dq_app.core.utils.hayInternet
 import com.example.bestiario_dq_app.data.local.MonstruoDao
 import com.example.bestiario_dq_app.ui.auth.AuthScreen
 import com.example.bestiario_dq_app.ui.Screen
-import com.example.bestiario_dq_app.ui.auth.SecretScreen
 import com.example.bestiario_dq_app.ui.bestiario.AdminScreen
 import com.example.bestiario_dq_app.ui.bestiario.DetalleScreen
 import com.example.bestiario_dq_app.ui.bestiario.DetalleScreenRoom
@@ -36,14 +34,16 @@ import com.example.bestiario_dq_app.ui.bestiario.MonstruosScreen
 import com.example.bestiario_dq_app.ui.bestiario.OrdenadaScreen
 import com.example.bestiario_dq_app.ui.bestiario.PerfilScreen
 import com.example.bestiario_dq_app.ui.bestiario.SettingsScreen
+import com.example.bestiario_dq_app.ui.bestiario.adminscreens.EditarMonstruo
 import com.example.bestiario_dq_app.ui.bestiario.componentes.AppDrawer
 import com.example.bestiario_dq_app.ui.bestiario.componentes.BottomBar
 import com.example.bestiario_dq_app.ui.bestiario.componentes.BottomBarScreen
 import com.example.bestiario_dq_app.ui.bestiario.componentes.DefaultAppBar
+import com.example.bestiario_dq_app.ui.onboarding.OnboardingScreen
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
-fun NavGraph(navController: NavHostController, monstruoDao: MonstruoDao, context: Context) {
+fun NavGraph(navController: NavHostController, monstruoDao: MonstruoDao, context: Context, initialDestination: String) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     val screens = listOf(
@@ -83,12 +83,12 @@ fun NavGraph(navController: NavHostController, monstruoDao: MonstruoDao, context
             }
         ) { innerPadding ->
             Box(modifier = Modifier.padding(innerPadding)) {
-                NavHost(navController = navController, startDestination = Screen.Auth.route) {
+                NavHost(navController = navController, startDestination = initialDestination) {
+                    composable(route = Screen.OnBoarding.route) {
+                        OnboardingScreen(navController, context)
+                    }
                     composable(route = Screen.Auth.route) {
                         AuthScreen(navController = navController)
-                    }
-                    composable(route = Screen.Secret.route) {
-                        SecretScreen()
                     }
                     composable(route = Screen.Monstruos.route) {
                         MonstruosScreen(navController, monstruoDao = monstruoDao, context = context)
@@ -107,6 +107,19 @@ fun NavGraph(navController: NavHostController, monstruoDao: MonstruoDao, context
                     }
                     composable(route = Screen.AniadirMonstruo.route) {
                         AniadirMonstruo()
+                    }
+                    composable(
+                        route = "${Screen.EditarMonstruo.route}/{idSeleccionado}",
+                        arguments = listOf(navArgument("idSeleccionado") {
+                            type = NavType.StringType
+                        })
+                    ) { backStackEntry ->
+                        val idSeleccionado = backStackEntry.arguments?.getString("idSeleccionado")
+                        EditarMonstruo(
+                            navController = navController,
+                            idSeleccionado = idSeleccionado,
+                            context = context
+                        )
                     }
                     // En este caso, pasamos el id de cada monstruo como parámetro para navegar a la carta
                     // de detalles.

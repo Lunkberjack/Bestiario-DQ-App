@@ -39,14 +39,6 @@ object AppModule {
             .create(ApiService::class.java)
     }
 
-    /*@Provides
-    @Singleton
-    fun provideSharedPref(@ApplicationContext appContext: Context): SharedPreferences {
-        return appContext.getSharedPreferences("prefs", MODE_PRIVATE)
-    }
-
-     */
-
     // Inyectar las defaultSharedPreferences asegura que las podamos recuperar en toda la app sólo
     // aportando el mismo contexto.
     @Provides

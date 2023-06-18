@@ -4,10 +4,9 @@ import android.graphics.BitmapFactory
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -27,9 +26,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.bestiario_dq_app.core.utils.encodeImageToBase64
 import com.example.bestiario_dq_app.data.local.AtributoEntity
-import com.example.bestiario_dq_app.data.local.MonstruoEntity
 import com.example.bestiario_dq_app.data.mappers.toAtributo
-import com.example.bestiario_dq_app.data.mappers.toMonstruo
+import com.example.bestiario_dq_app.data.remote.responses.Atributo
+import com.example.bestiario_dq_app.data.remote.responses.Monstruo
 import com.example.bestiario_dq_app.ui.bestiario.MonstruosViewModel
 
 
@@ -39,15 +38,16 @@ fun AniadirMonstruo(viewModel: MonstruosViewModel = hiltViewModel()) {
     val monsterIdState = remember { mutableStateOf(TextFieldValue()) }
     val monsterNameState = remember { mutableStateOf(TextFieldValue()) }
     val monsterFamilyState = remember { mutableStateOf(TextFieldValue()) }
+    // State para la imagen en Base64.
     val monsterImageState = remember { mutableStateOf(TextFieldValue()) }
 
-    // State for the list of attributes
-    val attributesState = remember {mutableStateListOf<AtributoEntity>()}
+    // State para la lista de atributos.
+    val attributesState = remember { mutableStateListOf<Atributo>() }
 
-    // State for the selected image
+    // State para la imagen en ImageBitmap.
     val selectedImage = remember { mutableStateOf<ImageBitmap?>(null) }
 
-    // Launch image selection activity
+    // Selección de imagen
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         val bitmap = uri?.let { selectedUri ->
             val inputStream = context.contentResolver.openInputStream(selectedUri)
@@ -58,123 +58,128 @@ fun AniadirMonstruo(viewModel: MonstruosViewModel = hiltViewModel()) {
         selectedImage.value = bitmap
         bitmap?.let { image ->
             val base64Image = encodeImageToBase64(image)
+            // Guardamos la imagen en el estado como Base64.
             monsterImageState.value = TextFieldValue(base64Image)
         }
     }
 
-    Column(modifier = Modifier.verticalScroll(rememberScrollState()).fillMaxSize()) {
-        // Text field for monster name
+    Column(modifier = Modifier
+        .verticalScroll(rememberScrollState())
+        .fillMaxSize()) {
         TextField(
             value = monsterIdState.value,
             onValueChange = { monsterIdState.value = it },
-            label = { Text("Monster Id") }
+            label = { Text("Monster Id") },
+            modifier = Modifier.fillMaxWidth()
         )
         TextField(
             value = monsterNameState.value,
             onValueChange = { monsterNameState.value = it },
-            label = { Text("Monster Name") }
+            label = { Text("Monster Name") },
+            modifier = Modifier.fillMaxWidth()
         )
         selectedImage.value?.let {
             Image(
                 bitmap = it,
                 contentDescription = "Imagen subida",
-                modifier = Modifier.width(200.dp)
+                modifier = Modifier.width(200.dp).fillMaxWidth()
             )
         }
-        // Button to select an image
-        Button(onClick = { launcher.launch("image/*") }) {
+        // Seleccionar la imagen (usando el launcher).
+        Button(onClick = { launcher.launch("image/*") }, modifier = Modifier.fillMaxWidth()) {
             Text("Select Image")
         }
 
         TextField(
             value = monsterFamilyState.value,
             onValueChange = { monsterFamilyState.value = it },
-            label = { Text("Monster Family") }
+            label = { Text("Monster Family") },
+            modifier = Modifier.fillMaxWidth()
         )
 
-        // Dynamic attribute fields
+        // Atributos dinámicos
         attributesState.forEachIndexed { index, attribute ->
-            AttributeField(attribute = attribute, onAttributeChange = { newAttribute ->
+            CampoAtributo(attribute = attribute, onAttributeChange = { newAttribute ->
                 attributesState[index] = newAttribute
-            }, onDeleteAttribute = {
+            }, onBorrarAtributo = {
                 attributesState.removeAt(index)
             })
         }
 
-        // Add attribute button
+        // Añadir un nuevo atributo
         Button(onClick = {
-            attributesState.add(AtributoEntity(0, "", listOf(), listOf(), 0))
-        }) {
-            Text("Add Attribute")
+            attributesState.add(Atributo(0, "", listOf(), listOf(), 0))
+        }, modifier = Modifier.fillMaxWidth()) {
+            Text("Nuevo atributo")
         }
 
-        // Button to save the monster with attributes
         Button(onClick = {
-            // Save the monster with attributes to the database
-            val monster = MonstruoEntity(
-                atributos = attributesState.toList().map { it.toAtributo() },
+            val monster = Monstruo(
+                atributos = attributesState.toList().map { it }.toMutableList(),
                 familia = monsterFamilyState.value.text,
                 idLista = monsterIdState.value.text,
                 imagen = monsterImageState.value.text,
                 nombre = monsterNameState.value.text
             )
-            viewModel.newMonstruo(monster.toMonstruo())
-            // Perform the database insertion here
+            viewModel.newMonstruo(monster)
         }) {
-            Text("Save Monster")
+            Text("Guardar monstruo")
         }
     }
 }
 
 @Composable
-fun AttributeField(attribute: AtributoEntity, onAttributeChange: (AtributoEntity) -> Unit, onDeleteAttribute: () -> Unit) {
-    // Text field for experience
+fun CampoAtributo(
+    attribute: Atributo,
+    onAttributeChange: (Atributo) -> Unit,
+    onBorrarAtributo: () -> Unit
+) {
     TextField(
         value = attribute.experiencia.toString(),
         onValueChange = { newExperience ->
             onAttributeChange(attribute.copy(experiencia = newExperience.toIntOrNull() ?: 0))
         },
-        label = { Text("Experience") }
+        label = { Text("Experience") },
+        modifier = Modifier.fillMaxWidth()
     )
 
-    // Text field for game
     TextField(
         value = attribute.juego,
         onValueChange = { newGame ->
             onAttributeChange(attribute.copy(juego = newGame))
         },
-        label = { Text("Game") }
+        label = { Text("Game") },
+        modifier = Modifier.fillMaxWidth()
     )
 
-    // Text field for locations
     TextField(
         value = attribute.lugares.joinToString(", "),
         onValueChange = { newLocations ->
             onAttributeChange(attribute.copy(lugares = newLocations.split(",").map { it.trim() }))
         },
-        label = { Text("Locations") }
+        label = { Text("Locations") },
+        modifier = Modifier.fillMaxWidth()
     )
 
-    // Text field for objects
     TextField(
         value = attribute.objetos.joinToString(", "),
         onValueChange = { newObjects ->
             onAttributeChange(attribute.copy(objetos = newObjects.split(",").map { it.trim() }))
         },
-        label = { Text("Objects") }
+        label = { Text("Objects") },
+        modifier = Modifier.fillMaxWidth()
     )
 
-    // Text field for gold
     TextField(
         value = attribute.oro.toString(),
         onValueChange = { newGold ->
             onAttributeChange(attribute.copy(oro = newGold.toIntOrNull() ?: 0))
         },
-        label = { Text("Gold") }
+        label = { Text("Gold") },
+        modifier = Modifier.fillMaxWidth()
     )
 
-    // Button to delete the attribute
-    Button(onClick = onDeleteAttribute) {
-        Text("Delete Attribute")
+    Button(onClick = onBorrarAtributo, modifier = Modifier.fillMaxWidth()) {
+        Text("Borrar atributo")
     }
 }

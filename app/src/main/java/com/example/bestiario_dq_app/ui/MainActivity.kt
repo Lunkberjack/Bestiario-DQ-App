@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import androidx.preference.PreferenceManager
 import com.example.bestiario_dq_app.core.utils.hayInternet
 import com.example.bestiario_dq_app.data.local.MonstruoDao
 import com.example.bestiario_dq_app.ui.auth.AuthViewModel
@@ -27,7 +28,15 @@ class MainActivity : ComponentActivity() {
             BestiarioDQAppTheme {
                 navController = rememberNavController()
                 // El contexto es para que las SharedPrefs sean compartidas en toda la aplicación.
-                NavGraph(navController = navController, monstruoDao = monstruoDao, context = LocalContext.current)
+                val context = LocalContext.current
+                val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+                var initialDestination = Screen.OnBoarding.route
+
+                if(prefs.getBoolean("onboardingCompletado", true)) {
+                    initialDestination = Screen.Auth.route
+                }
+
+                NavGraph(navController = navController, monstruoDao = monstruoDao, context = context, initialDestination)
             }
         }
     }

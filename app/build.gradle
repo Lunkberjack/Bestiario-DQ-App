@@ -69,6 +69,7 @@ dependencies {
 
     implementation 'androidx.compose.material3:material3:1.1.0'
     implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.google.android.gms:play-services-cast-framework:21.0.1'
 
 
     testImplementation 'junit:junit:4.13.2'
@@ -116,11 +117,14 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-paging:2.5.1"
 
-    // To use Kotlin annotation processing tool (kapt)
+    // Para usar processor annotation tool (kapt)
     kapt "androidx.room:room-compiler:$room_version"
 
     // SharedPreferences
     implementation "androidx.preference:preference-ktx:1.2.0"
+
+    // Data store: como SharedPreferences, pero más potente.
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 }
 
 // Permite referenciar el código generado

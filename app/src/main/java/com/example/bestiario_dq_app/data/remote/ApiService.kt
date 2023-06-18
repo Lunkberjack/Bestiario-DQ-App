@@ -12,6 +12,7 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -20,6 +21,15 @@ interface ApiService {
     suspend fun newMonstruo(
         @Body request: Monstruo
     )
+
+    @PUT("monstruo/{idLista}/editar")
+    suspend fun actualizarMonstruo(
+        @Path("idLista")
+        idLista: String,
+        @Body
+        request: Monstruo
+    )
+
     @DELETE("monstruo/{idLista}/borrar")
     suspend fun borrarMonstruo(
         @Path("idLista")

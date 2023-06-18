@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!--El nombre es necesario para que la inyección de dependencias funcione-->
+    <!--AllowBackup debe estar a false para que las SharedPrefs se eliminen al desinstalar-->
     <application
         android:name=".BestiarioApp"
         android:usesCleartextTraffic="true"

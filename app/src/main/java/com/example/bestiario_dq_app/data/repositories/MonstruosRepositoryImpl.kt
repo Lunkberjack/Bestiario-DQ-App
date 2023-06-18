@@ -22,6 +22,10 @@ class MonstruosRepositoryImpl @Inject constructor(
         return apiService.newMonstruo(monstruo)
     }
 
+    override suspend fun actualizarMonstruo(idLista: String, monstruo: Monstruo) {
+        return apiService.actualizarMonstruo(monstruo.idLista, monstruo)
+    }
+
 
     override suspend fun borrarMonstruo(idLista: String) {
         return apiService.borrarMonstruo(idLista)

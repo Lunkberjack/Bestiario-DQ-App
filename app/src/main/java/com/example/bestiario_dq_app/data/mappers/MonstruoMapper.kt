@@ -24,7 +24,7 @@ fun MonstruoEntity.toMonstruo(): Monstruo {
         nombre = nombre,
         familia = familia,
         imagen = imagen,
-        atributos = atributos
+        atributos = atributos.toMutableList()
     )
 }
 

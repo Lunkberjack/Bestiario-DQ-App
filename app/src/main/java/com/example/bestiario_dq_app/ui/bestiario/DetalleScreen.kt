@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FloatingActionButton
@@ -99,6 +100,21 @@ fun DetalleScreen(
                     Modifier.size(20.dp)
                 )
             }
+
+            FloatingActionButton(
+                onClick = {
+                    navController.navigate(Screen.EditarMonstruo.route + "/${viewModel.monstruo.value?.idLista}")
+                },
+                modifier = Modifier
+                    .padding(20.dp)
+                    .offset(y = (-50).dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "Editar monstruo",
+                    Modifier.size(20.dp)
+                )
+            }
         }
     }
 
@@ -168,7 +184,7 @@ fun DetalleScreen(
                                 fontFamily = manrope,
                                 fontWeight = FontWeight.ExtraBold,
                                 // Si el nombre es demasiado largo se reduce la letra.
-                                fontSize = if(it.nombre.length > 10) 40.sp else 50.sp,
+                                fontSize = if (it.nombre.length > 10) 40.sp else 50.sp,
                                 color = Color(
                                     paletaMonstruo.getDarkVibrantColor(
                                         Color(
@@ -198,7 +214,10 @@ fun DetalleScreen(
                 }
             }
             // Familia, atributos por juego
-            Column(modifier = Modifier.width(300.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                modifier = Modifier.width(300.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 monstruoState?.let {
                     if (paletaMonstruo != null) {
                         Text(
