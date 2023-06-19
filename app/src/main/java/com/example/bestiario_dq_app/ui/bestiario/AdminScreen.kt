@@ -43,8 +43,8 @@ fun AdminScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(17.5.dp))
 
         ComponenteAdmin(navController, titulo = "Nuevo monstruo", ruta = Screen.AniadirMonstruo.route)
-        ComponenteAdmin(navController, titulo = "Nueva familia", ruta = Screen.AniadirMonstruo.route)
-        ComponenteAdmin(navController, titulo = "Nuevo juego", ruta = Screen.AniadirMonstruo.route)
+        //ComponenteAdmin(navController, titulo = "Nueva familia", ruta = Screen.AniadirMonstruo.route)
+        //ComponenteAdmin(navController, titulo = "Nuevo juego", ruta = Screen.AniadirMonstruo.route)
     }
 }
 
@@ -75,12 +75,6 @@ fun ComponenteAdmin(
                 fontFamily = manrope,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 20.sp
-            )
-            Icon(
-                painter = painterResource(id = icono),
-                tint = Color.Black,
-                contentDescription = "Icono",
-                modifier = Modifier.size(30.dp)
             )
         }
     }
