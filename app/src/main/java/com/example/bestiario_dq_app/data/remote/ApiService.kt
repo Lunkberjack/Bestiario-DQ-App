@@ -4,6 +4,7 @@ import com.example.bestiario_dq_app.data.remote.requests.PeticionAuth
 import com.example.bestiario_dq_app.data.remote.responses.Familia
 import com.example.bestiario_dq_app.data.remote.responses.Juego
 import com.example.bestiario_dq_app.data.remote.responses.Monstruo
+import com.example.bestiario_dq_app.data.remote.responses.MonstruoBusqueda
 import com.example.bestiario_dq_app.data.remote.responses.TokenResponse
 import kotlinx.coroutines.flow.Flow
 
@@ -71,6 +72,12 @@ interface ApiService {
         @Path("order") order: String?,
         @Path("tipo") tipo: String?
     ): List<Monstruo>
+
+    @GET("/monstruosBusqueda/{orden}/{tipo}")
+    suspend fun getMonstruosBusqueda(
+        @Path("orden") order: String?,
+        @Path("tipo") tipo: String?
+    ): List<MonstruoBusqueda>
 
     @GET("familias")
     suspend fun getFamilias(): List<Familia>

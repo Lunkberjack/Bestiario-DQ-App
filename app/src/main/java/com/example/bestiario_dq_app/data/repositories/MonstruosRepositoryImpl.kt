@@ -7,6 +7,7 @@ import com.example.bestiario_dq_app.data.remote.responses.Atributo
 import com.example.bestiario_dq_app.data.remote.responses.Familia
 import com.example.bestiario_dq_app.data.remote.responses.Juego
 import com.example.bestiario_dq_app.data.remote.responses.Monstruo
+import com.example.bestiario_dq_app.data.remote.responses.MonstruoBusqueda
 import com.example.bestiario_dq_app.domain.repositories.MonstruosRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
@@ -43,6 +44,13 @@ class MonstruosRepositoryImpl @Inject constructor(
         return flow {
             val monstruos = apiService.getMonstruos(orden, tipo)
             emit(monstruos)
+        }
+    }
+
+    override suspend fun getMonstruosBusqueda(orden: String?, tipo: String?): Flow<List<MonstruoBusqueda>> {
+        return flow {
+            val monstruosBusqueda = apiService.getMonstruosBusqueda(orden, tipo)
+            emit(monstruosBusqueda)
         }
     }
 

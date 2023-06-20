@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.preference.PreferenceManager
 import androidx.room.Room
 import com.example.bestiario_dq_app.data.local.MonstruoDao
@@ -18,8 +19,17 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Response
+import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.net.SocketTimeoutException
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -28,13 +38,15 @@ object AppModule {
     @Provides
     @Singleton
     fun provideAuthApi(): ApiService {
+        val okHttpClient = OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .build()
+
         return Retrofit.Builder()
-            // La IP actual del dispositivo donde corre la API.
             .addConverterFactory(GsonConverterFactory.create())
-            //.baseUrl("http://10.42.2.171:8080/")
-            .baseUrl("http://192.168.178.114:8080/")
-            //.baseUrl("http://192.168.123.229:8080/")
-            //.baseUrl("http://192.168.123.168:8080/")
+            .baseUrl("http://192.168.123.168:8080/")
+            .client(okHttpClient)
             .build()
             .create(ApiService::class.java)
     }
@@ -55,7 +67,10 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideMonstruosRepository(apiService: ApiService, prefs: SharedPreferences): MonstruosRepository {
+    fun provideMonstruosRepository(
+        apiService: ApiService,
+        prefs: SharedPreferences
+    ): MonstruosRepository {
         return MonstruosRepositoryImpl(apiService, prefs)
     }
 

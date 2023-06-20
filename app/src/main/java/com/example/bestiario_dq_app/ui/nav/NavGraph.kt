@@ -111,7 +111,7 @@ fun NavGraph(
                         PerfilScreen(context, navController)
                     }
                     composable(route = Screen.Settings.route) {
-                        SettingsScreen()
+                        SettingsScreen(navController)
                     }
                     composable(route = Screen.Admin.route) {
                         AdminScreen(navController)

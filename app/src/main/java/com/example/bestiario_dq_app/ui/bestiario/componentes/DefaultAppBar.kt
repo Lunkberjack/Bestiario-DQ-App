@@ -20,6 +20,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,10 +35,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.room.util.query
 import com.example.bestiario_dq_app.R
+import com.example.bestiario_dq_app.data.remote.responses.MonstruoBusqueda
 import com.example.bestiario_dq_app.ui.bestiario.BusquedaScreen
 import com.example.bestiario_dq_app.ui.bestiario.MonstruosViewModel
 import com.example.bestiario_dq_app.ui.bestiario.SearchViewModel
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
+
+var listaMonstruos = listOf<MonstruoBusqueda>()
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -94,6 +99,9 @@ fun DefaultAppBar(
             IconButton(
                 onClick = {
                     searchViewModel.setSearchActive(true)
+                    viewModel.getMonstruos("idLista", "Ascendente")
+                    viewModel.getFamilias()
+                    viewModel.getJuegos()
                 }
             ) {
                 Icon(
@@ -112,21 +120,23 @@ fun DefaultAppBar(
     )
     if (searchViewModel.searchActive.value) {
         var query by remember { mutableStateOf("") }
-        viewModel.getMonstruos("idLista", "Ascendente")
-        viewModel.getFamilias()
-        viewModel.getJuegos()
-
         SearchBar(
             query = query,
             onQueryChange = {
                 query = it
-                if(query.isNotEmpty()) {
-                    viewModel.monstruosBusqueda(query)
+            },
+            onSearch = {
+                if (query.isNotEmpty()) {
+                    viewModel.getMonstruosBusqueda()
+                    listaMonstruos = viewModel.monstruosBusqueda.value.filter {
+                        it.coincideBusqueda(query)
+                    }
+                    viewModel.getFamilias()
                     viewModel.familiasBusqueda(query)
+                    viewModel.getJuegos()
                     viewModel.juegosBusqueda(query)
                 }
             },
-            onSearch = { searchViewModel.setSearchActive(false) },
             active = searchViewModel.searchActive.value,
             onActiveChange = { searchViewModel.setSearchActive(it) },
             placeholder = { Text(text = "Buscar...") },
@@ -144,7 +154,7 @@ fun DefaultAppBar(
                 }
             }
         ) {
-            BusquedaScreen(navController = navController, viewModel, searchViewModel)
+            BusquedaScreen(navController = navController, listaMonstruos, viewModel, searchViewModel)
         }
     }
 }

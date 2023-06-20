@@ -21,11 +21,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.room.util.query
+import com.example.bestiario_dq_app.data.remote.responses.MonstruoBusqueda
 import com.example.bestiario_dq_app.ui.bestiario.componentes.ResultadoBusqueda
 import com.example.bestiario_dq_app.ui.theme.manrope
 
 @Composable
-fun BusquedaScreen(navController: NavController, viewModel: MonstruosViewModel, searchViewModel: SearchViewModel) {
+fun BusquedaScreen(navController: NavController, listaMonstruos: List<MonstruoBusqueda>, viewModel: MonstruosViewModel, searchViewModel: SearchViewModel) {
     Column(
         Modifier
             .fillMaxSize()
@@ -36,11 +37,11 @@ fun BusquedaScreen(navController: NavController, viewModel: MonstruosViewModel, 
             Column {
                 ApartadoBusqueda(apartado = "Monstruos")
                 LazyColumn {
-                    items(viewModel.monstruos.value) { monstruo ->
+                    items(listaMonstruos) { monstruo ->
                         ResultadoBusqueda(
                             navController = navController,
                             titulo = monstruo.nombre,
-                            subtitulo = monstruo.familia,
+                            subtitulo = monstruo.idLista,
                             id = monstruo.idLista,
                             searchViewModel = searchViewModel
                         )

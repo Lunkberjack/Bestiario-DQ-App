@@ -4,6 +4,7 @@ import com.example.bestiario_dq_app.data.remote.responses.Atributo
 import com.example.bestiario_dq_app.data.remote.responses.Familia
 import com.example.bestiario_dq_app.data.remote.responses.Juego
 import com.example.bestiario_dq_app.data.remote.responses.Monstruo
+import com.example.bestiario_dq_app.data.remote.responses.MonstruoBusqueda
 import kotlinx.coroutines.flow.Flow
 
 interface MonstruosRepository {
@@ -13,6 +14,7 @@ interface MonstruosRepository {
     suspend fun getMonstruoIdLista(idLista: String): Monstruo
     suspend fun getMonstruoNombre(nombre: String): Monstruo
     suspend fun getMonstruos(orden: String?, tipo: String?): Flow<List<Monstruo>>
+    suspend fun getMonstruosBusqueda(orden: String?, tipo: String?): Flow<List<MonstruoBusqueda>>
     suspend fun getFamilias(): Flow<List<Familia>>
     suspend fun getJuegos(): Flow<List<Juego>>
     suspend fun getFamilia(nombre: String): Familia

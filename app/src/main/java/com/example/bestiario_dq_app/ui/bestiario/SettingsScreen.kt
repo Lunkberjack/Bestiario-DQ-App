@@ -13,11 +13,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.bestiario_dq_app.ui.Screen
 import com.example.bestiario_dq_app.ui.theme.manrope
 
-@Preview
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(navController: NavController) {
     Column(modifier = Modifier.fillMaxSize()) {
         Text(
             text = "Configuración",
@@ -31,12 +32,10 @@ fun SettingsScreen() {
         Divider()
         Spacer(modifier = Modifier.height(17.5.dp))
 
-        Text(
-            text = "Tema",
-            fontFamily = manrope,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 20.sp,
-            modifier = Modifier.padding(start = 16.dp, bottom = 16.dp)
+        ComponenteAdmin(
+            navController = navController,
+            titulo = "Repetir tutorial",
+            ruta = Screen.OnBoarding.route
         )
     }
 }

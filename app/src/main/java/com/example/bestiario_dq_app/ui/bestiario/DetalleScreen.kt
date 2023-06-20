@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -195,11 +197,9 @@ fun DetalleScreen(
                                 )
                             )
                         }
-
                     }
                 }
             }
-
 
             Row {
                 if (bitmapPaleta != null) {
@@ -214,7 +214,9 @@ fun DetalleScreen(
             }
             // Familia, atributos por juego
             Column(
-                modifier = Modifier.width(300.dp),
+                modifier = Modifier
+                    .width(300.dp)
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 monstruoState?.let {

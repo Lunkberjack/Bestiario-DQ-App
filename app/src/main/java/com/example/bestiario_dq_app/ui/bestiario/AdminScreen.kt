@@ -53,7 +53,6 @@ fun ComponenteAdmin(
     navController: NavController,
     modifier: Modifier = Modifier,
     titulo: String,
-    icono: Int = R.drawable.slimeoutline,
     ruta: String
 ) {
     Column(

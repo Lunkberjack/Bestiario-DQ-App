@@ -25,7 +25,6 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,7 +43,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.PathNode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -54,9 +52,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.example.bestiario_dq_app.R
-import com.example.bestiario_dq_app.core.utils.TipoOrden
 import com.example.bestiario_dq_app.ui.Screen
-import com.example.bestiario_dq_app.ui.bestiario.MonstruosScreen
 import com.example.bestiario_dq_app.ui.bestiario.MonstruosViewModel
 import com.example.bestiario_dq_app.ui.theme.manrope
 import kotlinx.coroutines.Dispatchers
@@ -76,6 +72,7 @@ fun AppDrawer(
     var selectedJuego by remember { mutableStateOf("") }
     var selectedOrden by remember { mutableStateOf("") }
     var selectedCriterio by remember { mutableStateOf("") }
+    var selectedFiltro by remember { mutableStateOf("") }
 
 
     val dialogFamilias = remember { mutableStateOf(false) }
@@ -138,16 +135,20 @@ fun AppDrawer(
                         .padding(10.dp),
                         onClick = {
                             dialogFamilias.value = false
+                            selectedFiltro = ""
                             if (selectedFamily.isNotEmpty()) {
                                 scope.launch {
                                     withContext(Dispatchers.IO) {
                                         drawerState.close()
-
                                     }
                                 }
                                 viewModel.viewModelScope.launch {
                                     navController.navigate(Screen.Familia.route + "/${selectedFamily}") {
-                                        navController.popBackStack(Screen.Monstruos.route, inclusive = false, saveState = false)
+                                        navController.popBackStack(
+                                            Screen.Monstruos.route,
+                                            inclusive = false,
+                                            saveState = false
+                                        )
                                     }
                                 }
                             }
@@ -209,16 +210,20 @@ fun AppDrawer(
                         .padding(10.dp),
                         onClick = {
                             dialogJuegos.value = false
+                            selectedFiltro = ""
                             if (selectedJuego.isNotEmpty()) {
                                 scope.launch {
                                     withContext(Dispatchers.IO) {
                                         drawerState.close()
-
                                     }
                                 }
                                 viewModel.viewModelScope.launch {
                                     navController.navigate(Screen.Juego.route + "/${selectedJuego}") {
-                                        navController.popBackStack(Screen.Monstruos.route, inclusive = false, saveState = false)
+                                        navController.popBackStack(
+                                            Screen.Monstruos.route,
+                                            inclusive = false,
+                                            saveState = false
+                                        )
                                     }
                                 }
                             }
@@ -290,14 +295,27 @@ fun AppDrawer(
                         onClick = {
                             dialogJuegos.value = false
                             if (selectedOrden.isNotEmpty()) {
-                                val criterio = if (selectedCriterio.equals("Número", ignoreCase = true)) "idLista" else "nombre"
+                                scope.launch {
+                                    withContext(Dispatchers.IO) {
+                                        drawerState.close()
+                                    }
+                                }
+                                val criterio = if (selectedFiltro.equals(
+                                        "Número",
+                                        ignoreCase = true
+                                    )
+                                ) "idLista" else "nombre"
                                 viewModel.getMonstruos(
                                     criterio,
                                     selectedOrden
                                 )
                                 navController.navigate(Screen.Orden.route + "/$criterio/${selectedOrden}") {
                                     // ESTA ES LA BUENA
-                                    navController.popBackStack(Screen.Monstruos.route, inclusive = false, saveState = false)
+                                    navController.popBackStack(
+                                        Screen.Monstruos.route,
+                                        inclusive = false,
+                                        saveState = false
+                                    )
                                 }
                                 dialogTipoOrden.value = false
                             }
@@ -336,8 +354,9 @@ fun AppDrawer(
                 )
             },
             icon = { Icon(Icons.Filled.Home, null) },
-            selected = currentRoute == Screen.Monstruos.route,
+            selected = selectedFiltro == "Familia",
             onClick = {
+                selectedFiltro = "Familia"
                 dialogFamilias.value = true
             },
             modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
@@ -351,8 +370,9 @@ fun AppDrawer(
                 )
             },
             icon = { Icon(Icons.Filled.Star, null) },
-            selected = currentRoute == Screen.Favoritos.route,
+            selected = selectedFiltro == "Juego",
             onClick = {
+                selectedFiltro = "Juego"
                 dialogJuegos.value = true
             },
             modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
@@ -379,7 +399,7 @@ fun AppDrawer(
                 )
             },
             icon = { Icon(Icons.Filled.Home, null) },
-            selected = currentRoute == Screen.Monstruos.route,
+            selected = selectedCriterio == "Número",
             onClick = {
                 selectedCriterio = "Número"
                 dialogTipoOrden.value = true
@@ -395,7 +415,7 @@ fun AppDrawer(
                 )
             },
             icon = { Icon(Icons.Filled.Star, null) },
-            selected = currentRoute == Screen.Favoritos.route,
+            selected = selectedCriterio == "Alfabéticamente",
             onClick = {
                 selectedCriterio = "Alfabéticamente"
                 dialogTipoOrden.value = true
@@ -407,9 +427,15 @@ fun AppDrawer(
             verticalAlignment = Alignment.Bottom,
             modifier = Modifier.fillMaxSize()
         ) {
-            IconButton(modifier = Modifier.padding(end = 20.dp, bottom = 20.dp), onClick = {
-                navController.navigate(Screen.Settings.route)
-            }) {
+            IconButton(modifier = Modifier.padding(end = 20.dp, bottom = 20.dp),
+                onClick = {
+                    scope.launch {
+                        withContext(Dispatchers.IO) {
+                            drawerState.close()
+                        }
+                    }
+                    navController.navigate(Screen.Settings.route)
+                }) {
                 Icon(
                     Icons.Default.Settings,
                     contentDescription = "Ajustes",

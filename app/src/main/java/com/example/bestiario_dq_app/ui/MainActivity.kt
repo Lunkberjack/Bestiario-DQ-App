@@ -1,6 +1,7 @@
 package com.example.bestiario_dq_app.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.ui.platform.LocalContext
@@ -11,6 +12,7 @@ import com.example.bestiario_dq_app.data.local.MonstruoDao
 import com.example.bestiario_dq_app.ui.nav.NavGraph
 import com.example.bestiario_dq_app.ui.theme.BestiarioDQAppTheme
 import dagger.hilt.android.AndroidEntryPoint
+import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -20,6 +22,7 @@ class MainActivity : ComponentActivity() {
     lateinit var navController: NavHostController
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContent {
             BestiarioDQAppTheme {

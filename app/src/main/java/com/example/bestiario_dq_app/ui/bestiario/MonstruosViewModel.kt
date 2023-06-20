@@ -15,6 +15,8 @@ import com.example.bestiario_dq_app.data.mappers.toMonstruo
 import com.example.bestiario_dq_app.data.remote.responses.Familia
 import com.example.bestiario_dq_app.data.remote.responses.Juego
 import com.example.bestiario_dq_app.data.remote.responses.Monstruo
+import com.example.bestiario_dq_app.data.remote.responses.MonstruoBusqueda
+import com.example.bestiario_dq_app.ui.auth.AuthUiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,6 +36,9 @@ class MonstruosViewModel @Inject constructor(
     private val _monstruos = MutableStateFlow(listOf<Monstruo>())
     val monstruos: StateFlow<List<Monstruo>> = _monstruos.asStateFlow()
 
+    private var _monstruosBusqueda = MutableStateFlow(listOf<MonstruoBusqueda>())
+    val monstruosBusqueda: StateFlow<List<MonstruoBusqueda>> = _monstruosBusqueda.asStateFlow()
+
     private val _familias = MutableStateFlow(listOf<Familia>())
     val familias: StateFlow<List<Familia>> = _familias.asStateFlow()
 
@@ -49,26 +54,10 @@ class MonstruosViewModel @Inject constructor(
     private val _monstruoSeleccionado = mutableStateOf("")
     val monstruoSeleccionado: State<String> = _monstruoSeleccionado
 
-    fun monstruosBusqueda(query: String) {
+    fun getMonstruosBusqueda() {
         viewModelScope.launch {
-            val busqueda = mutableListOf<Monstruo>()
-            // Primero aparecerán los que EMPIEZAN por la query.
-            for(each in monstruos.value) {
-                if(each.nombre.startsWith(query, ignoreCase = true)) {
-                    busqueda.add(each)
-                } else {
-                    busqueda.remove(each)
-                }
-            }
-            // Después, los que la CONTIENEN.
-            for(each in monstruos.value) {
-                if(each.nombre.contains(query, ignoreCase = true) && !(each.nombre.startsWith(query, ignoreCase = true))) {
-                    busqueda.add(each)
-                } else if(!(each.nombre.startsWith(query, ignoreCase = true))) {
-                    busqueda.remove(each)
-                }
-                _monstruos.emit(busqueda)
-            }
+            val nuevosMonstruos = repository.getMonstruosBusqueda("nombre", "Ascendente")
+            _monstruosBusqueda.emitAll(nuevosMonstruos)
         }
     }
 
@@ -76,20 +65,25 @@ class MonstruosViewModel @Inject constructor(
         viewModelScope.launch {
             val busqueda = mutableListOf<Familia>()
             // Primero aparecerán los que EMPIEZAN por la query.
-            for(each in familias.value) {
-                if(each.nombre.startsWith(query, ignoreCase = true)) {
+            for (each in familias.value) {
+                if (each.nombre.startsWith(query, ignoreCase = true)) {
                     busqueda.add(each)
                 } else {
                     busqueda.remove(each)
                 }
             }
             // Después, los que la CONTIENEN.
-            for(each in familias.value) {
-                if(each.nombre.contains(query, ignoreCase = true) && !(each.nombre.startsWith(query, ignoreCase = true))) {
+            for (each in familias.value) {
+                if (each.nombre.contains(
+                        query,
+                        ignoreCase = true
+                    ) && !(each.nombre.startsWith(query, ignoreCase = true))
+                ) {
                     busqueda.add(each)
-                } else if(!(each.nombre.startsWith(query, ignoreCase = true))) {
+                } else if (!(each.nombre.startsWith(query, ignoreCase = true))) {
                     busqueda.remove(each)
                 }
+                //_familias.value = busqueda
                 _familias.emit(busqueda)
             }
         }
@@ -99,18 +93,26 @@ class MonstruosViewModel @Inject constructor(
         viewModelScope.launch {
             val busqueda = mutableListOf<Juego>()
             // Primero aparecerán los que EMPIEZAN por la query.
-            for(each in juegos.value) {
-                if(each.nombre.startsWith(query, ignoreCase = true) || each.abr.startsWith(query, ignoreCase = true)) {
+            for (each in juegos.value) {
+                if (each.nombre.startsWith(query, ignoreCase = true) || each.abr.startsWith(
+                        query,
+                        ignoreCase = true
+                    )
+                ) {
                     busqueda.add(each)
                 } else {
                     busqueda.remove(each)
                 }
             }
             // Después, los que la CONTIENEN.
-            for(each in juegos.value) {
-                if(each.nombre.contains(query, ignoreCase = true) && !(each.nombre.startsWith(query, ignoreCase = true))) {
+            for (each in juegos.value) {
+                if (each.nombre.contains(
+                        query,
+                        ignoreCase = true
+                    ) && !(each.nombre.startsWith(query, ignoreCase = true))
+                ) {
                     busqueda.add(each)
-                } else if(!(each.nombre.startsWith(query, ignoreCase = true))) {
+                } else if (!(each.nombre.startsWith(query, ignoreCase = true))) {
                     busqueda.remove(each)
                 }
                 _juegos.emit(busqueda)
@@ -120,10 +122,10 @@ class MonstruosViewModel @Inject constructor(
 
     fun filtrarFamilia(familia: String) {
         viewModelScope.launch {
-           repository.filtrarFamilia(familia).collect { listaFiltrada ->
-               _monstruos.value = listaFiltrada
-               _monstruos.emit(listaFiltrada)
-           }
+            repository.filtrarFamilia(familia).collect { listaFiltrada ->
+                _monstruos.value = listaFiltrada
+                _monstruos.emit(listaFiltrada)
+            }
         }
     }
 
@@ -135,9 +137,9 @@ class MonstruosViewModel @Inject constructor(
         }
     }
 
-fun actualizarNombre(nombre: String) {
-    _monstruo.value?.nombre = nombre
-}
+    fun actualizarNombre(nombre: String) {
+        _monstruo.value?.nombre = nombre
+    }
 
     fun actualizarFamilia(familia: String) {
         _monstruo.value?.familia = familia
@@ -175,17 +177,21 @@ fun actualizarNombre(nombre: String) {
     fun getMonstruos(orden: String?, tipo: String?) {
         // Lógica para obtener la lista según el orden seleccionado
         viewModelScope.launch {
-            val nuevosMonstruos = repository.getMonstruos(orden, tipo)
-            _monstruos.emitAll(nuevosMonstruos)
+            try {
+                val nuevosMonstruos = repository.getMonstruos(orden, tipo)
+                _monstruos.emitAll(nuevosMonstruos)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
-   fun getFamilias() {
-       viewModelScope.launch {
-           repository.getFamilias().collect { listaFamilias ->
-               _familias.value = listaFamilias
-           }
-       }
+    fun getFamilias() {
+        viewModelScope.launch {
+            repository.getFamilias().collect { listaFamilias ->
+                _familias.value = listaFamilias
+            }
+        }
     }
 
     fun getJuegos() {
