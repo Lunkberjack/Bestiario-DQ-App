@@ -82,7 +82,7 @@ fun AniadirMonstruo(viewModel: MonstruosViewModel = hiltViewModel(), navControll
         TextField(
             value = monsterIdState.value,
             onValueChange = { monsterIdState.value = it },
-            label = { Text("Monster Id") },
+            label = { Text("Id (lista)") },
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
@@ -95,7 +95,7 @@ fun AniadirMonstruo(viewModel: MonstruosViewModel = hiltViewModel(), navControll
         TextField(
             value = monsterNameState.value,
             onValueChange = { monsterNameState.value = it },
-            label = { Text("Monster Name") },
+            label = { Text("Nombre del monstruo") },
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
@@ -122,7 +122,7 @@ fun AniadirMonstruo(viewModel: MonstruosViewModel = hiltViewModel(), navControll
         TextField(
             value = monsterFamilyState.value,
             onValueChange = { monsterFamilyState.value = it },
-            label = { Text("Monster Family") },
+            label = { Text("Familia") },
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,

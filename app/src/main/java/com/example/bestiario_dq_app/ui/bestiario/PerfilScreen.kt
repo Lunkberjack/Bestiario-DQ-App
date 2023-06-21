@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -33,9 +34,11 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import androidx.preference.PreferenceManager
 import com.example.bestiario_dq_app.R
@@ -109,6 +112,20 @@ fun PerfilScreen(context: Context, navController: NavController) {
         val avatar: ImageBitmap =
             BitmapFactory.decodeResource(LocalContext.current.resources, avatarPreferencias)
                 .asImageBitmap()
+        val isAdmin =
+            PreferenceManager.getDefaultSharedPreferences(context).getBoolean("admin", false)
+        if(isAdmin) {
+            Image(
+                painter = painterResource(id = R.drawable.corona),
+                contentDescription = "Corona de admin",
+                modifier = Modifier
+                    .size(150.dp)
+                        // Colocamos la corona sobre el admin
+                    .offset(y = 54.dp)
+                    .zIndex(100f)
+            )
+        }
+
         Image(
             bitmap = avatar,
             contentDescription = "Avatar",
@@ -133,8 +150,6 @@ fun PerfilScreen(context: Context, navController: NavController) {
         )
 
         // Descripción, estado, acciones, etc
-        val isAdmin =
-            PreferenceManager.getDefaultSharedPreferences(context).getBoolean("admin", false)
         Text(
             // Estas monstruosidades son actually emojis.
             text = if (isAdmin) "Eres un admin \uD83E\uDD13" else "Plebeyo \uD83E\uDD7A",

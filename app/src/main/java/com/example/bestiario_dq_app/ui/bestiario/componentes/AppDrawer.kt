@@ -300,7 +300,7 @@ fun AppDrawer(
                                         drawerState.close()
                                     }
                                 }
-                                val criterio = if (selectedFiltro.equals(
+                                val criterio = if (selectedCriterio.equals(
                                         "Número",
                                         ignoreCase = true
                                     )

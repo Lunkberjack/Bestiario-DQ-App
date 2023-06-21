@@ -150,7 +150,7 @@ fun EditarMonstruo(
         TextField(
             value = monsterIdState.value.text,
             onValueChange = { monsterIdState.value = monsterIdState.value.copy(text = it) },
-            label = { Text("Monster Id") },
+            label = { Text("Id (lista)") },
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
@@ -164,7 +164,7 @@ fun EditarMonstruo(
         TextField(
             value = monsterNameState.value.text,
             onValueChange = { monsterNameState.value = monsterNameState.value.copy(text = it) },
-            label = { Text("Monster Name") },
+            label = { Text("Nombre del monstruo") },
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
@@ -178,7 +178,7 @@ fun EditarMonstruo(
         TextField(
             value = monsterFamilyState.value.text,
             onValueChange = { monsterFamilyState.value = monsterFamilyState.value.copy(text = it) },
-            label = { Text("Monster Family") },
+            label = { Text("Familia") },
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
