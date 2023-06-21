@@ -11,6 +11,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -102,7 +103,9 @@ fun PagerScreen(onBoardingPage: OnBoardingPage) {
         Image(
             modifier = Modifier
                 .fillMaxWidth(0.5f)
-                .fillMaxHeight(0.7f),
+                .fillMaxHeight(0.7f)
+                .clip(shape = RoundedCornerShape(percent = 50))
+                .aspectRatio(1f),
             painter = painterResource(id = onBoardingPage.image),
             contentDescription = "Imagen pager"
         )
