@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
@@ -72,7 +74,7 @@ fun DetalleScreenRoom(
         val paletaMonstruo = bitmapPaleta?.let { Palette.from(it).generate() }
 
         if (paletaMonstruo != null) {
-            // Esta función viene de DetallesScreen.
+            // Diferentes fallbacks por si ese color en específico no se ha generado. Debería ser suficiente con dos fallbacks.
             EllipticalShape(
                 Color(
                     paletaMonstruo.getLightVibrantColor(
@@ -125,7 +127,7 @@ fun DetalleScreenRoom(
                                 fontFamily = manrope,
                                 fontWeight = FontWeight.ExtraBold,
                                 // Si el nombre es demasiado largo se reduce la letra.
-                                fontSize = if(it.nombre.length > 10) 40.sp else 50.sp,
+                                fontSize = if (it.nombre.length > 10) 40.sp else 50.sp,
                                 color = Color(
                                     paletaMonstruo.getDarkVibrantColor(
                                         Color(
@@ -152,9 +154,13 @@ fun DetalleScreenRoom(
                     )
                 }
             }
-
             // Familia, atributos por juego
-            Column(modifier = Modifier.width(300.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                modifier = Modifier
+                    .width(300.dp)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 monstruoState?.let {
                     if (paletaMonstruo != null) {
                         Text(
@@ -164,7 +170,15 @@ fun DetalleScreenRoom(
                                         fontFamily = manrope,
                                         fontWeight = FontWeight.ExtraBold,
                                         fontSize = 20.sp,
-                                        color = Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb()))
+                                        color = Color(
+                                            paletaMonstruo.getDarkVibrantColor(
+                                                Color(
+                                                    paletaMonstruo.getVibrantColor(
+                                                        Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb())).toArgb()
+                                                    )
+                                                ).toArgb()
+                                            )
+                                        )
                                     )
                                 ) {
                                     append("Familia: ")

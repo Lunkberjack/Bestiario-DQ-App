@@ -14,20 +14,20 @@ sealed class OnBoardingPage(
 ) {
     object Primera : OnBoardingPage(
         image = R.drawable.limo,
-        title = "Meeting",
-        description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod."
+        title = "Bienvenid@ :)",
+        description = "Bienvenido al Bestiario de Dragon Quest.\nPuedes navegar con la barra inferior (Home, Favoritos y Perfil).",
     )
 
     object Segunda : OnBoardingPage(
         image = R.drawable.dientecillos,
-        title = "Coordination",
-        description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod."
+        title = "Funciones",
+        description = "En el menú lateral puedes filtrar y ordenar, y en la barra superior tienes una completa búsqueda."
     )
 
     object Tercera : OnBoardingPage(
         // Cambiar por cosas con sentido.
         image = R.drawable.dracanino,
-        title = "Dialogue",
-        description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod."
+        title = "Ayuda interactiva",
+        description = "Si tienes alguna duda, puedes repetir este tutorial en el menú opciones."
     )
 }

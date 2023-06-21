@@ -71,7 +71,15 @@ fun JuegoExpansible(
         },
         colors = CardDefaults.cardColors(
             // Copiamos el color para poder modificar su transparencia.
-            containerColor = Color(paletaMonstruo.getVibrantColor(Color.White.toArgb())).copy(alpha = 0.2f)
+            containerColor = Color(
+                paletaMonstruo.getDarkVibrantColor(
+                    Color(
+                        paletaMonstruo.getVibrantColor(
+                            Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb())).toArgb()
+                        )
+                    ).toArgb()
+                )
+            ).copy(alpha = 0.2f)
         )
     ) {
         Column(
@@ -91,7 +99,15 @@ fun JuegoExpansible(
                                 fontFamily = manrope,
                                 fontWeight = FontWeight.ExtraBold,
                                 fontSize = 20.sp,
-                                color = Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb())),
+                                color = Color(
+                                    paletaMonstruo.getDarkVibrantColor(
+                                        Color(
+                                            paletaMonstruo.getVibrantColor(
+                                                Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb())).toArgb()
+                                            )
+                                        ).toArgb()
+                                    )
+                                ),
                             )
                         ) {
                             append("Juego: ")

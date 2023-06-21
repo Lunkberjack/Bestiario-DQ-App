@@ -77,6 +77,7 @@ fun DetalleScreen(
     val prefs = PreferenceManager.getDefaultSharedPreferences(context)
     val isAdmin = prefs.getBoolean("admin", false)
 
+    // Si es admin, se accede a las funciones de edición y borrado.
     if (isAdmin) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
             FloatingActionButton(
@@ -108,7 +109,7 @@ fun DetalleScreen(
                 },
                 modifier = Modifier
                     .padding(20.dp)
-                    .offset(y = (-50).dp)
+                    .offset(y = (-70).dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
@@ -188,11 +189,7 @@ fun DetalleScreen(
                                 fontSize = if (it.nombre.length > 10) 40.sp else 50.sp,
                                 color = Color(
                                     paletaMonstruo.getDarkVibrantColor(
-                                        Color(
-                                            paletaMonstruo.getVibrantColor(
-                                                Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb())).toArgb()
-                                            )
-                                        ).toArgb()
+                                        Color.White.toArgb()
                                     )
                                 )
                             )
@@ -228,7 +225,19 @@ fun DetalleScreen(
                                         fontFamily = manrope,
                                         fontWeight = FontWeight.ExtraBold,
                                         fontSize = 20.sp,
-                                        color = Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb()))
+                                        color = Color(
+                                            paletaMonstruo.getDarkVibrantColor(
+                                                Color(
+                                                    paletaMonstruo.getLightVibrantColor(
+                                                        Color(
+                                                            paletaMonstruo.getVibrantColor(
+                                                                Color.LightGray.toArgb()
+                                                            )
+                                                        ).toArgb()
+                                                    )
+                                                ).toArgb()
+                                            )
+                                        )
                                     )
                                 ) {
                                     append("Familia: ")

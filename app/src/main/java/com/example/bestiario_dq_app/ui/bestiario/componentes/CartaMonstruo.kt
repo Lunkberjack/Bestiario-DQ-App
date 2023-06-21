@@ -95,13 +95,7 @@ fun CartaMonstruo(
                 // que cerramos la carta de un monstruo favorito, cambiemos de pantalla y no no).
                 val currentRoute = navController.currentBackStackEntry?.destination?.route
                 if (currentRoute == Screen.Favoritos.route) {
-                    navController.navigate(Screen.DetalleRoom.route + "/${monstruo.idLista}") {
-                        navController.popBackStack(
-                            Screen.Favoritos.route,
-                            inclusive = false,
-                            saveState = false
-                        )
-                    }
+                    navController.navigate(Screen.DetalleRoom.route + "/${monstruo.idLista}")
                 } else {
                     navController.navigate(Screen.Detalle.route + "/${monstruo.idLista}")
                 }
@@ -151,11 +145,7 @@ fun CartaMonstruo(
                         fontWeight = FontWeight.ExtraBold,
                         color = Color(
                             paletaMonstruo.getDarkVibrantColor(
-                                Color(
-                                    paletaMonstruo.getVibrantColor(
-                                        Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb())).toArgb()
-                                    )
-                                ).toArgb()
+                                Color.White.toArgb()
                             )
                         )
                     )
@@ -165,11 +155,7 @@ fun CartaMonstruo(
                         fontWeight = FontWeight.Light,
                         color = Color(
                             paletaMonstruo.getDarkVibrantColor(
-                                Color(
-                                    paletaMonstruo.getVibrantColor(
-                                        Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb())).toArgb()
-                                    )
-                                ).toArgb()
+                                Color.White.toArgb()
                             )
                         )
                     )
@@ -234,11 +220,7 @@ fun CartaMonstruo(
                             contentDescription = "Agregar a favoritos (descargar)",
                             tint = Color(
                                 paletaMonstruo.getDarkVibrantColor(
-                                    Color(
-                                        paletaMonstruo.getVibrantColor(
-                                            Color(paletaMonstruo.getLightVibrantColor(Color.LightGray.toArgb())).toArgb()
-                                        )
-                                    ).toArgb()
+                                    Color.White.toArgb()
                                 )
                             )
                         )

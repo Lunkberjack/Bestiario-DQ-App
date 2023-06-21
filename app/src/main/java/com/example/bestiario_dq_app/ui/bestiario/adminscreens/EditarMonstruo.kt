@@ -19,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -28,6 +29,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
@@ -149,21 +151,42 @@ fun EditarMonstruo(
             value = monsterIdState.value.text,
             onValueChange = { monsterIdState.value = monsterIdState.value.copy(text = it) },
             label = { Text("Monster Id") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                disabledContainerColor = Color.White,
+                focusedLabelColor = Color.Blue,
+                unfocusedLabelColor = Color.Black,
+            ),
         )
 
         TextField(
             value = monsterNameState.value.text,
             onValueChange = { monsterNameState.value = monsterNameState.value.copy(text = it) },
             label = { Text("Monster Name") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                disabledContainerColor = Color.White,
+                focusedLabelColor = Color.Blue,
+                unfocusedLabelColor = Color.Black,
+            ),
         )
 
         TextField(
             value = monsterFamilyState.value.text,
             onValueChange = { monsterFamilyState.value = monsterFamilyState.value.copy(text = it) },
             label = { Text("Monster Family") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                disabledContainerColor = Color.White,
+                focusedLabelColor = Color.Blue,
+                unfocusedLabelColor = Color.Black,
+            ),
         )
 
 

@@ -29,6 +29,7 @@ import androidx.navigation.NavHostController
 import androidx.preference.PreferenceManager
 import com.example.bestiario_dq_app.ui.Screen
 import com.example.bestiario_dq_app.ui.onboarding.componentes.OnBoardingPage
+import com.example.bestiario_dq_app.ui.theme.manrope
 
 @OptIn(ExperimentalFoundationApi::class)
 @ExperimentalAnimationApi
@@ -69,10 +70,10 @@ fun OnboardingScreen(
                     if (pagerState.currentPage == iteration) Color.DarkGray else Color.LightGray
                 Box(
                     modifier = Modifier
-                        .padding(2.dp)
+                        .padding(5.dp, bottom = 20.dp)
                         .clip(CircleShape)
                         .background(color)
-                        .size(20.dp)
+                        .size(8.dp)
                         .align(Bottom)
                 )
             }
@@ -103,14 +104,15 @@ fun PagerScreen(onBoardingPage: OnBoardingPage) {
                 .fillMaxWidth(0.5f)
                 .fillMaxHeight(0.7f),
             painter = painterResource(id = onBoardingPage.image),
-            contentDescription = "Pager Image"
+            contentDescription = "Imagen pager"
         )
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = onBoardingPage.title,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            fontFamily = manrope
         )
         Text(
             modifier = Modifier
@@ -120,7 +122,8 @@ fun PagerScreen(onBoardingPage: OnBoardingPage) {
             text = onBoardingPage.description,
             fontSize = 20.sp,
             fontWeight = FontWeight.Medium,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            fontFamily = manrope
         )
     }
 }
@@ -149,7 +152,7 @@ fun BotonFinal(
                     contentColor = Color.White
                 )
             ) {
-                Text(text = "Entendido")
+                Text(text = "Entendido", fontFamily = manrope, fontWeight = FontWeight.Light)
             }
         }
     }
