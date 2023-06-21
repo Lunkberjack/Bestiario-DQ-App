@@ -42,7 +42,6 @@ import com.example.bestiario_dq_app.ui.bestiario.SearchViewModel
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
-var listaMonstruos = listOf<MonstruoBusqueda>()
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,6 +52,8 @@ fun DefaultAppBar(
     viewModel: MonstruosViewModel = hiltViewModel(),
     searchViewModel: SearchViewModel = hiltViewModel()
 ) {
+    var listaMonstruos by remember { mutableStateOf(emptyList<MonstruoBusqueda>()) }
+
     val coroutineScope = rememberCoroutineScope()
     //var searchActive by remember { mutableStateOf(false) }
 
@@ -120,6 +121,9 @@ fun DefaultAppBar(
     )
     if (searchViewModel.searchActive.value) {
         var query by remember { mutableStateOf("") }
+        viewModel.getFamilias()
+        viewModel.getJuegos()
+
         SearchBar(
             query = query,
             onQueryChange = {
@@ -128,12 +132,12 @@ fun DefaultAppBar(
             onSearch = {
                 if (query.isNotEmpty()) {
                     viewModel.getMonstruosBusqueda()
-                    listaMonstruos = viewModel.monstruosBusqueda.value.filter {
+                    val monstruosBusqueda = viewModel.monstruosBusqueda.value.filter {
                         it.coincideBusqueda(query)
                     }
-                    viewModel.getFamilias()
+                    listaMonstruos = monstruosBusqueda
+
                     viewModel.familiasBusqueda(query)
-                    viewModel.getJuegos()
                     viewModel.juegosBusqueda(query)
                 }
             },

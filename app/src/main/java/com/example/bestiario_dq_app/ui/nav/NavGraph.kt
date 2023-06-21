@@ -67,7 +67,7 @@ fun NavGraph(
 
     ModalNavigationDrawer(
         drawerState = drawerState,
-        drawerContent = {                 // pantalla de detalle (que se muestra en pantalla completa).
+        drawerContent = {
             if ((navBackStackEntry?.destination?.route)?.containsAny(rutasExcluidas) == false) {
                 AppDrawer(Screen.Monstruos.route, navController, drawerState = drawerState)
             }
@@ -117,7 +117,7 @@ fun NavGraph(
                         AdminScreen(navController)
                     }
                     composable(route = Screen.AniadirMonstruo.route) {
-                        AniadirMonstruo()
+                        AniadirMonstruo(navController = navController)
                     }
                     composable(
                         route = "${Screen.EditarMonstruo.route}/{idSeleccionado}",

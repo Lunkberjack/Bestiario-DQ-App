@@ -11,7 +11,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.movableContentOf
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
@@ -26,14 +31,23 @@ import com.example.bestiario_dq_app.ui.bestiario.componentes.ResultadoBusqueda
 import com.example.bestiario_dq_app.ui.theme.manrope
 
 @Composable
-fun BusquedaScreen(navController: NavController, listaMonstruos: List<MonstruoBusqueda>, viewModel: MonstruosViewModel, searchViewModel: SearchViewModel) {
+fun BusquedaScreen(
+    navController: NavController,
+    listaMonstruos: List<MonstruoBusqueda> = remember { mutableStateListOf() },
+    viewModel: MonstruosViewModel,
+    searchViewModel: SearchViewModel
+) {
+
     Column(
         Modifier
             .fillMaxSize()
-            .padding(12.dp)) {
-        Row(modifier = Modifier
-            .weight(0.33f)
-            .fillMaxWidth()) {
+            .padding(12.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .weight(0.33f)
+                .fillMaxWidth()
+        ) {
             Column {
                 ApartadoBusqueda(apartado = "Monstruos")
                 LazyColumn {
@@ -49,9 +63,11 @@ fun BusquedaScreen(navController: NavController, listaMonstruos: List<MonstruoBu
                 }
             }
         }
-        Row(modifier = Modifier
-            .weight(0.33f)
-            .fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .weight(0.33f)
+                .fillMaxWidth()
+        ) {
             Column {
                 ApartadoBusqueda(apartado = "Familias")
                 LazyColumn {
@@ -66,9 +82,11 @@ fun BusquedaScreen(navController: NavController, listaMonstruos: List<MonstruoBu
                 }
             }
         }
-        Row(modifier = Modifier
-            .weight(0.33f)
-            .fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .weight(0.33f)
+                .fillMaxWidth()
+        ) {
             Column {
                 ApartadoBusqueda(apartado = "Juegos")
                 LazyColumn {

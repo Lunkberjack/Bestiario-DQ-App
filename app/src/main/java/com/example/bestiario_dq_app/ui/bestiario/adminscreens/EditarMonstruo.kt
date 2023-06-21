@@ -40,6 +40,7 @@ import com.example.bestiario_dq_app.core.utils.base64ToBitmap
 import com.example.bestiario_dq_app.core.utils.encodeImageToBase64
 import com.example.bestiario_dq_app.data.remote.responses.Atributo
 import com.example.bestiario_dq_app.data.remote.responses.Monstruo
+import com.example.bestiario_dq_app.ui.Screen
 import com.example.bestiario_dq_app.ui.bestiario.MonstruosViewModel
 import com.example.bestiario_dq_app.ui.theme.manrope
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -89,7 +90,11 @@ fun EditarMonstruo(
         ) {
             CircularProgressIndicator()
             Spacer(modifier = Modifier.height(20.dp))
-            Text(text = "Cargando los datos...", fontFamily = manrope, fontWeight = FontWeight.Light)
+            Text(
+                text = "Cargando los datos...",
+                fontFamily = manrope,
+                fontWeight = FontWeight.Light
+            )
         }
         return
     }
@@ -122,22 +127,23 @@ fun EditarMonstruo(
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
-            .fillMaxSize()
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        selectedImage.value?.let {
-            val imagePreview =
-                viewModel.monstruo.value?.let { it1 -> base64ToBitmap(it1.imagen, 200, 200) }
-            if (imagePreview != null) {
-                Image(
-                    bitmap = imagePreview.asImageBitmap(),
-                    contentDescription = "Imagen subida",
-                    modifier = Modifier.width(200.dp)
-                )
-            }
+
+        val imagePreview =
+            viewModel.monstruo.value?.let { it1 -> base64ToBitmap(it1.imagen, 200, 200) }
+        if (imagePreview != null) {
+            Image(
+                bitmap = imagePreview.asImageBitmap(),
+                contentDescription = "Imagen subida",
+                modifier = Modifier.width(200.dp)
+            )
         }
         // Seleccionar la imagen (usando el launcher).
         Button(onClick = { launcher.launch("image/*") }) {
-            Text("Select Image")
+            Text("Subir imagen")
         }
         TextField(
             value = monsterIdState.value.text,
@@ -183,26 +189,38 @@ fun EditarMonstruo(
         // Añadir un nuevo atributo.
         Button(onClick = {
             attributesState.add(Atributo(0, "", listOf(), listOf(), 0))
-        }) {
+        }, modifier = Modifier.fillMaxWidth()) {
             Text("Nuevo atributo")
         }
 
         // Se crea una nueva instancia de Monstruo con los datos proporcionados y se llama al
         // método PUT de la API, que lo actualiza por ID.
-        Button(onClick = {
-            val monstruo = viewModel.monstruo.value?.let { it ->
-                Monstruo(
-                    atributos = attributesState.map { it }.toMutableList(),
-                    familia = monsterFamilyState.value.text,
-                    idLista = monsterIdState.value.text,
-                    imagen = monsterImageState.value.text,
-                    nombre = monsterNameState.value.text
-                )
-            }
-            if (monstruo != null) {
-                viewModel.actualizarMonstruo(monsterIdState.value.text, monstruo)
-            }
-        }) {
+        Button(
+            onClick = {
+                val monstruo = viewModel.monstruo.value?.let { it ->
+                    Monstruo(
+                        atributos = attributesState.map { it }.toMutableList(),
+                        familia = monsterFamilyState.value.text,
+                        idLista = monsterIdState.value.text,
+                        imagen = monsterImageState.value.text,
+                        nombre = monsterNameState.value.text
+                    )
+                }
+                if (monstruo != null) {
+                    viewModel.actualizarMonstruo(monsterIdState.value.text, monstruo)
+                }
+                navController.navigate(Screen.Monstruos.route) {
+                    navController.popBackStack(Screen.Monstruos.route, inclusive = true, saveState = false)
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            // Validación de campos que consideramos obligatorios.
+            enabled =
+            monsterImageState.value.text.isNotBlank()
+                    && monsterIdState.value.text.isNotBlank()
+                    && monsterNameState.value.text.isNotBlank()
+                    && monsterFamilyState.value.text.isNotBlank()
+        ) {
             Text("Guardar monstruo")
         }
     }
